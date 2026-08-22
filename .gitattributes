@@ -1,0 +1,22 @@
+# Normalise line endings.
+#
+# Without this, git on Windows checks files out with CRLF, which contradicts
+# both .editorconfig (`end_of_line = lf`) and Prettier (`endOfLine: "lf"`) — so
+# `npm run format:check` would fail on a fresh clone for reasons that have
+# nothing to do with the code. `eol=lf` pins the working copy to LF everywhere.
+* text=auto eol=lf
+
+# Binaries git must never touch.
+*.woff2 binary
+*.woff  binary
+*.ttf   binary
+*.otf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.avif  binary
+*.ico   binary
+
+# Generated: collapse in diffs and exclude from language statistics.
+package-lock.json -diff linguist-generated

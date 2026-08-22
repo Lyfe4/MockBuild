@@ -1,0 +1,167 @@
+/**
+ * A minimal modern reset.
+ *
+ * Deliberately small. It normalises the handful of defaults that are actively
+ * unhelpful and leaves everything else — lists, headings, tables — for the
+ * component that owns them to style. Anything opinionated about *this site*
+ * belongs in global.css, not here.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove the default margin; every gap on the page should be a deliberate one. */
+* {
+  margin: 0;
+}
+
+html {
+  /* Prevent iOS bumping up text size when a device is rotated to landscape. */
+  text-size-adjust: 100%;
+}
+
+/**
+ * Smooth scrolling, but only for readers who have not asked for reduced motion.
+ * `scroll-padding-top` keeps in-page anchor targets clear of any sticky header.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
+
+html {
+  scroll-padding-top: var(--space-2xl);
+}
+
+body {
+  min-height: 100svh;
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Replaced elements are block-level and never overflow their container. */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* Form controls do not inherit typography by default. Make them. */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Only ever resize vertically; horizontal resize breaks layouts. */
+textarea {
+  resize: vertical;
+}
+
+/* Long words and URLs break rather than forcing a horizontal scrollbar. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+dd,
+dt,
+figcaption {
+  overflow-wrap: break-word;
+}
+
+/**
+ * `text-wrap: balance` evens out the line lengths of short blocks — the browser
+ * only applies it up to a handful of lines, so it is safe on headings and
+ * counter-productive on body copy, which gets `pretty` instead (it just avoids
+ * orphans and is cheap at any length).
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+  text-wrap: pretty;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+/**
+ * Focus.
+ *
+ * Remove the UA outline only where we immediately replace it: `:focus-visible`
+ * still draws a ring, so keyboard users are never left without one. The ring is
+ * built from tokens, so it recolours with the season.
+ */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-xs);
+}
+
+::selection {
+  background-color: var(--color-selection-bg);
+  color: var(--color-selection-ink);
+}
+
+/**
+ * A blanket safety net for anyone who has asked for reduced motion, covering
+ * animation that did not come from our duration tokens (third-party CSS, UA
+ * animations, anything added in a hurry). The token overrides in tokens.css
+ * remain the primary mechanism.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

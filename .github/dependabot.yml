@@ -1,0 +1,36 @@
+version: 2
+
+updates:
+  # Application and tooling dependencies.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Australia/Melbourne
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # Patch and minor bumps arrive as one reviewable PR per week rather than
+      # a dozen. Majors stay separate, because they are the ones that need
+      # reading.
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  # The actions used by .github/workflows. Pinned action versions go stale
+  # quietly and are a supply-chain risk worth keeping current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Australia/Melbourne
+    commit-message:
+      prefix: chore
+      include: scope

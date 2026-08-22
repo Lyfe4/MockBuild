@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel an in-flight run when the same branch or PR is pushed to again.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# The workflow only reads the repository. Anything needing more should ask for
+# it on the job that needs it, not here.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # Single source of truth: the same file nvm reads locally.
+          node-version-file: .nvmrc
+          cache: npm
+
+      # `npm ci` — not `npm install` — so the lockfile is honoured exactly and a
+      # drifted lockfile fails the build instead of being silently rewritten.
+      - name: Install dependencies
+        run: npm ci
+
+      # Each check is its own step so a red run says which gate failed without
+      # anyone opening the log. They are not combined into `npm run check`.
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build

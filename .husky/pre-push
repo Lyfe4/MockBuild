@@ -1,0 +1,4 @@
+# Whole-project checks, before anything leaves the machine. Type errors and
+# failing tests are cheap to catch here and expensive to catch in CI.
+npm run typecheck
+npm run test

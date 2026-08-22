@@ -1,0 +1,9 @@
+# features/specimen
+
+A single specimen record: the sheet image, determination history, collection
+locality, and the seed viability notes.
+
+Empty until the detail view is built. See the note in `features/catalogue`
+for the slice conventions.
+
+Delete this file once the folder has real contents.

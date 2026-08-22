@@ -1,0 +1,86 @@
+/**
+ * Self-hosted variable fonts.
+ *
+ * ── Where the files go ────────────────────────────────────────────────────
+ * Drop the .woff2 files into `public/fonts/`, keeping the names below:
+ *
+ *   public/fonts/eb-garamond-variable.woff2         (display, roman)
+ *   public/fonts/eb-garamond-variable-italic.woff2  (display, italic)
+ *   public/fonts/inter-variable.woff2               (UI text)
+ *
+ * Files under `public/` are copied to the build root verbatim and are served
+ * from `/fonts/…`, which is why these `url()`s are root-relative and not
+ * bundler-resolved. Nothing is downloaded at build time and no font CDN is
+ * contacted at runtime — see the CSP in index.html, which allows `font-src
+ * 'self'` only.
+ *
+ * ── Why these two ─────────────────────────────────────────────────────────
+ * EB Garamond (OFL-1.1) for display: an old-style serif with the plate-caption
+ * feel a herbarium wants. Inter (OFL-1.1) for UI: a neutral grotesque that stays
+ * legible at the small sizes labels and metadata need. Both ship as variable
+ * fonts, so the whole weight range costs one request.
+ *
+ * Substituting a different family? Update --font-family-display /
+ * --font-family-text in tokens.css to match, and keep the licences OFL.
+ *
+ * ── Loading behaviour ─────────────────────────────────────────────────────
+ * `font-display: swap` renders the fallback immediately and swaps when the
+ * webfont arrives: text is never invisible. The `size-adjust` / metric
+ * overrides on the fallback faces below reduce the layout shift that swap
+ * would otherwise cause. Tune them once the real files are in place.
+ */
+
+@font-face {
+  font-family: 'EB Garamond Variable';
+  src: url('/fonts/eb-garamond-variable.woff2') format('woff2-variations');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  /* Latin + Latin-1 Supplement + Latin Extended-A, plus common punctuation. */
+  unicode-range: u+0000-00ff, u+0100-017f, u+2000-206f, u+2070-209f, u+20a0-20bf, u+2122, u+2212;
+}
+
+@font-face {
+  font-family: 'EB Garamond Variable';
+  src: url('/fonts/eb-garamond-variable-italic.woff2') format('woff2-variations');
+  font-weight: 400 800;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: u+0000-00ff, u+0100-017f, u+2000-206f, u+2070-209f, u+20a0-20bf, u+2122, u+2212;
+}
+
+@font-face {
+  font-family: 'Inter Variable';
+  src: url('/fonts/inter-variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: u+0000-00ff, u+0100-017f, u+2000-206f, u+2070-209f, u+20a0-20bf, u+2122, u+2212;
+}
+
+/**
+ * Metric-matched fallbacks. Referenced ahead of the generic families in
+ * --font-family-* so the pre-swap render occupies close to the same space as
+ * the webfont, which keeps CLS near zero.
+ *
+ * The adjustment values below are placeholders. Once the real .woff2 files are
+ * in `public/fonts/`, measure and replace them — the Fontaine or Capsize
+ * tooling will generate exact numbers.
+ */
+@font-face {
+  font-family: 'EB Garamond Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 96%;
+  ascent-override: 88%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Segoe UI'), local('Helvetica Neue'), local('Arial');
+  size-adjust: 100%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}

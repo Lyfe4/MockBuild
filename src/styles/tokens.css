@@ -1,0 +1,277 @@
+/**
+ * Design tokens for the Thornfield Botanical Archive.
+ *
+ * Three layers, in this order:
+ *
+ *   1. PRIMITIVES  Raw, context-free values. Named after the material they came
+ *                  from (paper, ink, russet) rather than the role they play.
+ *                  Components never reference this layer directly.
+ *   2. SEMANTIC    Role-named tokens (--color-bg, --color-ink, --space-md).
+ *                  This is the only layer components are allowed to consume.
+ *   3. SEASONS     `[data-season]` on <html> remaps the semantic colour tokens.
+ *                  Nothing else changes: spacing, type and motion are constant
+ *                  across seasons, so a re-theme can never shift the layout.
+ *
+ * The palettes are drawn from herbarium materials — mounting paper, iron-gall and
+ * walnut inks, pressed and faded leaves. All four are light; the seasons vary hue
+ * and warmth rather than luminance, which is what keeps contrast stable.
+ *
+ * Every semantic ink colour meets WCAG 2.2 AA (>= 4.5:1) against its own season's
+ * --color-bg. Re-check this if you change a palette.
+ */
+
+:root {
+  /* ------------------------------------------------------------------ *
+   * 1. PRIMITIVES
+   * ------------------------------------------------------------------ */
+
+  /* Papers — mounting card, sized rag, sun-bleached stock. */
+  --paper-warm-50: #fdfaf1;
+  --paper-warm-100: #f8f3e4;
+  --paper-warm-200: #f3ede3;
+  --paper-warm-300: #f2e9d4;
+  --paper-neutral-50: #fbf8f1;
+  --paper-neutral-100: #f5f1e8;
+  --paper-green-50: #fbfaf3;
+  --paper-green-100: #f4f3ea;
+  --paper-green-200: #eceee0;
+  --paper-cool-50: #f7f8f6;
+  --paper-cool-100: #edeeec;
+  --paper-cool-200: #e3e6e4;
+  --paper-cream-50: #faf6ee;
+  --paper-cream-200: #ece1d3;
+
+  /* Inks — none of these blacks are neutral; each keeps its pigment's cast. */
+  --ink-sepia-900: #2b2317;
+  --ink-sepia-600: #6b5c42;
+  --ink-walnut-900: #2a1f1a;
+  --ink-walnut-600: #6a544a;
+  --ink-walnut-500: #6e4b2a;
+  --ink-herbarium-900: #1f2a21;
+  --ink-herbarium-600: #55604f;
+  --ink-irongall-900: #1b242a;
+  --ink-irongall-600: #56646b;
+  --ink-irongall-500: #3f6472;
+  --ink-charcoal-900: #23201a;
+  --ink-charcoal-600: #5e574b;
+
+  /* Pressed-leaf and pigment accents. */
+  --leaf-olive-600: #5a7042;
+  --leaf-olive-700: #46592f;
+  --leaf-ochre-600: #85590f;
+  --leaf-ochre-700: #6a4609;
+  --leaf-russet-600: #8f462a;
+  --leaf-russet-700: #72351d;
+  --leaf-slate-700: #33525e;
+
+  /* Rules and hairlines — the faint pencil grid on a specimen sheet. */
+  --line-warm-200: #e4d9be;
+  --line-neutral-200: #dcd4c4;
+  --line-green-200: #d8dbc9;
+  --line-cream-200: #decfbf;
+  --line-cool-200: #d2d8d6;
+
+  /* Washes: accent tints used behind text, never as text. */
+  --wash-olive: #e9ecdd;
+  --wash-ochre: #f2e6cd;
+  --wash-russet: #f0e0d6;
+  --wash-slate: #dfe6e9;
+  --wash-neutral: #ebe5d8;
+
+  /* Type. The two custom families are declared in fonts.css. */
+  --font-family-display:
+    'EB Garamond Variable', 'EB Garamond Fallback', georgia, 'Times New Roman', serif;
+  --font-family-text:
+    'Inter Variable', 'Inter Fallback', -apple-system, blinkmacsystemfont, 'Segoe UI', roboto,
+    sans-serif;
+  --font-family-mono: ui-monospace, sfmono-regular, 'SF Mono', menlo, consolas, monospace;
+
+  /**
+   * Fluid type scale. Each clamp() minimum is the mobile size; the maximum is
+   * reached at roughly 1280px. Preferred values are written as `rem + vw` rather
+   * than `vw` alone so the scale still responds to the reader's browser font
+   * size — a vw-only preferred value silently defeats text zoom.
+   */
+  --font-size-2xs: 0.75rem;
+  --font-size-xs: clamp(0.8125rem, 0.79rem + 0.11vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 0.85rem + 0.13vw, 0.9375rem);
+  --font-size-md: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --font-size-lg: clamp(1.125rem, 1.05rem + 0.36vw, 1.375rem);
+  --font-size-xl: clamp(1.375rem, 1.22rem + 0.75vw, 1.875rem);
+  --font-size-2xl: clamp(1.75rem, 1.45rem + 1.5vw, 2.75rem);
+  --font-size-3xl: clamp(2.25rem, 1.7rem + 2.7vw, 4rem);
+  --font-size-4xl: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);
+
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.04em;
+  --letter-spacing-wider: 0.12em;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /**
+   * Spacing. A 4px base, mobile-first: the fixed steps are the mobile values,
+   * and only the two largest steps grow with the viewport — which is where
+   * generous whitespace actually starts to read as generous.
+   */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: clamp(2.5rem, 1.9rem + 3vw, 4rem);
+  --space-3xl: clamp(3.5rem, 2.5rem + 5vw, 6.5rem);
+
+  --measure: 68ch;
+  --measure-narrow: 46ch;
+  --layout-max-width: 76rem;
+  --layout-gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+  --radius-pill: 999rem;
+
+  /* Shadows are tinted with the sepia ink so they read as paper, not as fog. */
+  --shadow-raised: 0 1px 2px rgb(43 35 23 / 7%);
+  --shadow-lifted: 0 2px 4px rgb(43 35 23 / 6%), 0 8px 16px -8px rgb(43 35 23 / 12%);
+  --shadow-overlay: 0 4px 8px rgb(43 35 23 / 8%), 0 24px 48px -16px rgb(43 35 23 / 20%);
+
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --layer-base: 0;
+  --layer-sticky: 10;
+  --layer-overlay: 100;
+  --layer-skip-link: 1000;
+
+  /* ------------------------------------------------------------------ *
+   * 2. SEMANTIC TOKENS
+   * Default palette: undressed archival neutral. This is what renders
+   * before ThemeProvider runs, and whenever JavaScript is unavailable.
+   * ------------------------------------------------------------------ */
+
+  --color-bg: var(--paper-neutral-100);
+  --color-surface: var(--paper-neutral-50);
+  --color-surface-sunken: var(--paper-warm-200);
+  --color-ink: var(--ink-charcoal-900);
+  --color-ink-muted: var(--ink-charcoal-600);
+  --color-accent: var(--ink-walnut-500);
+  --color-accent-strong: var(--leaf-russet-700);
+  --color-accent-wash: var(--wash-neutral);
+  --color-on-accent: var(--paper-neutral-50);
+  --color-line: var(--line-neutral-200);
+  --color-selection-bg: var(--wash-neutral);
+  --color-selection-ink: var(--ink-charcoal-900);
+
+  /* Derived roles — every season inherits these without restating them. */
+  --color-focus-ring: var(--color-accent-strong);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------ *
+ * 3. SEASONS
+ * Southern Hemisphere. ThemeProvider writes `data-season` onto <html>.
+ * Selectors are `:root[data-season=…]` so they outrank the bare `:root`
+ * defaults on specificity, not merely on source order.
+ * ------------------------------------------------------------------ */
+
+/* Spring — Sep to Nov. New growth pressed onto pale wash paper. */
+:root[data-season='spring'] {
+  --color-bg: var(--paper-green-100);
+  --color-surface: var(--paper-green-50);
+  --color-surface-sunken: var(--paper-green-200);
+  --color-ink: var(--ink-herbarium-900);
+  --color-ink-muted: var(--ink-herbarium-600);
+  --color-accent: var(--leaf-olive-600);
+  --color-accent-strong: var(--leaf-olive-700);
+  --color-accent-wash: var(--wash-olive);
+  --color-on-accent: var(--paper-green-50);
+  --color-line: var(--line-green-200);
+  --color-selection-bg: var(--wash-olive);
+  --color-selection-ink: var(--ink-herbarium-900);
+}
+
+/* Summer — Dec to Feb. Sun-bleached sheets, dried grass, ochre pigment. */
+:root[data-season='summer'] {
+  --color-bg: var(--paper-warm-100);
+  --color-surface: var(--paper-warm-50);
+  --color-surface-sunken: var(--paper-warm-300);
+  --color-ink: var(--ink-sepia-900);
+  --color-ink-muted: var(--ink-sepia-600);
+  --color-accent: var(--leaf-ochre-600);
+  --color-accent-strong: var(--leaf-ochre-700);
+  --color-accent-wash: var(--wash-ochre);
+  --color-on-accent: var(--paper-warm-50);
+  --color-line: var(--line-warm-200);
+  --color-selection-bg: var(--wash-ochre);
+  --color-selection-ink: var(--ink-sepia-900);
+}
+
+/* Autumn — Mar to May. Pressed leaves and walnut ink on tanned card. */
+:root[data-season='autumn'] {
+  --color-bg: var(--paper-warm-200);
+  --color-surface: var(--paper-cream-50);
+  --color-surface-sunken: var(--paper-cream-200);
+  --color-ink: var(--ink-walnut-900);
+  --color-ink-muted: var(--ink-walnut-600);
+  --color-accent: var(--leaf-russet-600);
+  --color-accent-strong: var(--leaf-russet-700);
+  --color-accent-wash: var(--wash-russet);
+  --color-on-accent: var(--paper-cream-50);
+  --color-line: var(--line-cream-200);
+  --color-selection-bg: var(--wash-russet);
+  --color-selection-ink: var(--ink-walnut-900);
+}
+
+/* Winter — Jun to Aug. Iron-gall ink, frost-grey stock, slate rules. */
+:root[data-season='winter'] {
+  --color-bg: var(--paper-cool-100);
+  --color-surface: var(--paper-cool-50);
+  --color-surface-sunken: var(--paper-cool-200);
+  --color-ink: var(--ink-irongall-900);
+  --color-ink-muted: var(--ink-irongall-600);
+  --color-accent: var(--ink-irongall-500);
+  --color-accent-strong: var(--leaf-slate-700);
+  --color-accent-wash: var(--wash-slate);
+  --color-on-accent: var(--paper-cool-50);
+  --color-line: var(--line-cool-200);
+  --color-selection-bg: var(--wash-slate);
+  --color-selection-ink: var(--ink-irongall-900);
+}
+
+/**
+ * Motion.
+ *
+ * Zeroing the duration tokens disables every transition and animation built on
+ * them — which is all of them, because components must not hard-code a duration.
+ *
+ * One caveat worth knowing: at exactly 0ms the browser fires no `transitionend`
+ * event. Nothing here depends on one. If that ever changes, move these to 0.01ms
+ * rather than reintroducing motion.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}

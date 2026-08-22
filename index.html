@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      Content-Security-Policy — production policy.
+
+      This is the policy that ships. It is deliberately strict:
+        · script-src 'self'      no inline scripts, no eval, no third-party JS.
+        · style-src  'self'      CSS Modules compile to an external stylesheet,
+                                 so no inline <style> or style="" is needed.
+        · connect-src 'self'     the archive is fully static; nothing phones home.
+        · frame-ancestors 'none' the site cannot be framed.
+
+      For this to hold at build time, `build.modulePreload.polyfill` is disabled
+      in vite.config.ts — the polyfill would otherwise inject an inline <script>.
+
+      The dev server cannot satisfy this policy: Vite injects an inline React
+      Fast Refresh preamble, serves CSS as inline <style> before extraction, and
+      opens a WebSocket for HMR. Rather than weaken the shipped policy to suit
+      `vite dev`, the `thornfield:relax-csp-for-dev` plugin in vite.config.ts
+      rewrites this tag's content on the dev server only. `vite build` output is
+      untouched — what you see below is what users get.
+
+      A meta-tag CSP is the right tool for a static host with no control over
+      response headers. If you later deploy somewhere that can set headers, move
+      this policy to a real `Content-Security-Policy` header (and add
+      `frame-ancestors`, which meta tags cannot enforce) and delete this tag.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <title>Thornfield Botanical Archive</title>
+    <meta
+      name="description"
+      content="A working seed bank and herbarium. Thornfield holds pressed specimens, accession records and viable seed from the temperate south, catalogued and open to researchers."
+    />
+
+    <!-- Neutral archival paper; matches --color-bg before a season is applied. -->
+    <meta name="theme-color" content="#f5f1e8" />
+    <meta name="color-scheme" content="light" />
+
+    <!--
+      Open Graph / Twitter. PLACEHOLDERS — replace before this goes anywhere public:
+        · og:url must be the real canonical origin.
+        · og:image must be an absolute URL to a 1200x630 PNG or JPEG.
+      Both are intentionally left as example.com so a stale value is obvious.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Thornfield Botanical Archive" />
+    <meta property="og:title" content="Thornfield Botanical Archive" />
+    <meta
+      property="og:description"
+      content="A working seed bank and herbarium. Pressed specimens, accession records and viable seed from the temperate south."
+    />
+    <meta property="og:locale" content="en_AU" />
+    <meta property="og:url" content="https://example.com/" />
+    <meta property="og:image" content="https://example.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A pressed fern specimen mounted on aged archival card, with a handwritten accession label."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="canonical" href="https://example.com/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      The Thornfield catalogue needs JavaScript to browse specimens. The accession records
+      themselves are available on request from the archive.
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

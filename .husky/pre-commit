@@ -1,0 +1,4 @@
+# Fast, staged-files-only: lint and format what is about to be committed.
+# The slow checks (types, tests) run on pre-push instead, so committing
+# stays quick enough that nobody reaches for --no-verify.
+npx lint-staged

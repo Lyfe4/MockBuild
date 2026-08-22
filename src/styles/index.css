@@ -1,0 +1,19 @@
+/**
+ * Stylesheet entry point.
+ *
+ * The order below is load-bearing and is the reason this file exists rather than
+ * four separate imports in main.tsx: the linter sorts import statements
+ * alphabetically, which would silently reorder the cascade. Keeping the order
+ * here — in CSS, next to a comment explaining it — makes it hard to break by
+ * accident.
+ *
+ *   1. fonts   @font-face declarations; must be registered before first use.
+ *   2. tokens  Custom properties on :root. Everything below depends on them.
+ *   3. reset   Neutralises unhelpful UA defaults.
+ *   4. global  Site defaults and utilities. Must win over the reset.
+ */
+
+@import url('./fonts.css');
+@import url('./tokens.css');
+@import url('./reset.css');
+@import url('./global.css');

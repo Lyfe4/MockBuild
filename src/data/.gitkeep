@@ -1,0 +1,9 @@
+# data
+
+Static specimen and accession records, as typed TypeScript modules rather than
+JSON, so the shapes in `src/types` are enforced at build time.
+
+Nothing in here is fetched at runtime — the archive is a static site and the
+data ships in the bundle. Keep it small enough that this stays true.
+
+Delete this file once the folder has real contents.

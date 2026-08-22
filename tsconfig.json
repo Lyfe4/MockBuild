@@ -1,0 +1,6 @@
+{
+  // Solution-style root config: it owns no files itself and simply points at the
+  // two real projects. `tsc -b` builds both. Editors resolve the right one per file.
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+}
