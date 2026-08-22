@@ -1,17 +1,22 @@
 import { describe, expect, it } from 'vitest';
 
 import { describePlant } from './describe';
-import { FLOWER_TYPES, LEAF_SHAPES, type PlantForm } from './types';
+import { FLOWER_TYPES, LEAF_SHAPES, PLANT_HABITS, type PlantForm } from './types';
 
 const BASE_FORM: PlantForm = {
+  habit: 'upright',
   branchCount: 3,
   branchDepth: 3,
   branchAngle: 28,
   stemCurve: 0.12,
   leafShape: 'ovate',
   leafDensity: 0.6,
+  leafArrangement: 'alternate',
+  lobeCount: 5,
   flowerType: 'cluster',
   flowerSize: 1,
+  petalCount: 5,
+  roots: false,
   height: 0.7,
   scale: 0.9,
 };
@@ -91,5 +96,62 @@ describe('describePlant', () => {
 
   it('is pure: the same form always gives the same sentence', () => {
     expect(describePlant(form())).toBe(describePlant(form()));
+  });
+
+  describe('habit', () => {
+    it.each(PLANT_HABITS)('describes the %s habit distinctly', (habit) => {
+      const others = PLANT_HABITS.filter((other) => other !== habit).map((other) =>
+        describePlant(form({ habit: other })),
+      );
+
+      expect(others).not.toContain(describePlant(form({ habit })));
+    });
+
+    it.each([
+      ['upright', 'upright'],
+      ['arching', 'arching'],
+      ['rosette', 'rosette'],
+      ['tuft', 'tuft'],
+      ['trailing', 'trailing'],
+    ] as const)('names the %s habit in the sentence', (habit, word) => {
+      expect(describePlant(form({ habit }))).toContain(word);
+    });
+
+    it('does not claim a rosette or a tuft is branched', () => {
+      // Neither habit branches at all, so a branching phrase would be a lie
+      // rather than merely unhelpful.
+      for (const habit of ['rosette', 'tuft'] as const) {
+        expect(describePlant(form({ habit, branchCount: 5, branchDepth: 5 }))).not.toContain(
+          'branched',
+        );
+      }
+    });
+  });
+
+  describe('roots', () => {
+    it('mentions exposed roots when they are drawn', () => {
+      expect(describePlant(form({ roots: true }))).toContain('roots');
+    });
+
+    it('says nothing about roots when they are not', () => {
+      expect(describePlant(form({ roots: false }))).not.toContain('roots');
+    });
+
+    it('still reads as one sentence with roots and no flowers', () => {
+      const text = describePlant(form({ roots: true, flowerType: 'none' }));
+
+      expect(text).toContain('and shown with its roots exposed.');
+      expect(text.slice(0, -1)).not.toContain('.');
+      // A missing conjunction would leave a double space where the clause joins.
+      expect(text).not.toContain('  ');
+    });
+
+    it('still reads as one sentence with roots and flowers', () => {
+      const text = describePlant(form({ roots: true, flowerType: 'spike' }));
+
+      expect(text).toContain('flowers');
+      expect(text).toContain('roots exposed.');
+      expect(text).not.toContain('  ');
+    });
   });
 });

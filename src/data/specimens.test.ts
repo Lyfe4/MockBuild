@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { SPECIMENS } from '@/data/specimens';
-import { FLOWER_TYPES, LEAF_SHAPES } from '@/lib/plant';
+import { FLOWER_TYPES, LEAF_ARRANGEMENTS, LEAF_SHAPES, PLANT_HABITS } from '@/lib/plant';
 import { CONSERVATION_STATUSES, HABITATS, SEASONS } from '@/types';
 
 /**
@@ -111,6 +111,40 @@ describe('SPECIMENS', () => {
     expect([...flowers].sort()).toEqual([...FLOWER_TYPES].sort());
   });
 
+  it('exercises every growth habit and leaf arrangement', () => {
+    const habits = new Set(SPECIMENS.map((specimen) => specimen.form.habit));
+    const arrangements = new Set(SPECIMENS.map((specimen) => specimen.form.leafArrangement));
+
+    expect([...habits].sort()).toEqual([...PLANT_HABITS].sort());
+    expect([...arrangements].sort()).toEqual([...LEAF_ARRANGEMENTS].sort());
+  });
+
+  it('draws roots on some sheets and not others', () => {
+    const withRoots = SPECIMENS.filter((specimen) => specimen.form.roots);
+
+    expect(withRoots.length).toBeGreaterThan(2);
+    expect(withRoots.length).toBeLessThan(SPECIMENS.length);
+  });
+
+  it('does not draw roots on a sheet whose note says they are absent', () => {
+    // The illustration and the curator's note describe the same object; if the
+    // label says the roots were not collected, the plate must not show them.
+    for (const specimen of SPECIMENS) {
+      if (/roots absent/i.test(specimen.notes)) {
+        expect(specimen.form.roots).toBe(false);
+      }
+    }
+  });
+
+  it('varies the lobe and petal counts rather than leaving them at a default', () => {
+    const lobed = SPECIMENS.filter(
+      (specimen) => specimen.form.leafShape === 'palmate' || specimen.form.leafShape === 'lobed',
+    );
+
+    expect(new Set(lobed.map((specimen) => specimen.form.lobeCount)).size).toBeGreaterThan(2);
+    expect(new Set(SPECIMENS.map((specimen) => specimen.form.petalCount)).size).toBeGreaterThan(2);
+  });
+
   it('keeps every form parameter inside its documented range', () => {
     for (const specimen of SPECIMENS) {
       const { form } = specimen;
@@ -126,6 +160,10 @@ describe('SPECIMENS', () => {
       expect(form.leafDensity).toBeLessThanOrEqual(1);
       expect(form.flowerSize).toBeGreaterThanOrEqual(0.4);
       expect(form.flowerSize).toBeLessThanOrEqual(2);
+      expect(form.lobeCount).toBeGreaterThanOrEqual(3);
+      expect(form.lobeCount).toBeLessThanOrEqual(9);
+      expect(form.petalCount).toBeGreaterThanOrEqual(4);
+      expect(form.petalCount).toBeLessThanOrEqual(8);
       expect(form.height).toBeGreaterThanOrEqual(0.3);
       expect(form.height).toBeLessThanOrEqual(1);
       expect(form.scale).toBeGreaterThanOrEqual(0.5);

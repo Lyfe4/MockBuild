@@ -161,9 +161,9 @@ export function cubicAngleAt(p0: Point, c1: Point, c2: Point, p3: Point, t: numb
 /**
  * Approximate arc length of a cubic, by chording it.
  *
- * Sixteen samples is well inside a pixel for curves at this scale, and the
- * value only feeds `stroke-dasharray`, where being a fraction of a percent out
- * is invisible.
+ * Sixteen samples is well inside a pixel at this scale, and the value is only
+ * ever used to choose a sample count and to report segment length, so a
+ * fraction of a percent of error is immaterial.
  */
 export function cubicLength(p0: Point, c1: Point, c2: Point, p3: Point): number {
   const samples = 16;
@@ -177,4 +177,71 @@ export function cubicLength(p0: Point, c1: Point, c2: Point, p3: Point): number 
   }
 
   return length;
+}
+
+/**
+ * Builds a closed outline around a cubic centreline whose width eases from
+ * `widthStart` to `widthEnd`.
+ *
+ * Walks up one side offsetting along the curve's normal, then back down the
+ * other, giving a filled ribbon that tapers continuously.
+ *
+ * A ribbon rather than a stroke because a stroked path has exactly one width
+ * for its whole length. Faking a taper by chopping every branch into separately
+ * stroked pieces would multiply the path count several-fold and still look
+ * stepped; this is one path per segment and genuinely continuous.
+ *
+ * The sample count adapts to length, so a long main stem stays smooth without a
+ * short twig paying for points it is too small to show.
+ */
+export function taperedRibbon(
+  p0: Point,
+  c1: Point,
+  c2: Point,
+  p3: Point,
+  widthStart: number,
+  widthEnd: number,
+): PathCommand[] {
+  const samples = Math.min(14, Math.max(5, Math.round(cubicLength(p0, c1, c2, p3) / 4)));
+
+  const near: Point[] = [];
+  const far: Point[] = [];
+
+  for (let i = 0; i <= samples; i += 1) {
+    const t = i / samples;
+    const point = cubicPointAt(p0, c1, c2, p3, t);
+    const angle = cubicAngleAt(p0, c1, c2, p3, t);
+
+    // Direction is (sin θ, cos θ), so its normal is (cos θ, −sin θ).
+    const nx = Math.cos(angle);
+    const ny = -Math.sin(angle);
+    const halfWidth = (widthStart + (widthEnd - widthStart) * t) / 2;
+
+    near.push({ x: point.x + nx * halfWidth, y: point.y + ny * halfWidth });
+    far.push({ x: point.x - nx * halfWidth, y: point.y - ny * halfWidth });
+  }
+
+  const start = near[0];
+
+  // Unreachable — the loop always runs at least six times — but it keeps the
+  // compiler satisfied under noUncheckedIndexedAccess without an assertion.
+  if (start === undefined) return [];
+
+  const commands: PathCommand[] = [moveTo(start.x, start.y)];
+
+  for (let i = 1; i < near.length; i += 1) {
+    const point = near[i];
+
+    if (point !== undefined) commands.push(lineTo(point.x, point.y));
+  }
+
+  for (let i = far.length - 1; i >= 0; i -= 1) {
+    const point = far[i];
+
+    if (point !== undefined) commands.push(lineTo(point.x, point.y));
+  }
+
+  commands.push(closePath);
+
+  return commands;
 }

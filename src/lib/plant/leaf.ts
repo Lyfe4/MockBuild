@@ -1,10 +1,10 @@
 import { angleOnBranch, pointOnBranch, type BranchNode } from './branch';
 import { closePath, curveTo, lineTo, mapCommands, moveTo, quadTo } from './path';
-import { jitter, randomBetween, type Rng } from './prng';
+import { clamp, jitter, randomBetween, type Rng } from './prng';
 import type { LeafMark, LeafShape, PathCommand, PlantForm, Point } from './types';
 
 /**
- * Leaf outlines and their placement along the branches.
+ * Leaf outlines, their veins, and their placement along the branches.
  *
  * Each shape is authored once in **leaf space** — a unit outline growing along
  * +y from an origin at the petiole — then rotated, scaled and translated onto a
@@ -18,48 +18,69 @@ const BASE_LEAF_LENGTH = 13;
 /** The most leaves the generator will hang on a single branch. */
 const MAX_LEAVES_PER_BRANCH = 6;
 
+interface LeafGeometry {
+  outline: PathCommand[];
+  /** Veins, as one or more sub-paths. Stroked over the blade. */
+  veins: PathCommand[];
+}
+
+/** The central vein, bowed very slightly so it is not a dead straight line. */
+function midribOnly(reach = 0.92): PathCommand[] {
+  return [moveTo(0, 0.04), quadTo({ x: 0.03, y: reach * 0.55 }, { x: 0, y: reach })];
+}
+
 /**
- * A closed outline in leaf space: origin at the petiole, tip at `(0, 1)`,
- * width roughly ±`halfWidth` about the midrib.
+ * A closed outline in leaf space, plus its veins: origin at the petiole, tip at
+ * `(0, 1)`, width roughly ±0.5 about the midrib.
  */
-function leafOutline(shape: LeafShape): PathCommand[] {
+function leafGeometry(shape: LeafShape, lobeCount: number): LeafGeometry {
   switch (shape) {
     /** Narrow, tapering to a point at both ends — a willow leaf. */
     case 'lanceolate':
-      return [
-        moveTo(0, 0),
-        quadTo({ x: 0.26, y: 0.35 }, { x: 0, y: 1 }),
-        quadTo({ x: -0.26, y: 0.35 }, { x: 0, y: 0 }),
-        closePath,
-      ];
+      return {
+        outline: [
+          moveTo(0, 0),
+          quadTo({ x: 0.26, y: 0.35 }, { x: 0, y: 1 }),
+          quadTo({ x: -0.26, y: 0.35 }, { x: 0, y: 0 }),
+          closePath,
+        ],
+        veins: midribOnly(),
+      };
 
     /** Broad and egg-shaped, widest below the middle. */
     case 'ovate':
-      return [
-        moveTo(0, 0),
-        curveTo({ x: 0.52, y: 0.2 }, { x: 0.44, y: 0.78 }, { x: 0, y: 1 }),
-        curveTo({ x: -0.44, y: 0.78 }, { x: -0.52, y: 0.2 }, { x: 0, y: 0 }),
-        closePath,
-      ];
+      return {
+        outline: [
+          moveTo(0, 0),
+          curveTo({ x: 0.52, y: 0.2 }, { x: 0.44, y: 0.78 }, { x: 0, y: 1 }),
+          curveTo({ x: -0.44, y: 0.78 }, { x: -0.52, y: 0.2 }, { x: 0, y: 0 }),
+          closePath,
+        ],
+        veins: midribOnly(),
+      };
 
     /** A thin blade with near-parallel sides — grasses and sedges. */
     case 'linear':
-      return [
-        moveTo(0, 0),
-        quadTo({ x: 0.12, y: 0.5 }, { x: 0.05, y: 1 }),
-        quadTo({ x: 0, y: 1.04 }, { x: -0.05, y: 1 }),
-        quadTo({ x: -0.12, y: 0.5 }, { x: 0, y: 0 }),
-        closePath,
-      ];
+      return {
+        outline: [
+          moveTo(0, 0),
+          quadTo({ x: 0.12, y: 0.5 }, { x: 0.05, y: 1 }),
+          quadTo({ x: 0, y: 1.04 }, { x: -0.05, y: 1 }),
+          quadTo({ x: -0.12, y: 0.5 }, { x: 0, y: 0 }),
+          closePath,
+        ],
+        veins: midribOnly(0.96),
+      };
 
     /**
-     * Five lobes radiating from the petiole. Built as a fan of pointed lobes
-     * rather than a scalloped outline, which is what distinguishes a palmate
-     * leaf from a merely wavy one at small sizes.
+     * Lobes radiating from the petiole, built as a fan of pointed lobes rather
+     * than a scalloped outline — that is what distinguishes a palmate leaf from
+     * a merely wavy one at small sizes. Each lobe gets its own rib.
      */
     case 'palmate': {
-      const commands: PathCommand[] = [moveTo(0, 0)];
-      const lobes = 5;
+      const lobes = clamp(Math.round(lobeCount), 3, 9);
+      const outline: PathCommand[] = [moveTo(0, 0)];
+      const veins: PathCommand[] = [];
 
       for (let i = 0; i < lobes; i += 1) {
         const spread = (i / (lobes - 1)) * 2 - 1;
@@ -69,26 +90,48 @@ function leafOutline(shape: LeafShape): PathCommand[] {
         const tip = { x: Math.sin(angle) * reach, y: Math.cos(angle) * reach };
         const notch = { x: Math.sin(angle) * 0.22, y: Math.cos(angle) * 0.22 };
 
-        commands.push(quadTo({ x: tip.x * 0.45, y: tip.y * 0.7 }, tip), lineTo(notch.x, notch.y));
+        outline.push(quadTo({ x: tip.x * 0.45, y: tip.y * 0.7 }, tip), lineTo(notch.x, notch.y));
+        veins.push(moveTo(0, 0.04), lineTo(tip.x * 0.86, tip.y * 0.86));
       }
 
-      commands.push(closePath);
+      outline.push(closePath);
 
-      return commands;
+      return { outline, veins };
     }
 
-    /** An ovate blade with a wavy, indented margin — oak-like. */
-    case 'lobed':
-      return [
-        moveTo(0, 0),
-        quadTo({ x: 0.42, y: 0.1 }, { x: 0.3, y: 0.3 }),
-        quadTo({ x: 0.52, y: 0.42 }, { x: 0.32, y: 0.62 }),
-        quadTo({ x: 0.44, y: 0.82 }, { x: 0, y: 1 }),
-        quadTo({ x: -0.44, y: 0.82 }, { x: -0.32, y: 0.62 }),
-        quadTo({ x: -0.52, y: 0.42 }, { x: -0.3, y: 0.3 }),
-        quadTo({ x: -0.42, y: 0.1 }, { x: 0, y: 0 }),
-        closePath,
-      ];
+    /**
+     * An entire blade with a wavy, indented margin — oak-like. The lobe count
+     * sets how many indentations run up each side.
+     */
+    case 'lobed': {
+      const lobes = clamp(Math.round(lobeCount), 3, 9);
+      const perSide = Math.max(2, Math.round(lobes / 2));
+      const right: PathCommand[] = [];
+      const left: PathCommand[] = [];
+
+      for (let i = 0; i < perSide; i += 1) {
+        const from = i / perSide;
+        const to = (i + 1) / perSide;
+        // Wider at the middle of the blade, tapering to the tip.
+        const bulge = 0.44 * Math.sin(Math.PI * ((from + to) / 2) * 0.9 + 0.35);
+        const waist = bulge * 0.62;
+
+        right.push(quadTo({ x: bulge, y: from + (to - from) * 0.35 }, { x: waist, y: to }));
+        left.unshift(quadTo({ x: -bulge, y: to - (to - from) * 0.35 }, { x: -waist, y: from }));
+      }
+
+      return {
+        outline: [
+          moveTo(0, 0),
+          ...right,
+          quadTo({ x: 0.18, y: 0.98 }, { x: 0, y: 1 }),
+          quadTo({ x: -0.18, y: 0.98 }, { x: -0.24, y: 1 - 1 / perSide }),
+          ...left,
+          closePath,
+        ],
+        veins: midribOnly(),
+      };
+    }
   }
 }
 
@@ -120,9 +163,11 @@ function leafCountFor(form: PlantForm, depth: number): number {
 /**
  * Hangs leaves along every branch.
  *
- * Leaves alternate sides as they ascend — the commonest phyllotaxy and the one
- * that reads as deliberate rather than scattered. Placement starts a little way
- * up each branch so leaves do not bunch at the junctions.
+ * Two things make the result read as drawn rather than scattered. Leaves
+ * **diminish towards the tips** — both up a single branch and outwards through
+ * the generations — which is how real foliage grades and is most of what stops
+ * a procedural plant looking like clip art. And each leaf carries a small
+ * independent rotation, so a row of them is not a rubber stamp repeated.
  *
  * @param nodes The skeleton from `growBranches`, in plant space.
  * @param rng Consumed in branch order, then leaf order within each branch.
@@ -130,30 +175,51 @@ function leafCountFor(form: PlantForm, depth: number): number {
 export function placeLeaves(nodes: readonly BranchNode[], form: PlantForm, rng: Rng): LeafMark[] {
   if (form.leafDensity <= 0) return [];
 
-  const outline = leafOutline(form.leafShape);
+  const { outline, veins } = leafGeometry(form.leafShape, form.lobeCount);
+  const opposite = form.leafArrangement === 'opposite';
   const leaves: LeafMark[] = [];
 
   for (const node of nodes) {
-    const count = leafCountFor(form, node.depth);
+    // A rosette's scape is bare; see BranchNode.bearsLeaves.
+    if (!node.bearsLeaves) continue;
 
-    for (let i = 0; i < count; i += 1) {
+    const count = leafCountFor(form, node.depth);
+    // Opposite leaves come in pairs, so half as many stations up the stem.
+    const stations = opposite ? Math.max(1, Math.round(count / 2)) : count;
+
+    for (let i = 0; i < stations; i += 1) {
       // Spread across the upper 75% of the branch.
-      const t = 0.25 + (count === 1 ? 0.4 : (i / count) * 0.75);
+      const t = 0.25 + (stations === 1 ? 0.4 : (i / stations) * 0.75);
       const origin = pointOnBranch(node, t);
       const branchAngle = angleOnBranch(node, t);
 
-      // Alternate sides, splaying roughly 60° off the stem.
-      const side = i % 2 === 0 ? 1 : -1;
-      const splay = side * randomBetween(rng, 0.75, 1.15);
-      const size = BASE_LEAF_LENGTH * form.height * jitter(rng, 0.22);
+      /**
+       * Leaves shrink towards the growing point: `t` handles it along a branch,
+       * `depth` handles it outwards through the tree. The per-leaf jitter is
+       * kept well below the taper so the gradient stays legible — random
+       * variation larger than the trend it sits on just reads as noise.
+       */
+      const tipTaper = 1 - t * 0.35;
+      const depthTaper = Math.max(0.55, 1 - node.depth * 0.1);
+      const size = BASE_LEAF_LENGTH * form.height * tipTaper * depthTaper * jitter(rng, 0.16);
 
-      leaves.push({
-        kind: 'leaf',
-        shape: form.leafShape,
-        commands: mapCommands(outline, (point) =>
-          placeLeafPoint(point, branchAngle + splay, size, origin),
-        ),
-      });
+      // How far the leaf stands off the stem, plus a small independent tilt.
+      const splay = randomBetween(rng, 0.75, 1.15);
+      const tilt = randomBetween(rng, -0.14, 0.14);
+
+      const sides = opposite ? [1, -1] : [i % 2 === 0 ? 1 : -1];
+
+      for (const side of sides) {
+        const angle = branchAngle + side * splay + tilt;
+        const transform = (point: Point): Point => placeLeafPoint(point, angle, size, origin);
+
+        leaves.push({
+          kind: 'leaf',
+          shape: form.leafShape,
+          commands: mapCommands(outline, transform),
+          midrib: mapCommands(veins, transform),
+        });
+      }
     }
   }
 

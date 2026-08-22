@@ -1,11 +1,12 @@
-import type { FlowerType, LeafShape, PlantForm } from './types';
+import type { FlowerType, LeafShape, PlantForm, PlantHabit } from './types';
 
 /**
  * Turns a form into a sentence.
  *
  * This is the illustration's accessible description, so it is written to be
  * *read aloud*: it describes what someone would see, in the order they would
- * notice it, and stops. It is not a caption and not a botanical diagnosis — the
+ * notice it — habit first, because that is what you register from across the
+ * room — and stops. It is not a caption and not a botanical diagnosis; the
  * specimen's own record carries that.
  *
  * It reads the same parameters the drawing does, so the two cannot drift.
@@ -17,6 +18,25 @@ function heightWord(height: number): string {
   if (height >= 0.55) return 'medium-height';
 
   return 'low';
+}
+
+/**
+ * The habit clause.
+ *
+ * `rosette` and `tuft` do not branch at all, so for those the phrase replaces
+ * the branching description entirely rather than contradicting it.
+ */
+const HABIT_WORDS: Record<PlantHabit, string> = {
+  upright: 'upright',
+  arching: 'arching',
+  rosette: 'ground-hugging rosette of a',
+  tuft: 'grassy tuft of a',
+  trailing: 'trailing',
+};
+
+/** Whether the habit branches, and so whether a branching phrase makes sense. */
+function branches(habit: PlantHabit): boolean {
+  return habit !== 'rosette' && habit !== 'tuft';
 }
 
 /** Bands branch fan-out and depth together — what the silhouette actually shows. */
@@ -74,7 +94,7 @@ function flowerClause(type: FlowerType, size: number): string | null {
     case 'umbel':
       return `a flat-topped umbel of ${scale} flowers`;
     case 'spike':
-      return `a spike of ${scale} flowers along the stem`;
+      return `a spike of ${scale} flowers opening from the base upwards`;
   }
 }
 
@@ -83,11 +103,17 @@ function flowerClause(type: FlowerType, size: number): string | null {
  *
  * @example
  * describePlant(form)
- * // "A tall, sparsely branched plant set with narrow lance-shaped leaves and
- * //  a spike of small flowers along the stem."
+ * // "A tall, arching plant set with narrow lance-shaped leaves, a spike of
+ * //  small flowers opening from the base upwards, and its roots exposed."
  */
 export function describePlant(form: PlantForm): string {
-  const parts = [`A ${heightWord(form.height)}, ${branchingWord(form)} plant`];
+  const habit = HABIT_WORDS[form.habit];
+
+  const opening = branches(form.habit)
+    ? `A ${heightWord(form.height)}, ${habit} ${branchingWord(form)} plant`
+    : `A ${heightWord(form.height)} ${habit} plant`;
+
+  const parts = [opening];
 
   if (form.leafDensity > 0) {
     parts.push(`${foliageWord(form.leafDensity)} ${LEAF_WORDS[form.leafShape]}`);
@@ -99,6 +125,13 @@ export function describePlant(form: PlantForm): string {
 
   if (flowers !== null) {
     parts.push(`and ${flowers}`);
+  }
+
+  // Roots go last because that is the order the eye takes them in, and because
+  // "shown with its roots exposed" is a fact about the plate rather than about
+  // the plant.
+  if (form.roots) {
+    parts.push(`${flowers === null ? 'and' : ''} shown with its roots exposed`.trim());
   }
 
   return `${parts.join(' ')}.`;

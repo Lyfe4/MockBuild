@@ -36,9 +36,21 @@ export function LabRoute() {
               <figcaption className={styles.caption}>
                 <div className={styles.name}>{specimen.scientificName}</div>
                 <div>{specimen.commonName}</div>
-                <div className={styles.meta}>
-                  {specimen.id} · {specimen.form.leafShape} · {specimen.form.flowerType}
-                </div>
+                <div className={styles.meta}>{specimen.id}</div>
+
+                {/* The parameters that most decide what the drawing looks
+                    like, so a shape on screen can be traced back to the form
+                    that produced it. */}
+                <dl className={styles.params}>
+                  <dt>habit</dt>
+                  <dd>{specimen.form.habit}</dd>
+                  <dt>leaf</dt>
+                  <dd>{specimen.form.leafShape}</dd>
+                  <dt>flower</dt>
+                  <dd>{specimen.form.flowerType}</dd>
+                  <dt>roots</dt>
+                  <dd>{specimen.form.roots ? 'yes' : 'no'}</dd>
+                </dl>
               </figcaption>
             </figure>
           </li>

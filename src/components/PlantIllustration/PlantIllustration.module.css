@@ -3,6 +3,10 @@
  *
  * Every colour is a semantic token, so the drawing recolours with the season
  * without the component knowing that seasons exist.
+ *
+ * Stems and roots are **filled**, not stroked: the generator hands over closed
+ * tapered outlines, which is how a single segment gets a continuous taper. Only
+ * the leaf veins are genuinely stroked.
  */
 
 .root {
@@ -11,27 +15,46 @@
   height: auto;
 }
 
-/**
- * Ink for the woody parts, accent for the living ones. Stroke widths come from
- * the generator, in view-box units, so they scale with the drawing.
- */
+/* Ink for the woody parts, accent for the living ones. */
 .stem {
-  fill: none;
-  stroke: var(--color-ink);
-  stroke-linecap: round;
+  fill: var(--color-ink);
+  stroke: none;
+}
+
+/*
+ * Roots read as a lighter, more tentative line than the stems — on a plate they
+ * are the part drawn from a washed, half-guessed specimen.
+ */
+.rootSegment {
+  fill: var(--color-ink-muted);
+  stroke: none;
 }
 
 .leaf {
   fill: var(--color-accent-wash);
   stroke: var(--color-accent);
-  stroke-width: 0.7;
+  stroke-width: 0.55;
   stroke-linejoin: round;
+}
+
+/*
+ * Veins. Finer than the blade outline and in the same ink, so the leaf reads as
+ * drawn rather than as a filled silhouette. Stroke widths are in view-box units,
+ * so they scale with the drawing.
+ */
+.midrib {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 0.35;
+  stroke-linecap: round;
+  opacity: 0.75;
 }
 
 .petal {
   fill: var(--color-surface);
   stroke: var(--color-accent-strong);
-  stroke-width: 0.6;
+  stroke-width: 0.45;
+  stroke-linejoin: round;
 }
 
 .core {
@@ -45,7 +68,9 @@
  * document is theme-ready, and zero under reduced motion.
  */
 .stem,
+.rootSegment,
 .leaf,
+.midrib,
 .petal,
 .core {
   transition:
@@ -56,24 +81,18 @@
 /**
  * The grow animation.
  *
- * Stems draw themselves on: the generator measures each segment, the renderer
- * puts that length into `stroke-dasharray` and `stroke-dashoffset` as SVG
- * presentation attributes, and this rule animates the offset back to zero.
+ * Everything fades up, staggered outwards from the base: roots and main stem
+ * first, then each successive generation of branch, then the foliage and
+ * flowers last. That ordering is what makes it read as growth rather than as a
+ * picture appearing.
  *
- * Using attributes rather than an inline `style` is deliberate — the site ships
- * a Content-Security-Policy with `style-src 'self'`, and keeping per-element
- * values in attributes means nothing here depends on inline style being allowed.
- *
- * Leaves and flowers fade rather than draw; outlining every leaf in sequence
- * reads as fussy at this size.
+ * A stroke-dasharray draw-on is not available here — the stems are filled
+ * outlines, not stroked centrelines, and that was the price of a continuous
+ * taper. Depth-staggered opacity gets the same "unfurling" impression, and the
+ * per-element delay rides on a class rather than an inline style, so the strict
+ * `style-src 'self'` CSP is untouched.
  */
-@keyframes draw-stem {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes fade-in {
+@keyframes plant-fade-in {
   from {
     opacity: 0;
   }
@@ -83,16 +102,45 @@
   }
 }
 
-.animated .stem {
-  animation: draw-stem var(--duration-slow) var(--ease-out) forwards;
-}
-
+.animated .stem,
+.animated .rootSegment,
 .animated .leaf,
+.animated .midrib,
 .animated .petal,
 .animated .core {
-  animation: fade-in var(--duration-slow) var(--ease-standard) backwards;
-  /* Foliage arrives as the stems finish drawing, not alongside them. */
-  animation-delay: var(--duration-base);
+  animation: plant-fade-in var(--duration-base) var(--ease-out) backwards;
+}
+
+.animated .depth0 {
+  animation-delay: 0ms;
+}
+
+.animated .depth1 {
+  animation-delay: calc(var(--duration-fast) * 1);
+}
+
+.animated .depth2 {
+  animation-delay: calc(var(--duration-fast) * 2);
+}
+
+.animated .depth3 {
+  animation-delay: calc(var(--duration-fast) * 3);
+}
+
+.animated .depth4 {
+  animation-delay: calc(var(--duration-fast) * 4);
+}
+
+.animated .depth5 {
+  animation-delay: calc(var(--duration-fast) * 5);
+}
+
+/* Foliage and flowers arrive once the branches are in place. */
+.animated .leaf,
+.animated .midrib,
+.animated .petal,
+.animated .core {
+  animation-delay: var(--duration-slow);
 }
 
 /**
@@ -100,18 +148,19 @@
  *
  * The duration tokens are already zeroed, which would be enough on paper. This
  * block is here because a zero-duration animation is the one case where
- * browsers genuinely differ on whether `forwards` commits the end state — and
- * the failure mode is an invisible illustration, not a slightly wrong one.
+ * browsers genuinely differ on whether the fill mode commits the end state —
+ * and the failure mode is an invisible illustration, not a slightly wrong one.
  * Switching the animation off and stating the end state directly removes the
  * question.
  */
 @media (prefers-reduced-motion: reduce) {
   .animated .stem,
+  .animated .rootSegment,
   .animated .leaf,
+  .animated .midrib,
   .animated .petal,
   .animated .core {
     animation: none;
     opacity: 1;
-    stroke-dashoffset: 0;
   }
 }

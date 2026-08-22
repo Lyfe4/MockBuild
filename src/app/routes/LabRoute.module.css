@@ -46,3 +46,27 @@
   color: var(--color-ink-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/*
+ * Parameter panel. A two-column definition list so the labels line up down the
+ * card and the values can be scanned as a column.
+ */
+.params {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 var(--space-xs);
+  margin: var(--space-2xs) 0 0;
+  padding-block-start: var(--space-2xs);
+  border-block-start: 1px solid var(--color-line);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-snug);
+}
+
+.params dt {
+  color: var(--color-ink-muted);
+}
+
+.params dd {
+  margin: 0;
+}

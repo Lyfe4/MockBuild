@@ -17,7 +17,7 @@ export interface PlantIllustrationProps {
   seed?: number | undefined;
 
   /**
-   * Draw the stems on and fade the foliage in on mount. Off by default: a page
+   * Draw the plant on from the base outwards on mount. Off by default: a page
    * of twenty-four of these animating at once is a lot. Disabled entirely under
    * `prefers-reduced-motion`.
    */
@@ -34,6 +34,23 @@ export interface PlantIllustrationProps {
 }
 
 /**
+ * Depth classes for the grow animation.
+ *
+ * A lookup rather than `styles[`depth${depth}`]` so every CSS Module key is
+ * statically referenced — a computed key silently yields `undefined` if a class
+ * is renamed, and nothing would fail until someone noticed the stagger had
+ * stopped happening.
+ */
+const DEPTH_CLASSES = [
+  styles.depth0,
+  styles.depth1,
+  styles.depth2,
+  styles.depth3,
+  styles.depth4,
+  styles.depth5,
+];
+
+/**
  * Renders a specimen's procedurally generated illustration as inline SVG.
  *
  * The split matters: `lib/plant` decides *what* the plant looks like and knows
@@ -41,9 +58,14 @@ export interface PlantIllustrationProps {
  * and knows nothing about branching or randomness. That is what lets the
  * generator be tested as plain data.
  *
- * Inline SVG rather than an `<img>` because the strokes are painted with CSS
+ * Inline SVG rather than an `<img>` because the marks are painted with CSS
  * custom properties: the drawing inherits the seasonal palette from the
  * document, and an external image could not.
+ *
+ * Stems and roots arrive as **closed tapered outlines** and are filled rather
+ * than stroked — see `taperedRibbon` — which is what gives a stem a continuous
+ * taper from base to tip. Leaves are filled blades with their veins stroked over
+ * the top, and flowers are petal outlines around a filled disc.
  */
 export function PlantIllustration({
   specimen,
@@ -95,30 +117,35 @@ export function PlantIllustration({
         </>
       )}
 
+      {/* Roots first, so the stems overlap them at the crown and not the reverse. */}
+      <g className={styles.roots}>
+        {geometry.roots.map((root, index) => (
+          <path
+            key={`root-${String(index)}`}
+            className={cx(styles.rootSegment, DEPTH_CLASSES[root.depth])}
+            d={toPathData(root.commands)}
+          />
+        ))}
+      </g>
+
       <g className={styles.stems}>
         {geometry.stems.map((stem, index) => (
           <path
             // Index is a stable identity here: the geometry is regenerated
             // wholesale and never reordered or spliced.
             key={`stem-${String(index)}`}
-            className={styles.stem}
+            className={cx(styles.stem, DEPTH_CLASSES[stem.depth])}
             d={toPathData(stem.commands)}
-            strokeWidth={stem.width}
-            /* The generator measures each segment so the draw-on animation has a
-               length without the CSS needing to ask the DOM for one. */
-            strokeDasharray={stem.length}
-            strokeDashoffset={animate ? stem.length : 0}
           />
         ))}
       </g>
 
       <g className={styles.leaves}>
         {geometry.leaves.map((leaf, index) => (
-          <path
-            key={`leaf-${String(index)}`}
-            className={styles.leaf}
-            d={toPathData(leaf.commands)}
-          />
+          <g key={`leaf-${String(index)}`}>
+            <path className={styles.leaf} d={toPathData(leaf.commands)} />
+            <path className={styles.midrib} d={toPathData(leaf.midrib)} />
+          </g>
         ))}
       </g>
 
@@ -126,12 +153,10 @@ export function PlantIllustration({
         {geometry.flowers.map((flower, index) => (
           <g key={`flower-${String(index)}`}>
             {flower.petals.map((petal, petalIndex) => (
-              <circle
+              <path
                 key={`petal-${String(petalIndex)}`}
                 className={styles.petal}
-                cx={petal.x}
-                cy={petal.y}
-                r={flower.petalRadius}
+                d={toPathData(petal)}
               />
             ))}
             <circle

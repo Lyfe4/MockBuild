@@ -18,10 +18,29 @@
  * direction vector `(sin θ, cos θ)`.
  */
 
+/**
+ * The plant's overall growth habit — the thing you recognise from across the
+ * room, before any detail resolves. Each one is a different growth strategy in
+ * `branch.ts`, not a parameter tweak, because a rosette is not an upright plant
+ * with different numbers.
+ */
+export const PLANT_HABITS = ['upright', 'arching', 'rosette', 'tuft', 'trailing'] as const;
+
+export type PlantHabit = (typeof PLANT_HABITS)[number];
+
 /** The leaf outlines the generator knows how to draw. */
 export const LEAF_SHAPES = ['lanceolate', 'ovate', 'palmate', 'linear', 'lobed'] as const;
 
 export type LeafShape = (typeof LEAF_SHAPES)[number];
+
+/**
+ * Phyllotaxy: whether leaves alternate up the stem or sit in facing pairs. One
+ * of the first things a botanical key asks about, and clearly visible even in
+ * silhouette.
+ */
+export const LEAF_ARRANGEMENTS = ['alternate', 'opposite'] as const;
+
+export type LeafArrangement = (typeof LEAF_ARRANGEMENTS)[number];
 
 /** How flowers are arranged, if there are any. */
 export const FLOWER_TYPES = ['none', 'single', 'cluster', 'umbel', 'spike'] as const;
@@ -29,19 +48,23 @@ export const FLOWER_TYPES = ['none', 'single', 'cluster', 'umbel', 'spike'] as c
 export type FlowerType = (typeof FLOWER_TYPES)[number];
 
 /**
- * The parameters that define a plant's habit.
+ * The parameters that define a plant.
  *
  * Every field has a documented range. Values outside it are not rejected —
  * `generate` clamps them — but they are outside what the drawing was tuned for
  * and will look wrong before they look interesting.
  */
 export interface PlantForm {
+  /** Overall growth habit. Determines which growth strategy runs. */
+  habit: PlantHabit;
+
   /**
    * How many child branches spring from the base node. Tapers by one at each
    * successive depth, to a floor of one, so this is a fan-out ceiling rather
    * than a constant.
    *
-   * Range 1–5. Sensible: 2–4.
+   * Range 1–5. Sensible: 2–4. Ignored by `rosette` and `tuft`, which do not
+   * branch.
    */
   branchCount: number;
 
@@ -67,7 +90,8 @@ export interface PlantForm {
    * `0` is a straight line. Applied as a perpendicular offset to the segment's
    * Bézier control points, proportional to its length.
    *
-   * Range -0.6–0.6. Sensible: -0.35–0.35.
+   * Range -0.6–0.6. Sensible: -0.35–0.35. `arching` and `trailing` add their own
+   * bow on top of this.
    */
   stemCurve: number;
 
@@ -76,11 +100,23 @@ export interface PlantForm {
 
   /**
    * How thickly leaves are set along the branches. `0` is bare; `1` is as dense
-   * as the generator will go (roughly six leaves on the longest branch).
+   * as the generator will go.
    *
    * Range 0–1.
    */
   leafDensity: number;
+
+  /** Whether leaves alternate up a stem or sit in facing pairs. */
+  leafArrangement: LeafArrangement;
+
+  /**
+   * Number of lobes, for the leaf shapes that have them (`palmate`, `lobed`).
+   * Ignored by the entire-margined shapes.
+   *
+   * Range 3–9. Odd numbers look more natural — a leaf usually has a terminal
+   * lobe on the midrib.
+   */
+  lobeCount: number;
 
   /** How flowers are arranged. `'none'` skips flower generation entirely. */
   flowerType: FlowerType;
@@ -91,6 +127,23 @@ export interface PlantForm {
    * Range 0.4–2. Sensible: 0.6–1.6.
    */
   flowerSize: number;
+
+  /**
+   * Petals per flower.
+   *
+   * Range 4–8. Most conspicuously affects `single`, where the flower is large
+   * enough to count them.
+   */
+  petalCount: number;
+
+  /**
+   * Draw a root tuft below the base.
+   *
+   * A herbarium sheet usually shows the whole plant, roots included; a garden
+   * illustration usually does not. Roots also shift the composition, since the
+   * fit anchors the lowest ink to the baseline rather than the stem base.
+   */
+  roots: boolean;
 
   /**
    * The plant's intrinsic height, which sets its **proportions** rather than
@@ -144,40 +197,52 @@ export type PathCommand =
     }
   | { readonly c: 'Z' };
 
-/** One woody segment: stem, branch or twig. */
-export interface StemMark {
-  readonly kind: 'stem';
+/**
+ * One woody segment: stem, branch, twig or root.
+ *
+ * `commands` is a **closed outline**, not a centreline, so the renderer fills it
+ * rather than stroking it. That is what buys a continuous taper along a single
+ * segment: a stroked path has one width for its whole length, and faking a taper
+ * by chopping each branch into separately-stroked pieces would multiply the path
+ * count several-fold for a visibly stepped result.
+ */
+export interface SegmentMark {
+  readonly kind: 'stem' | 'root';
   readonly commands: readonly PathCommand[];
-  /** Stroke width in canvas units. Tapers with depth. */
+  /** Width in canvas units where the segment leaves its parent. */
   readonly width: number;
+  /** Width at its far end. Always less than `width`. */
+  readonly tipWidth: number;
   /** 0 for the main stem, incrementing outwards. */
   readonly depth: number;
-  /**
-   * Approximate arc length in canvas units, from sampling the curve. The
-   * renderer uses it for the `stroke-dasharray` draw-on animation, which needs
-   * a length without calling `getTotalLength()` on a live DOM node.
-   */
+  /** Approximate centreline arc length in canvas units, from sampling. */
   readonly length: number;
 }
 
-/** One leaf, as a closed outline. */
+/** One leaf: a closed blade outline plus the veins drawn over it. */
 export interface LeafMark {
   readonly kind: 'leaf';
   readonly commands: readonly PathCommand[];
+  /**
+   * Midrib, and for palmate leaves a rib into each lobe. Stroked, not filled,
+   * and drawn over the blade. Multiple sub-paths in one command list.
+   */
+  readonly midrib: readonly PathCommand[];
   readonly shape: LeafShape;
 }
 
 /**
- * One flower, as primitives rather than a path: a ring of petal centres around
- * a core. The renderer draws circles, which keeps small flowers crisp at any
- * scale and keeps this structure trivial to assert on.
+ * One flower: a ring of petal outlines around a filled centre.
+ *
+ * Petals are outlines rather than discs so a large `single` flower reads as
+ * having narrow overlapping petals — the thing that separates a botanical plate
+ * from a child's drawing of a daisy.
  */
 export interface FlowerMark {
   readonly kind: 'flower';
   readonly center: Point;
   readonly coreRadius: number;
-  readonly petalRadius: number;
-  readonly petals: readonly Point[];
+  readonly petals: readonly (readonly PathCommand[])[];
 }
 
 /**
@@ -189,7 +254,9 @@ export interface FlowerMark {
  */
 export interface PlantGeometry {
   readonly viewBox: { readonly width: number; readonly height: number };
-  readonly stems: readonly StemMark[];
+  readonly stems: readonly SegmentMark[];
+  /** Empty unless `form.roots`. Separate from `stems` so it can be styled apart. */
+  readonly roots: readonly SegmentMark[];
   readonly leaves: readonly LeafMark[];
   readonly flowers: readonly FlowerMark[];
 }
@@ -211,3 +278,14 @@ export const VIEW_BOX = { width: 120, height: 160 } as const;
  * input was wrong, and truncating beats hanging.
  */
 export const MAX_BRANCH_NODES = 400;
+
+/**
+ * How much thicker the base of the plant is than its finest twig.
+ *
+ * Held constant across every habit and depth: `branch.ts` derives its per
+ * generation decay from this and the actual tree depth, rather than compounding
+ * a fixed ratio, which would make a deep plant absurdly spindly at the tips. An
+ * engraved plate keeps its line weights within a narrow band — much beyond this
+ * and the twigs stop reading as the same drawing as the stem.
+ */
+export const BASE_TO_TIP_WIDTH_RATIO = 2.3;

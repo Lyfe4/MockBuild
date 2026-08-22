@@ -23,6 +23,21 @@ function svgIn(container: HTMLElement): SVGSVGElement {
 }
 
 /**
+ * The illustration's top-level groups, in render order: roots, stems, leaves,
+ * flowers. Addressed by position because the class names are hashed at build
+ * time, and only direct children so nested groups do not leak in.
+ */
+function groupsIn(container: HTMLElement): Element[] {
+  return [...svgIn(container).children].filter((node) => node.tagName === 'g');
+}
+
+function stemPathsIn(container: HTMLElement): Element[] {
+  const stems = groupsIn(container)[1];
+
+  return stems === undefined ? [] : [...stems.children];
+}
+
+/**
  * Just the drawn marks.
  *
  * Comparing whole `innerHTML` would compare the `useId` values in `<title>` and
@@ -129,30 +144,102 @@ describe('PlantIllustration', () => {
   });
 
   describe('grow animation', () => {
-    it('is off by default, with stems fully drawn', () => {
+    it('adds no animation class by default', () => {
       const { container } = render(<PlantIllustration specimen={specimen} />);
 
-      for (const path of container.querySelectorAll('path[stroke-dasharray]')) {
-        expect(path.getAttribute('stroke-dashoffset')).toBe('0');
+      expect(svgIn(container).classList).toHaveLength(1);
+    });
+
+    it('marks the drawing as animated when asked', () => {
+      const { container } = render(<PlantIllustration specimen={specimen} animate />);
+
+      expect(svgIn(container).classList).toHaveLength(2);
+    });
+
+    it('carries no inline style, so the strict CSP holds', () => {
+      // style-src is 'self' with no 'unsafe-inline'. Per-element animation
+      // timing rides on depth classes precisely so nothing here needs a style
+      // attribute; a regression to inline styles would only show up in
+      // production, as an illustration that silently fails to render.
+      const { container } = render(<PlantIllustration specimen={specimen} animate />);
+
+      expect(container.querySelectorAll('[style]')).toHaveLength(0);
+      expect(container.querySelectorAll('style')).toHaveLength(0);
+    });
+
+    it('tags each segment with its depth so the stagger has something to key on', () => {
+      const { container } = render(<PlantIllustration specimen={specimen} animate />);
+
+      const stems = stemPathsIn(container);
+
+      expect(stems.length).toBeGreaterThan(0);
+      // Two classes on every stem: the stem class and its depth class.
+      for (const path of stems) {
+        expect(path.classList).toHaveLength(2);
+      }
+    });
+  });
+
+  describe('botanical detail', () => {
+    it('draws stems as closed filled outlines rather than strokes', () => {
+      const { container } = render(<PlantIllustration specimen={specimen} />);
+
+      const stems = [...container.querySelectorAll('path')].filter((path) =>
+        path.getAttribute('d')?.endsWith('Z'),
+      );
+
+      expect(stems.length).toBeGreaterThan(0);
+      // A tapered ribbon is a fill; a stroke-width would mean it went back to
+      // being a centreline with one width for its whole length.
+      expect(stems.every((path) => path.getAttribute('stroke-width') === null)).toBe(true);
+    });
+
+    it('draws a vein path alongside every leaf blade', () => {
+      const withLeaves = SPECIMENS.find((record) => record.form.leafDensity > 0.5);
+
+      expect(withLeaves).toBeDefined();
+
+      const { container } = render(<PlantIllustration specimen={withLeaves!} />);
+      const leafGroup = groupsIn(container)[2];
+
+      expect(leafGroup).toBeDefined();
+      // Each leaf is a <g> holding a blade and its midrib.
+      for (const leaf of leafGroup!.children) {
+        expect(leaf.querySelectorAll('path')).toHaveLength(2);
       }
     });
 
-    it('offsets every stem by its own length when animating', () => {
-      const { container } = render(<PlantIllustration specimen={specimen} animate />);
+    it('draws roots only for specimens that record them', () => {
+      const withRoots = SPECIMENS.find((record) => record.form.roots);
+      const without = SPECIMENS.find((record) => !record.form.roots);
 
-      const stems = container.querySelectorAll('path[stroke-dasharray]');
+      expect(withRoots).toBeDefined();
+      expect(without).toBeDefined();
 
-      expect(stems.length).toBeGreaterThan(0);
+      const rootCount = (record: Specimen): number => {
+        const { container, unmount } = render(<PlantIllustration specimen={record} />);
+        const count = groupsIn(container)[0]?.children.length ?? 0;
 
-      for (const path of stems) {
-        const dashArray = path.getAttribute('stroke-dasharray');
-        const dashOffset = path.getAttribute('stroke-dashoffset');
+        unmount();
 
-        // Offsetting by exactly the path length is what hides the stroke before
-        // the animation walks the offset back to zero.
-        expect(dashOffset).toBe(dashArray);
-        expect(Number(dashOffset)).toBeGreaterThan(0);
-      }
+        return count;
+      };
+
+      expect(rootCount(withRoots!)).toBeGreaterThan(0);
+      expect(rootCount(without!)).toBe(0);
+    });
+
+    it('draws flower petals as outlines around a filled centre', () => {
+      const flowering = SPECIMENS.find((record) => record.form.flowerType === 'single');
+
+      expect(flowering).toBeDefined();
+
+      const { container } = render(<PlantIllustration specimen={flowering!} />);
+      const circles = container.querySelectorAll('circle');
+
+      // One disc per flower, and the petals are paths rather than more discs.
+      expect(circles).toHaveLength(1);
+      expect(container.querySelectorAll('path').length).toBeGreaterThan(flowering!.form.petalCount);
     });
   });
 

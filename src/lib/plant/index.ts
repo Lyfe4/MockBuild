@@ -9,15 +9,24 @@ export { generatePlant, seedFromId } from './generate';
 export { describePlant } from './describe';
 export { toPathData } from './path';
 export { hashString, mulberry32 } from './prng';
-export { FLOWER_TYPES, LEAF_SHAPES, VIEW_BOX } from './types';
+export {
+  BASE_TO_TIP_WIDTH_RATIO,
+  FLOWER_TYPES,
+  LEAF_ARRANGEMENTS,
+  LEAF_SHAPES,
+  PLANT_HABITS,
+  VIEW_BOX,
+} from './types';
 export type {
   FlowerMark,
   FlowerType,
+  LeafArrangement,
   LeafMark,
   LeafShape,
   PathCommand,
   PlantForm,
   PlantGeometry,
+  PlantHabit,
   Point,
-  StemMark,
+  SegmentMark,
 } from './types';
