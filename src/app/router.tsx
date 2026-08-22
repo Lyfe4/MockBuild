@@ -41,6 +41,15 @@ const devOnlyRoutes = import.meta.env.DEV
           return { Component: LabRoute };
         },
       },
+      {
+        // SPIKE — the beetle contact sheet. Same dead-code technique.
+        path: 'lab/insects',
+        lazy: async () => {
+          const { InsectLabRoute } = await import('./routes/InsectLabRoute');
+
+          return { Component: InsectLabRoute };
+        },
+      },
     ]
   : [];
 

@@ -1,0 +1,107 @@
+/*
+ * TEMPORARY — throwaway styling for the beetle contact sheet. Plain on purpose:
+ * this is an instrument for judging the generator, not a page.
+ */
+
+.intro {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-sm);
+  color: var(--color-ink-muted);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+}
+
+.sizeLink {
+  color: var(--color-accent-strong);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  text-underline-offset: 0.25em;
+}
+
+/*
+ * Four across, matching the four seeds, so each row is one preset and each
+ * column is one seed. That is the comparison the sheet exists to make.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin-block-start: var(--space-xl);
+}
+
+.cell {
+  margin: 0;
+}
+
+.plate {
+  aspect-ratio: 6 / 7;
+  padding: var(--space-2xs);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+}
+
+.caption {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-2xs);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.name {
+  text-transform: uppercase;
+}
+
+.seed {
+  color: var(--color-ink-muted);
+}
+
+.legend {
+  margin-block-start: var(--space-2xl);
+  padding-block-start: var(--space-md);
+  border-block-start: 1px solid var(--color-line);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+}
+
+.legendRow {
+  display: grid;
+  gap: var(--space-2xs);
+  padding-block: var(--space-2xs);
+}
+
+.legendRow dt {
+  text-transform: uppercase;
+}
+
+.legendRow dd {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+@media (min-width: 40rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .legendRow {
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+/* `?size=large`: two across, so each beetle gets real estate to be judged in. */
+.gridLarge {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 40rem) {
+  .gridLarge {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2xl);
+  }
+}

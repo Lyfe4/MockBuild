@@ -1,0 +1,90 @@
+/**
+ * SPIKE — beetle illustration.
+ *
+ * Ink outlines over a light wash, with the markings as the only pigment. Every
+ * colour is a semantic token, so a beetle recolours with the season exactly as
+ * a plant does.
+ */
+
+.root {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* A closed outline: filled with the paper wash, drawn round with ink. */
+.shape {
+  fill: var(--color-surface);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+/* An open line: antenna shaft, leg segment, stria, seam. */
+.line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dot {
+  stroke: none;
+}
+
+.ink {
+  stroke: var(--color-ink);
+}
+
+/*
+ * Dots have no stroke, so their ink has to come from the fill. Eyes and
+ * punctures are solid marks, not outlined ones.
+ */
+circle.ink {
+  fill: var(--color-ink);
+}
+
+.accent {
+  fill: var(--color-accent-strong);
+  stroke: var(--color-accent-strong);
+  stroke-width: 0.4;
+}
+
+/* Season changes ease, on the same token as the rest of the site. */
+.shape,
+.line,
+.dot {
+  transition:
+    fill var(--duration-palette) var(--ease-standard),
+    stroke var(--duration-palette) var(--ease-standard);
+}
+
+/**
+ * A plain fade. The plant's depth-staggered grow-in does not translate: a
+ * beetle has no growth order, and drawing it limb by limb would look like an
+ * assembly diagram rather than a specimen.
+ */
+@keyframes insect-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animated {
+  animation: insect-fade-in var(--duration-base) var(--ease-out) backwards;
+}
+
+/*
+ * The duration token is already zeroed under reduced motion; this states the
+ * end position outright because a zero-duration animation is the one case where
+ * browsers differ on whether the fill mode commits, and the failure mode is an
+ * invisible illustration.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animated {
+    animation: none;
+    opacity: 1;
+  }
+}
