@@ -6,7 +6,7 @@ reads as though one person wrote it.
 ## Getting set up
 
 ```bash
-nvm use          # reads .nvmrc — Node 22
+nvm use          # reads .nvmrc — Node 24
 npm install      # also installs the Husky hooks via `prepare`
 npm run dev
 ```

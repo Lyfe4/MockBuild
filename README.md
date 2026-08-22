@@ -23,7 +23,7 @@ catalogue in autumn._
 
 ## Getting started
 
-Requires Node 22 (see `.nvmrc`).
+Requires Node 24 (see `.nvmrc`).
 
 ```bash
 nvm use && npm install && npm run dev
@@ -81,15 +81,9 @@ icon package, no analytics, and no `eslint-import-resolver-typescript`.
 
 ### Version choices worth explaining
 
-Five packages are **not** on their newest release. Each was pinned for a
-concrete reason, not caution:
+Two packages are **not** on their newest release. Both are held back by a peer
+range rather than by choice, and neither is a judgement call:
 
-- **react-router 7, not 8.** v8 declares `engines.node >= 22.22.0`; the target
-  environment is Node 22.14. The data router API this project uses is identical
-  in both. Move to v8 when the Node floor is raised.
-- **lint-staged 16, not 17.** Same reason — v17 requires Node ≥ 22.22.1.
-- **jsdom 29, not 30.** Same reason — v30 requires Node ≥ 22.22.2. Installing it
-  produces an `EBADENGINE` warning and an unsupported configuration.
 - **TypeScript 6.0, not 7.0.** typescript-eslint 8 declares a peer range of
   `>=4.8.4 <6.1.0`. Installing TS 7 would silently break every type-aware lint
   rule, which is most of the value of the lint setup. Upgrade once
@@ -99,7 +93,31 @@ concrete reason, not caution:
   ESLint 9; it is accurate, and moving to 10 is blocked on those two plugins
   rather than on anything here.
 
-`npm audit` reports **0 vulnerabilities** as of the scaffold commit.
+Everything else tracks latest stable. react-router, lint-staged and jsdom were
+previously pinned back for a Node 22.14 toolchain and moved to their current
+majors when the runtime went to Node 24.
+
+One thing `npm outdated` will flag that is not a holdback: **@types/node** tracks
+the Node version in `.nvmrc` (24.x), not its own latest (26.x). Type definitions
+should describe the runtime you actually run, so bump it when `.nvmrc` moves and
+not before.
+
+`npm audit` reports **0 vulnerabilities**.
+
+### Upgrading to react-router 8
+
+Worth knowing if you are reading older examples: v8 is ESM-only, drops the
+`react-router-dom` package, and **moves the DOM `RouterProvider` to
+`react-router/dom`**. That last one is quiet rather than loud — a
+`RouterProvider` is still exported from `react-router`, and importing it
+type-checks and renders, but it is the core provider without
+`ReactDOM.flushSync` wired in, so view transitions and scroll restoration stop
+working correctly. `src/main.tsx` imports from `react-router/dom` for that
+reason.
+
+Middleware is always on in v8 and the `context` passed to loaders and actions is
+now always a `RouterContextProvider`. Nothing in this scaffold has loaders yet,
+so there was nothing to migrate; keep it in mind when the catalogue gains them.
 
 ## Folder structure
 
