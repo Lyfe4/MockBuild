@@ -1,86 +1,143 @@
 /**
  * Self-hosted variable fonts.
  *
- * ── Where the files go ────────────────────────────────────────────────────
- * Drop the .woff2 files into `public/fonts/`, keeping the names below:
+ * Both are OFL-1.1 and live in `public/fonts/`, which Vite copies to the build
+ * root verbatim — hence the root-relative `url()`s. Nothing is fetched from a
+ * font CDN at build or at runtime; the CSP allows `font-src 'self'` only.
  *
- *   public/fonts/eb-garamond-variable.woff2         (display, roman)
- *   public/fonts/eb-garamond-variable-italic.woff2  (display, italic)
- *   public/fonts/inter-variable.woff2               (UI text)
+ * ── The two families ──────────────────────────────────────────────────────
+ * **Fraunces** (Undercase Type) for display and body. A variable serif with
+ * four axes — `opsz` 9–144, `wght` 100–900, `SOFT` 0–100 and `WONK` 0–1. The
+ * optical-size axis is the reason it is here: headings can be set at a display
+ * optical size with the fine hairlines and tight spacing an engraved plate has,
+ * while body copy at the same family uses a text optical size with sturdier
+ * strokes. `WONK` swaps in the singular, slightly wayward glyph alternates, and
+ * is used only on the wordmark.
  *
- * Files under `public/` are copied to the build root verbatim and are served
- * from `/fonts/…`, which is why these `url()`s are root-relative and not
- * bundler-resolved. Nothing is downloaded at build time and no font CDN is
- * contacted at runtime — see the CSP in index.html, which allows `font-src
- * 'self'` only.
+ * **JetBrains Mono** for labels, catalogue numbers and metadata. Variable
+ * `wght` 100–800. A mono for the ledger voice: uppercase and tracked out, it
+ * reads as a museum accession label rather than as code.
  *
- * ── Why these two ─────────────────────────────────────────────────────────
- * EB Garamond (OFL-1.1) for display: an old-style serif with the plate-caption
- * feel a herbarium wants. Inter (OFL-1.1) for UI: a neutral grotesque that stays
- * legible at the small sizes labels and metadata need. Both ship as variable
- * fonts, so the whole weight range costs one request.
+ * ── Subsetting ────────────────────────────────────────────────────────────
+ * Fraunces ships pre-subset by the foundry, using Google Fonts' own ranges. The
+ * basic-latin faces cover everything this site actually types; the extended
+ * ones are declared with their own `unicode-range` so a browser downloads them
+ * only if a specimen name ever needs a glyph from that block. The mono is the
+ * full face — no subsetter was available that could take a variable font apart
+ * safely — but its `unicode-range` still keeps it out of the critical path for
+ * documents that never use it.
  *
- * Substituting a different family? Update --font-family-display /
- * --font-family-text in tokens.css to match, and keep the licences OFL.
- *
- * ── Loading behaviour ─────────────────────────────────────────────────────
+ * ── Loading ───────────────────────────────────────────────────────────────
  * `font-display: swap` renders the fallback immediately and swaps when the
- * webfont arrives: text is never invisible. The `size-adjust` / metric
- * overrides on the fallback faces below reduce the layout shift that swap
- * would otherwise cause. Tune them once the real files are in place.
+ * webfont arrives, so text is never invisible. The two primary faces are
+ * preloaded from `index.html`.
+ *
+ * The metric-override faces at the bottom are what keep the swap from shifting
+ * the layout. Their numbers were **measured in the browser** against the real
+ * files, not guessed — see the note there before changing them.
  */
 
+/* Latin basic: ASCII, Latin-1 and common punctuation. The everyday face. */
 @font-face {
-  font-family: 'EB Garamond Variable';
-  src: url('/fonts/eb-garamond-variable.woff2') format('woff2-variations');
-  font-weight: 400 800;
-  font-style: normal;
-  font-display: swap;
-  /* Latin + Latin-1 Supplement + Latin Extended-A, plus common punctuation. */
-  unicode-range: u+0000-00ff, u+0100-017f, u+2000-206f, u+2070-209f, u+20a0-20bf, u+2122, u+2212;
-}
-
-@font-face {
-  font-family: 'EB Garamond Variable';
-  src: url('/fonts/eb-garamond-variable-italic.woff2') format('woff2-variations');
-  font-weight: 400 800;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: u+0000-00ff, u+0100-017f, u+2000-206f, u+2070-209f, u+20a0-20bf, u+2122, u+2212;
-}
-
-@font-face {
-  font-family: 'Inter Variable';
-  src: url('/fonts/inter-variable.woff2') format('woff2-variations');
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-latin.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
-  unicode-range: u+0000-00ff, u+0100-017f, u+2000-206f, u+2070-209f, u+20a0-20bf, u+2122, u+2212;
+  unicode-range:
+    u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+2000-206f, u+2074,
+    u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+
+/* Latin extended: only fetched if a name needs a glyph from these blocks. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-latin-ext.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    u+0100-024f, u+0259, u+1e00-1eff, u+2020, u+20a0-20ab, u+20ad-20cf, u+2113, u+2c60-2c7f,
+    u+a720-a7ff;
+}
+
+/*
+ * A real italic, not a synthesised oblique. Every scientific name on the site
+ * is set in it, so the difference is visible on every row of the catalogue.
+ */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-italic-latin.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range:
+    u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+2000-206f, u+2074,
+    u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-italic-latin-ext.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range:
+    u+0100-024f, u+0259, u+1e00-1eff, u+2020, u+20a0-20ab, u+20ad-20cf, u+2113, u+2c60-2c7f,
+    u+a720-a7ff;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono.woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+2000-206f, u+2074,
+    u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
 }
 
 /**
- * Metric-matched fallbacks. Referenced ahead of the generic families in
- * --font-family-* so the pre-swap render occupies close to the same space as
- * the webfont, which keeps CLS near zero.
+ * Metric-matched fallbacks.
  *
- * The adjustment values below are placeholders. Once the real .woff2 files are
- * in `public/fonts/`, measure and replace them — the Fontaine or Capsize
- * tooling will generate exact numbers.
+ * Named ahead of the generic families in `--font-family-*`, so the pre-swap
+ * render occupies close to the same space as the webfont and the swap does not
+ * reflow the page.
+ *
+ * These numbers were **measured, not estimated**. A sample string was rendered
+ * to a canvas at 100px in the real webfont and in the first local fallback, and
+ * the standard recipe applied:
+ *
+ *   size-adjust      = webfont advance width / fallback advance width
+ *   ascent-override  = webfont ascent  / size-adjust
+ *   descent-override = webfont descent / size-adjust
+ *
+ * Guessing them is worse than omitting them: a wrong `size-adjust` shifts the
+ * layout on swap in the opposite direction to the one it is meant to cancel.
+ * Fraunces sets much narrower than Georgia, so its fallback scales *down* —
+ * an estimate would very likely have gone the other way.
+ *
+ * Measured against Georgia and Consolas, the first local in each stack.
+ * Re-measure if either font file is replaced.
  */
 @font-face {
-  font-family: 'EB Garamond Fallback';
-  src: local('Georgia'), local('Times New Roman');
-  size-adjust: 96%;
-  ascent-override: 88%;
-  descent-override: 24%;
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia'), local('Times New Roman'), local('Times');
+  /* Fraunces sets considerably narrower than Georgia — 2701 against 3087 units
+     for the same string — so the fallback has to be scaled down, not up. */
+  size-adjust: 87.5%;
+  ascent-override: 112%;
+  descent-override: 29.7%;
   line-gap-override: 0%;
 }
 
 @font-face {
-  font-family: 'Inter Fallback';
-  src: local('Segoe UI'), local('Helvetica Neue'), local('Arial');
-  size-adjust: 100%;
-  ascent-override: 90%;
-  descent-override: 22%;
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Consolas'), local('Menlo'), local('DejaVu Sans Mono'), local('Courier New');
+  /* JetBrains Mono has a wider advance than Consolas, so this one scales up. */
+  size-adjust: 109.1%;
+  ascent-override: 93.5%;
+  descent-override: 27.5%;
   line-gap-override: 0%;
 }

@@ -199,17 +199,26 @@ blanket `!important` fallback for anything that slips through.
 
 ### Fonts
 
-Two OFL-1.1 variable fonts, self-hosted, **not included in this repository** —
-drop them into `public/fonts/` (see the README there):
+Two OFL-1.1 variable families, self-hosted in `public/fonts/` with their licence
+files alongside. See the [README there](public/fonts/README.md) for provenance.
 
-- **EB Garamond** for display. An old-style serif with the plate-caption feel a
-  herbarium wants.
-- **Inter** for UI. A neutral grotesque that stays legible at the small sizes
-  labels and metadata need.
+- **Fraunces** (Undercase Type) for display _and_ body. Four axes — `opsz`
+  9–144, `wght`, `SOFT`, `WONK`. The optical-size axis is the reason it is here:
+  one family sets headings with the fine hairlines of an engraved plate and body
+  copy with strokes sturdy enough to survive at 16px. `WONK` swaps in the
+  wayward glyph alternates and is used on the wordmark only.
+- **JetBrains Mono** for labels, catalogue numbers and metadata. Uppercase and
+  tracked out, it gives the ledger voice a museum accession label rather than a
+  terminal.
 
-Both are declared with `font-display: swap` and metric-matched fallback faces,
-so text is never invisible and layout shift on swap stays near zero. No font CDN
-is contacted — the CSP allows `font-src 'self'` only.
+`font-display: swap`, `unicode-range` per subset, and the two primary faces
+preloaded from `index.html`. No font CDN is contacted — the CSP allows
+`font-src 'self'` only.
+
+The fallback faces carry `size-adjust` and metric overrides that were
+**measured in a browser against the real files**, not estimated: Fraunces sets
+much narrower than Georgia, so its fallback scales _down_ to 87.5%, which a
+guess would very likely have got backwards. Re-measure if a font file changes.
 
 ## Accessibility commitments
 

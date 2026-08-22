@@ -79,12 +79,29 @@
   --wash-neutral: #ebe5d8;
 
   /* Type. The two custom families are declared in fonts.css. */
-  --font-family-display:
-    'EB Garamond Variable', 'EB Garamond Fallback', georgia, 'Times New Roman', serif;
-  --font-family-text:
-    'Inter Variable', 'Inter Fallback', -apple-system, blinkmacsystemfont, 'Segoe UI', roboto,
-    sans-serif;
-  --font-family-mono: ui-monospace, sfmono-regular, 'SF Mono', menlo, consolas, monospace;
+  /*
+   * Fraunces carries both display and body: the opsz axis is what lets one
+   * family do both jobs, set large and fine for headings and sturdier at text
+   * sizes. --font-optical-* below are the values to feed it.
+   */
+  --font-family-display: 'Fraunces', 'Fraunces Fallback', georgia, 'Times New Roman', serif;
+  --font-family-text: 'Fraunces', 'Fraunces Fallback', georgia, 'Times New Roman', serif;
+  --font-family-mono:
+    'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, consolas, monospace;
+
+  /*
+   * Optical sizes, fed to Fraunces through font-variation-settings. Display
+   * sizes get the fine hairlines and tight fit of a large-cut face; text sizes
+   * get the sturdier strokes that survive at 16px.
+   */
+  --font-optical-display: 96;
+  --font-optical-heading: 48;
+  --font-optical-text: 11;
+
+  /* Fraunces' own axes. WONK swaps in the wayward alternates; wordmark only. */
+  --font-soft: 0;
+  --font-wonk-on: 1;
+  --font-wonk-off: 0;
 
   /**
    * Fluid type scale. Each clamp() minimum is the mobile size; the maximum is
