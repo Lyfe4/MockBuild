@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { describeInsect, type BeetleForm, type InsectForm } from '@/lib/insect';
+import { describeInsect, PIGMENTS, type BeetleForm, type InsectForm } from '@/lib/insect';
 
 import { InsectIllustration } from './InsectIllustration';
 
@@ -27,6 +27,7 @@ const BEETLE: BeetleForm = {
   femurThickness: 1,
   legSpread: 0.5,
   tibialSpines: false,
+  pigment: 2,
   marking: 'spots',
   markingCount: 4,
   markingSize: 1,
@@ -126,6 +127,42 @@ describe('InsectIllustration', () => {
     );
 
     expect(container.querySelectorAll('[clip-path]')).toHaveLength(0);
+  });
+
+  describe('pigment', () => {
+    it('carries the pigment as an attribute, within the range the CSS maps', () => {
+      const { container } = render(<InsectIllustration insect={FORM} seed={1} title="Beetle" />);
+      const value = Number(svgIn(container).getAttribute('data-pigment'));
+
+      expect(PIGMENTS).toContain(value);
+    });
+
+    it.each([...PIGMENTS])('reports pigment %i when the form asks for it', (pigment) => {
+      const { container } = render(
+        <InsectIllustration
+          insect={{ order: 'coleoptera', form: { ...BEETLE, pigment } }}
+          seed={1}
+          title="Beetle"
+        />,
+      );
+
+      expect(svgIn(container)).toHaveAttribute('data-pigment', String(pigment));
+    });
+
+    it('colours through the attribute rather than an inline style', () => {
+      // The whole reason the pigment is an index: `style-src 'self'` forbids
+      // writing a custom property onto the element.
+      const { container } = render(
+        <InsectIllustration
+          insect={{ order: 'coleoptera', form: { ...BEETLE, pigment: 4 } }}
+          seed={1}
+          title="Beetle"
+        />,
+      );
+
+      expect(container.querySelectorAll('[style]')).toHaveLength(0);
+      expect(svgIn(container)).toHaveAttribute('data-pigment');
+    });
   });
 
   it('renders the identical beetle for the same seed across mounts', () => {

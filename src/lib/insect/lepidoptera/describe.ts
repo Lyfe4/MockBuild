@@ -1,3 +1,4 @@
+import { pigmentWord } from '../core';
 import type { ForewingShape, HindwingShape, MothAntennaType, MothForm } from './types';
 
 /**
@@ -72,7 +73,9 @@ export function describeMoth(form: MothForm): string {
 
   if (form.dusting) clauses.push('a fine dusting of scales');
 
-  const opening = `A ${sizeWord(form)} moth, drawn from above with wings spread`;
+  // Colour in the opening, with the size: every specimen has one, so it is
+  // not a character to be listed alongside the ones that vary.
+  const opening = `A ${sizeWord(form)} moth in ${pigmentWord(form.pigment)}, drawn from above with wings spread`;
   const last = clauses.pop() ?? '';
 
   return clauses.length === 0

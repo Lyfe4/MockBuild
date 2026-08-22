@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { generateBeetle } from './generate';
-import { commandPoints } from '../core';
 import type { InsectGeometry, InsectMark, Point } from '../core';
+import { commandPoints, PIGMENTS } from '../core';
 import {
   ANTENNA_TYPES,
   BEETLE_VIEW_BOX as VIEW_BOX,
@@ -34,6 +34,7 @@ const BASE_FORM: BeetleForm = {
   femurThickness: 1,
   legSpread: 0.6,
   tibialSpines: true,
+  pigment: 2,
   marking: 'spots',
   markingCount: 4,
   markingSize: 0.9,
@@ -307,6 +308,44 @@ describe('generateBeetle', () => {
         }
       },
     );
+  });
+
+  describe('pigment', () => {
+    it("carries the form's pigment through to the geometry", () => {
+      for (const pigment of PIGMENTS) {
+        expect(generateBeetle(form({ pigment }), 5).pigment).toBe(pigment);
+      }
+    });
+
+    it('reports a pigment inside the range the renderer can map', () => {
+      // The renderer turns this into `data-pigment`, and the stylesheet only
+      // has rules for 1..6 — anything else would render unpainted.
+      for (const seed of [1, 2, 3, 99]) {
+        const { pigment } = generateBeetle(form(), seed);
+
+        expect(PIGMENTS).toContain(pigment);
+      }
+    });
+
+    it('pulls an impossible pigment onto a usable one rather than throwing', () => {
+      for (const [given, expected] of [
+        [0, 1],
+        [-4, 1],
+        [7, 6],
+        [99, 6],
+        [Number.NaN, 1],
+      ] as const) {
+        expect(generateBeetle(form({ pigment: given as never }), 1).pigment).toBe(expected);
+      }
+    });
+
+    it('leaves the drawing itself alone', () => {
+      // Colour is the renderer's business; changing it must not move a line.
+      const a = generateBeetle(form({ pigment: 1 }), 5);
+      const b = generateBeetle(form({ pigment: 6 }), 5);
+
+      expect(a.marks).toStrictEqual(b.marks);
+    });
   });
 
   it('clamps out-of-range parameters rather than throwing', () => {

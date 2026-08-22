@@ -1,6 +1,6 @@
 import { clamp, hashString, mulberry32 } from '@/lib/random';
 
-import { composeAndFit, type InsectGeometry, type InsectMark } from '../core';
+import { composeAndFit, normalisePigment, type InsectGeometry, type InsectMark } from '../core';
 import { buildElytra, elytronOutline } from './elytra';
 import { buildHead } from './head';
 import { buildLegs } from './legs';
@@ -49,6 +49,7 @@ export function normaliseBeetleForm(form: BeetleForm): BeetleForm {
     femurThickness: clamp(form.femurThickness, 0.4, 1.4),
     legSpread: clamp(form.legSpread, 0, 1),
     tibialSpines: form.tibialSpines,
+    pigment: normalisePigment(form.pigment),
     marking: form.marking,
     markingCount: clamp(Math.round(form.markingCount), 1, 9),
     markingSize: clamp(form.markingSize, 0.3, 1.5),
@@ -77,6 +78,7 @@ export function generateBeetle(form: BeetleForm, seed: number): InsectGeometry {
   return composeAndFit(authored, {
     viewBox: BEETLE_VIEW_BOX,
     scale: safeForm.scale,
+    pigment: safeForm.pigment,
     // Markings name this surface through `clipTo`; the left one is mirrored
     // from it automatically, alongside the marks that reference it.
     clips: { 'elytron-right': elytronOutline(safeForm, metrics) },

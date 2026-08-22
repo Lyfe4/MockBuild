@@ -1,4 +1,4 @@
-import type { Range } from '../core';
+import type { Pigment, Range } from '../core';
 
 /**
  * Coleoptera — the beetle generator's own vocabulary.
@@ -91,6 +91,12 @@ export interface BeetleForm {
   /** Small spines along the tibiae. */
   tibialSpines: boolean;
 
+  /**
+   * Which of the six plate pigments this specimen is washed and marked in.
+   * An index; the season decides what it resolves to. Range 1–6.
+   */
+  pigment: Pigment;
+
   marking: MarkingType;
   /** Spots per elytron, or bands across it. Ignored by `none` and `stripe`. Range 1–9. */
   markingCount: number;
@@ -132,6 +138,7 @@ export interface BeetlePresetSpec {
     readonly punctures?: readonly boolean[];
     readonly horn?: readonly boolean[];
     readonly tibialSpines?: readonly boolean[];
+    readonly pigment?: readonly Pigment[];
   };
 }
 

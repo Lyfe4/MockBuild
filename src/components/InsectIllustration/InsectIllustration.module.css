@@ -1,20 +1,72 @@
 /**
  * Insect illustration — beetles and moths alike.
  *
- * Ink outlines over a light wash, with the markings as the only pigment. Every
- * colour is a semantic token, so a beetle recolours with the season exactly as
- * a plant does.
+ * Ink outlines over a pigment wash, with the markings in the pigment's deeper
+ * tone. Every colour is a semantic token, so a specimen recolours with the
+ * season exactly as a plant does.
+ *
+ * ## How a specimen gets its colour
+ *
+ * The generator picks one of six pigments and the renderer puts the index on
+ * the svg as `data-pigment`. Each index below resolves the two local custom
+ * properties the rest of the file paints from. Doing it this way rather than
+ * writing `--pigment` onto the element is what keeps the strict CSP intact:
+ * setting a custom property inline would need a `style` attribute, and
+ * `style-src 'self'` forbids one.
  */
 
 .root {
   display: block;
   inline-size: 100%;
   block-size: auto;
+
+  /* The default, for a geometry that somehow arrives without an index. */
+  --pigment: var(--pigment-1);
+  --pigment-deep: var(--pigment-deep-1);
 }
 
-/* A closed outline: filled with the paper wash, drawn round with ink. */
+.root[data-pigment='1'] {
+  --pigment: var(--pigment-1);
+  --pigment-deep: var(--pigment-deep-1);
+}
+
+.root[data-pigment='2'] {
+  --pigment: var(--pigment-2);
+  --pigment-deep: var(--pigment-deep-2);
+}
+
+.root[data-pigment='3'] {
+  --pigment: var(--pigment-3);
+  --pigment-deep: var(--pigment-deep-3);
+}
+
+.root[data-pigment='4'] {
+  --pigment: var(--pigment-4);
+  --pigment-deep: var(--pigment-deep-4);
+}
+
+.root[data-pigment='5'] {
+  --pigment: var(--pigment-5);
+  --pigment-deep: var(--pigment-deep-5);
+}
+
+.root[data-pigment='6'] {
+  --pigment: var(--pigment-6);
+  --pigment-deep: var(--pigment-deep-6);
+}
+
+/*
+ * A closed outline — body, wing, wing case, head capsule.
+ *
+ * Filled with the pigment let down into the surface token rather than laid over
+ * it at an opacity: mixing composites against the colour the plate is actually
+ * made of, where fill-opacity would composite against whatever happens to be
+ * behind the svg. A specimen dropped onto a dark card would otherwise go
+ * muddy. Weak on purpose — this is a wash, and the ink outline is what carries
+ * the drawing.
+ */
 .shape {
-  fill: var(--color-surface);
+  fill: color-mix(in srgb, var(--pigment) 22%, var(--color-surface));
   stroke-width: 1;
   stroke-linejoin: round;
 }
@@ -51,9 +103,19 @@ circle.ink {
   fill: var(--color-ink);
 }
 
-.accent {
-  fill: var(--color-accent-strong);
-  stroke: var(--color-accent-strong);
+/* Markings: the pigment at full strength, which is the only place it appears. */
+.pigmented {
+  fill: var(--pigment-deep);
+  stroke: var(--pigment-deep);
+}
+
+/*
+ * Only *paths* take their weight from the stylesheet. A ringed dot carries its
+ * own stroke-width as a presentation attribute — an eyespot's rings are sized
+ * by the generator — and any stroke-width declared here would override it,
+ * because a declaration always beats a presentation attribute.
+ */
+path.pigmented {
   stroke-width: 0.4;
 }
 

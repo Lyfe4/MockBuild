@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { describeBeetle } from './describe';
+import { PIGMENTS, pigmentWord } from '../core';
 import { ANTENNA_TYPES, MARKING_TYPES, type BeetleForm } from './types';
 
 const BASE_FORM: BeetleForm = {
@@ -25,6 +26,7 @@ const BASE_FORM: BeetleForm = {
   femurThickness: 1,
   legSpread: 0.6,
   tibialSpines: true,
+  pigment: 2,
   marking: 'spots',
   markingCount: 4,
   markingSize: 0.9,
@@ -135,6 +137,28 @@ describe('describeBeetle', () => {
     expect(text).not.toContain(' and .');
     expect(text).not.toContain(', .');
     expect(text).toMatch(/with .+ antennae\.$/);
+  });
+
+  describe('colouring', () => {
+    it.each([...PIGMENTS])('names the colour for pigment %i', (pigment) => {
+      expect(describeBeetle(form({ pigment }))).toContain(pigmentWord(pigment));
+    });
+
+    it('gives every pigment its own wording', () => {
+      // Six pigments described identically would tell a listener nothing about
+      // which of six drawings they are in front of.
+      const descriptions = PIGMENTS.map((pigment) => describeBeetle(form({ pigment })));
+
+      expect(new Set(descriptions).size).toBe(PIGMENTS.length);
+    });
+
+    it('puts the colour with the shape, not in the list of characters', () => {
+      // Every specimen has a colour, so it is not one of the things that
+      // varies — it belongs in the opening, before 'drawn from above'.
+      expect(describeBeetle(form({ pigment: 2 }))).toMatch(
+        /^An? .+ beetle in russet, drawn from above with /,
+      );
+    });
   });
 
   it('is pure: the same form always gives the same sentence', () => {

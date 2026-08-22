@@ -68,7 +68,15 @@ describe('resolveBeetlePreset', () => {
         if (choices.pronotumShape !== undefined) {
           expect(choices.pronotumShape).toContain(form.pronotumShape);
         }
+        if (choices.pigment !== undefined) expect(choices.pigment).toContain(form.pigment);
       }
+    });
+
+    it('names a pigment set, and moves inside it', () => {
+      // Without a set every specimen of the kind would be one colour, which is
+      // the failure the whole pigment layer exists to avoid.
+      expect(spec.choices?.pigment?.length ?? 0).toBeGreaterThan(1);
+      expect(new Set(forms.map((form) => form.pigment)).size).toBeGreaterThan(1);
     });
 
     it('keeps every sampled parameter inside its declared range', () => {

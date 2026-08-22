@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   commandPoints,
   markPoints,
+  PIGMENTS,
   type InsectGeometry,
   type InsectMark,
   type Point,
@@ -33,6 +34,7 @@ const BASE_FORM: MothForm = {
   eyespotCount: 1,
   eyespotSize: 0.8,
   eyespotRings: 2,
+  pigment: 3,
   fringe: true,
   dusting: true,
   dustingDensity: 0.4,
@@ -315,6 +317,37 @@ describe('generateMoth', () => {
     );
   });
 
+  describe('pigment', () => {
+    it("carries the form's pigment through to the geometry", () => {
+      for (const pigment of PIGMENTS) {
+        expect(generateMoth(form({ pigment }), 3).pigment).toBe(pigment);
+      }
+    });
+
+    it('reports a pigment inside the range the renderer can map', () => {
+      for (const seed of [1, 2, 3, 88]) {
+        expect(PIGMENTS).toContain(generateMoth(form(), seed).pigment);
+      }
+    });
+
+    it('pulls an impossible pigment onto a usable one rather than throwing', () => {
+      for (const [given, expected] of [
+        [0, 1],
+        [9, 6],
+        [Number.NaN, 1],
+      ] as const) {
+        expect(generateMoth(form({ pigment: given as never }), 1).pigment).toBe(expected);
+      }
+    });
+
+    it('leaves the drawing itself alone', () => {
+      const a = generateMoth(form({ pigment: 2 }), 3);
+      const b = generateMoth(form({ pigment: 5 }), 3);
+
+      expect(a.marks).toStrictEqual(b.marks);
+    });
+  });
+
   it('clamps out-of-range parameters rather than throwing', () => {
     const wild = form({
       wingSpan: 40,
@@ -383,7 +416,15 @@ describe('resolveMothPreset', () => {
         if (choices.antennaType !== undefined) {
           expect(choices.antennaType).toContain(candidate.antennaType);
         }
+        if (choices.pigment !== undefined) expect(choices.pigment).toContain(candidate.pigment);
       }
+    });
+
+    it('names a pigment set, and moves inside it', () => {
+      // A preset with no set would leave every specimen of the kind the same
+      // colour, which is the failure this whole layer exists to avoid.
+      expect(spec.choices?.pigment?.length ?? 0).toBeGreaterThan(1);
+      expect(new Set(forms.map((candidate) => candidate.pigment)).size).toBeGreaterThan(1);
     });
 
     it('draws every resolved specimen inside the frame', () => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { describeMoth } from './describe';
+import { PIGMENTS, pigmentWord } from '../core';
 import { FOREWING_SHAPES, HINDWING_SHAPES, MOTH_ANTENNA_TYPES, type MothForm } from './types';
 
 const BASE_FORM: MothForm = {
@@ -18,6 +19,7 @@ const BASE_FORM: MothForm = {
   eyespotCount: 1,
   eyespotSize: 0.8,
   eyespotRings: 2,
+  pigment: 3,
   fringe: true,
   dusting: false,
   dustingDensity: 0.4,
@@ -100,6 +102,24 @@ describe('describeMoth', () => {
     expect(text).not.toContain(' and .');
     expect(text).not.toContain(', .');
     expect(text).toMatch(/antennae\.$/);
+  });
+
+  describe('colouring', () => {
+    it.each([...PIGMENTS])('names the colour for pigment %i', (pigment) => {
+      expect(describeMoth(form({ pigment }))).toContain(pigmentWord(pigment));
+    });
+
+    it('gives every pigment its own wording', () => {
+      const descriptions = PIGMENTS.map((pigment) => describeMoth(form({ pigment })));
+
+      expect(new Set(descriptions).size).toBe(PIGMENTS.length);
+    });
+
+    it('puts the colour with the size, before the wing characters', () => {
+      expect(describeMoth(form({ pigment: 3 }))).toMatch(
+        /^A .+ moth in olive, drawn from above with wings spread: /,
+      );
+    });
   });
 
   it('is pure: the same form always gives the same sentence', () => {

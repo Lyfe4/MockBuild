@@ -27,13 +27,13 @@ export interface InsectIllustrationProps {
 }
 
 /**
- * Which marks are painted with the accent, and which with ink.
+ * Which marks are painted with the specimen's pigment, and which with ink.
  *
- * Patterns are the only coloured element: on a plate they are the pigment and
+ * Markings are the pigmented element: on a plate they are the colour and
  * everything else is the engraver's line. Keeping the list here rather than in
  * the CSS means the generator stays ignorant of colour.
  */
-const ACCENT_PARTS = new Set<InsectMark['part']>(['marking']);
+const PIGMENTED_PARTS = new Set<InsectMark['part']>(['marking']);
 
 /**
  * Renders a procedurally generated insect as inline SVG.
@@ -43,9 +43,15 @@ const ACCENT_PARTS = new Set<InsectMark['part']>(['marking']);
  * geometry brings its own view box, which is how a portrait beetle and a
  * landscape moth can share one renderer.
  *
- * Closed marks are filled with the surface token and stroked with ink — the
- * look of a pen outline over a flat wash. All of it is presentation attributes
- * and classes, never inline styles, so the strict `style-src 'self'` CSP holds.
+ * Closed marks are filled with the specimen's pigment mixed into the surface
+ * token and stroked with ink — the look of a pen outline over a flat wash.
+ *
+ * The pigment travels as a `data-pigment` attribute carrying an index, which
+ * the stylesheet maps onto the `--pigment-N` tokens. An attribute rather than a
+ * custom property written onto the element, because writing one would mean a
+ * `style` attribute and the strict `style-src 'self'` CSP forbids it. All of
+ * this is presentation attributes and classes; there is not an inline style
+ * anywhere in the tree.
  */
 export function InsectIllustration({
   insect,
@@ -70,8 +76,7 @@ export function InsectIllustration({
 
   const renderMark = (mark: InsectMark, index: number) => {
     const key = `${mark.part}-${mark.side}-${String(index)}`;
-    const accent = ACCENT_PARTS.has(mark.part);
-    const tone = accent ? styles.accent : styles.ink;
+    const tone = PIGMENTED_PARTS.has(mark.part) ? styles.pigmented : styles.ink;
 
     if (mark.kind === 'dot') {
       // A ring rather than a disc, when the generator asked for one: an
@@ -115,6 +120,7 @@ export function InsectIllustration({
     <svg
       className={cx(styles.root, animate && styles.animated, className)}
       viewBox={`0 0 ${String(geometry.viewBox.width)} ${String(geometry.viewBox.height)}`}
+      data-pigment={String(geometry.pigment)}
       preserveAspectRatio="xMidYMid meet"
       focusable="false"
       {...accessibilityProps}

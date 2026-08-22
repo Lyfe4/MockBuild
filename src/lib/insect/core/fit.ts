@@ -1,5 +1,5 @@
 import { commandPoints, mapCommands, mirrorCommands, mirrorPoint } from './path';
-import type { InsectGeometry, InsectMark, PathCommand, Point, ViewBox } from './types';
+import type { InsectGeometry, InsectMark, PathCommand, Pigment, Point, ViewBox } from './types';
 
 /**
  * Mirroring and fitting — the two steps every order finishes with.
@@ -53,6 +53,8 @@ export interface ComposeOptions {
   readonly viewBox: ViewBox;
   /** How much of it to fill, 0.5–1. */
   readonly scale: number;
+  /** The pigment index to hand on to the renderer. */
+  readonly pigment: Pigment;
   /**
    * Outlines to expose as clip paths, keyed by name, in insect space. Right-hand
    * surfaces are mirrored automatically, exactly as the marks are.
@@ -146,6 +148,7 @@ export function composeAndFit(
   return {
     viewBox,
     marks,
+    pigment: options.pigment,
     clips: Object.fromEntries(
       clipEntries.map(([name, commands]) => [name, mapCommands(commands, toCanvas)]),
     ),

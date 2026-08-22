@@ -22,6 +22,18 @@ export interface Point {
 }
 
 /**
+ * Which of the six plate pigments a specimen is coloured with.
+ *
+ * An index, not a colour. The generator has no idea what ochre looks like and
+ * must not: the renderer maps the index onto `--pigment-N` through a
+ * `data-pigment` attribute, and the season decides what that resolves to. Kept
+ * in `core` because both orders are painted from the same six.
+ */
+export const PIGMENTS = [1, 2, 3, 4, 5, 6] as const;
+
+export type Pigment = (typeof PIGMENTS)[number];
+
+/**
  * A single path instruction.
  *
  * Structured rather than pre-formatted, so a test can assert on a control point
@@ -153,6 +165,13 @@ export interface ViewBox {
 export interface InsectGeometry {
   readonly viewBox: ViewBox;
   readonly marks: readonly InsectMark[];
+  /**
+   * The pigment index the renderer should dress the whole animal in.
+   *
+   * Carried on the geometry rather than read off the form by the component, so
+   * the renderer keeps taking one object and knowing nothing about beetles.
+   */
+  readonly pigment: Pigment;
   /**
    * Outlines the renderer should turn into clip paths, keyed by the name that
    * marks reference through `clipTo`.

@@ -1,6 +1,6 @@
 import { mulberry32, type Rng } from '@/lib/random';
 
-import { between, betweenInt, pick, wobble } from '../core';
+import { between, betweenInt, pick, pickPigment, wobble } from '../core';
 import { normaliseMothForm } from './generate';
 import type { MothForm, MothPresetSpec, MothRangeKey } from './types';
 
@@ -69,6 +69,8 @@ export function resolveMothPreset(spec: MothPresetSpec, seed: number): MothForm 
     antennaType: pick(rng, choices.antennaType ?? [], spec.base.antennaType),
     fringe: pick(rng, choices.fringe ?? [], spec.base.fringe),
     dusting: pick(rng, choices.dusting ?? [], spec.base.dusting),
+    // Last, so adding a pigment set to a preset cannot shift the traits above it.
+    pigment: pickPigment(rng, choices.pigment ?? [], spec.base.pigment),
   });
 }
 
@@ -87,6 +89,7 @@ const BASE: MothForm = {
   eyespotCount: 0,
   eyespotSize: 0.8,
   eyespotRings: 2,
+  pigment: 1,
   fringe: false,
   dusting: false,
   dustingDensity: 0.4,
@@ -123,6 +126,8 @@ export const MOTH_PRESETS: readonly MothPresetSpec[] = [
       hindwingShape: ['tailed'],
       antennaType: ['clubbed'],
       forewingShape: ['triangular'],
+      // Pale ground with dark banding: ochre, bone, slate.
+      pigment: [1, 6, 4],
     },
   },
   {
@@ -157,6 +162,8 @@ export const MOTH_PRESETS: readonly MothPresetSpec[] = [
       antennaType: ['bipectinate'],
       forewingShape: ['rounded', 'triangular'],
       hindwingShape: ['rounded'],
+      // The warm end — an eyespot needs a ground it can sit dark against.
+      pigment: [1, 2, 5],
     },
   },
   {
@@ -190,6 +197,8 @@ export const MOTH_PRESETS: readonly MothPresetSpec[] = [
       antennaType: ['filiform'],
       dusting: [true],
       fringe: [true, false],
+      // Cryptic: chalk, lichen-olive and grey.
+      pigment: [6, 3, 4],
     },
   },
   {
@@ -221,6 +230,8 @@ export const MOTH_PRESETS: readonly MothPresetSpec[] = [
       forewingShape: ['falcate'],
       hindwingShape: ['rounded'],
       antennaType: ['filiform', 'clubbed'],
+      // Bark and dead-leaf browns.
+      pigment: [5, 3, 6],
     },
   },
 ];

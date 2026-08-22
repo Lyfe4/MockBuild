@@ -1,4 +1,4 @@
-import type { Range } from '../core';
+import type { Pigment, Range } from '../core';
 
 /**
  * Lepidoptera — the moth and butterfly generator's vocabulary.
@@ -64,6 +64,12 @@ export interface MothForm {
   /** Concentric rings around each eyespot's pupil. Range 1–3. */
   eyespotRings: number;
 
+  /**
+   * Which of the six plate pigments this specimen is washed and patterned in.
+   * An index; the season decides what it resolves to. Range 1–6.
+   */
+  pigment: Pigment;
+
   /** Draw the scalloped fringe line just inside the outer margin. */
   fringe: boolean;
 
@@ -93,6 +99,7 @@ export interface MothPresetSpec {
     readonly antennaType?: readonly MothAntennaType[];
     readonly fringe?: readonly boolean[];
     readonly dusting?: readonly boolean[];
+    readonly pigment?: readonly Pigment[];
   };
 }
 

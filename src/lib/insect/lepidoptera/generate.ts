@@ -1,6 +1,13 @@
 import { clamp, mulberry32 } from '@/lib/random';
 
-import { composeAndFit, lineTo, moveTo, type InsectGeometry, type InsectMark } from '../core';
+import {
+  composeAndFit,
+  lineTo,
+  moveTo,
+  normalisePigment,
+  type InsectGeometry,
+  type InsectMark,
+} from '../core';
 import { buildBody } from './body';
 import { metricsFor } from './metrics';
 import { buildWingPatterns, wingClip } from './patterns';
@@ -42,6 +49,7 @@ export function normaliseMothForm(form: MothForm): MothForm {
     eyespotCount: clamp(Math.round(form.eyespotCount), 0, 3),
     eyespotSize: clamp(form.eyespotSize, 0.3, 1.4),
     eyespotRings: clamp(Math.round(form.eyespotRings), 1, 3),
+    pigment: normalisePigment(form.pigment),
     fringe: form.fringe,
     dusting: form.dusting,
     dustingDensity: clamp(form.dustingDensity, 0, 1),
@@ -150,6 +158,7 @@ export function generateMoth(form: MothForm, seed: number): InsectGeometry {
   return composeAndFit(authored, {
     viewBox: MOTH_VIEW_BOX,
     scale: safeForm.scale,
+    pigment: safeForm.pigment,
     clips: {
       [wingClip('hindwing')]: hindwing.outline,
       [wingClip('forewing')]: forewing.outline,

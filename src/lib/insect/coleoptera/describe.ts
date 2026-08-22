@@ -1,3 +1,4 @@
+import { pigmentWord } from '../core';
 import type { AntennaType, BeetleForm, MarkingType } from './types';
 
 /**
@@ -81,7 +82,12 @@ export function describeBeetle(form: BeetleForm): string {
   const shape = shapeWord(form);
   // 'A oval beetle' is the kind of thing that makes a description sound generated.
   const article = /^[aeiou]/i.test(shape) ? 'An' : 'A';
-  const opening = `${article} ${shape} beetle, drawn from above`;
+  /**
+   * The colour goes in the opening rather than in the clause list. It is not a
+   * character the animal either has or lacks — every specimen is washed in
+   * something — so it belongs with the shape, where a viewer meets it.
+   */
+  const opening = `${article} ${shape} beetle in ${pigmentWord(form.pigment)}, drawn from above`;
 
   if (clauses.length === 1) return `${opening} with ${clauses[0] ?? ''}.`;
 

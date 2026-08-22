@@ -1,6 +1,6 @@
 import { mulberry32, type Rng } from '@/lib/random';
 
-import { between, betweenInt, pick, wobble } from '../core';
+import { between, betweenInt, pick, pickPigment, wobble } from '../core';
 import { normaliseBeetleForm } from './generate';
 import type { BeetleForm, BeetlePresetSpec, BeetleRangeKey } from './types';
 
@@ -87,6 +87,8 @@ export function resolveBeetlePreset(spec: BeetlePresetSpec, seed: number): Beetl
     punctures: pick(rng, choices.punctures ?? [], spec.base.punctures),
     horn: pick(rng, choices.horn ?? [], spec.base.horn),
     tibialSpines: pick(rng, choices.tibialSpines ?? [], spec.base.tibialSpines),
+    // Last, so adding a pigment set to a preset cannot shift the traits above it.
+    pigment: pickPigment(rng, choices.pigment ?? [], spec.base.pigment),
   });
 }
 
@@ -113,6 +115,7 @@ const BASE: BeetleForm = {
   femurThickness: 1,
   legSpread: 0.6,
   tibialSpines: false,
+  pigment: 5,
   marking: 'none',
   markingCount: 4,
   markingSize: 0.9,
@@ -150,7 +153,12 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       legLength: [1, 1.3],
     },
     // Banded or plain: both are common in the group.
-    choices: { marking: ['bands', 'none'], antennaType: ['filiform'] },
+    choices: {
+      marking: ['bands', 'none'],
+      antennaType: ['filiform'],
+      // Bark-dwellers: the mottled greys and browns, never a warning colour.
+      pigment: [3, 5, 6],
+    },
   },
   {
     name: 'Ladybird',
@@ -183,7 +191,13 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       elytraTaper: [0, 0.14],
       antennaLength: [0.32, 0.48],
     },
-    choices: { marking: ['spots'], antennaType: ['clavate'], pronotumShape: ['rounded'] },
+    choices: {
+      marking: ['spots'],
+      antennaType: ['clavate'],
+      pronotumShape: ['rounded'],
+      // Aposematic, so only the two warm earths.
+      pigment: [1, 2],
+    },
   },
   {
     name: 'Stag',
@@ -223,6 +237,8 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       pronotumShape: ['angular', 'rounded'],
       pronotumRidge: [true, false],
       marking: ['none'],
+      // Chestnut through to dark umber, which is the whole group.
+      pigment: [2, 5],
     },
   },
   {
@@ -262,6 +278,8 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       punctures: [true, false],
       marking: ['stripe', 'none'],
       pronotumShape: ['angular'],
+      // The dark, faintly metallic end: slate, umber, and a pale chalky form.
+      pigment: [4, 5, 6],
     },
   },
 ];

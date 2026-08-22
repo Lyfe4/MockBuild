@@ -78,6 +78,90 @@
   --wash-slate: #dfe6e9;
   --wash-neutral: #ebe5d8;
 
+  /**
+   * Pigments — the six earths a specimen plate is coloured with.
+   *
+   * Six families, because that is about as many as an engraver would keep on
+   * the bench and still tell apart at plate size: ochre, russet, olive, slate,
+   * umber and bone. Each is given per season and shifted with it — warmer and
+   * deeper through autumn, greyed and cooled through winter — so a specimen
+   * recolours with the archive rather than sitting on top of it.
+   *
+   * Each family is a pair. The base is mixed into the surface as a wash and is
+   * never used at full strength; the `-deep` is the solid one, for markings,
+   * eyespot rings and anything that has to hold an edge against that wash.
+   */
+
+  /* Undressed archival neutral — what renders before a season is applied. */
+  --pigment-archive-ochre: #9a7434;
+  --pigment-archive-ochre-deep: #6d4f1c;
+  --pigment-archive-russet: #9c5a3c;
+  --pigment-archive-russet-deep: #6f3a22;
+  --pigment-archive-olive: #6e7a4a;
+  --pigment-archive-olive-deep: #4b552d;
+  --pigment-archive-slate: #4f6b78;
+  --pigment-archive-slate-deep: #344b56;
+  --pigment-archive-umber: #7a5a44;
+  --pigment-archive-umber-deep: #533a29;
+  --pigment-archive-bone: #b6ab92;
+  --pigment-archive-bone-deep: #6d6552;
+
+  /* Spring — greener and a shade lighter; olive leads. */
+  --pigment-spring-ochre: #8f7c33;
+  --pigment-spring-ochre-deep: #63541c;
+  --pigment-spring-russet: #96593f;
+  --pigment-spring-russet-deep: #683823;
+  --pigment-spring-olive: #63793f;
+  --pigment-spring-olive-deep: #41562a;
+  --pigment-spring-slate: #4a6f72;
+  --pigment-spring-slate-deep: #315055;
+  --pigment-spring-umber: #6f5c42;
+  --pigment-spring-umber-deep: #4a3c2a;
+  --pigment-spring-bone: #aeb097;
+  --pigment-spring-bone-deep: #676c55;
+
+  /* Summer — sun-bleached and warm; ochre leads. */
+  --pigment-summer-ochre: #a5791f;
+  --pigment-summer-ochre-deep: #77530d;
+  --pigment-summer-russet: #a55f31;
+  --pigment-summer-russet-deep: #763e1a;
+  --pigment-summer-olive: #7c8043;
+  --pigment-summer-olive-deep: #565a28;
+  --pigment-summer-slate: #5a707a;
+  --pigment-summer-slate-deep: #3d4f58;
+  --pigment-summer-umber: #866041;
+  --pigment-summer-umber-deep: #5e4127;
+  --pigment-summer-bone: #bfae8d;
+  --pigment-summer-bone-deep: #776a4e;
+
+  /* Autumn — the warmest and deepest set; russet and umber lead. */
+  --pigment-autumn-ochre: #9a6a22;
+  --pigment-autumn-ochre-deep: #6d4810;
+  --pigment-autumn-russet: #96482a;
+  --pigment-autumn-russet-deep: #6b2f18;
+  --pigment-autumn-olive: #6f7040;
+  --pigment-autumn-olive-deep: #4c4d26;
+  --pigment-autumn-slate: #55636c;
+  --pigment-autumn-slate-deep: #39454d;
+  --pigment-autumn-umber: #7c503a;
+  --pigment-autumn-umber-deep: #543322;
+  --pigment-autumn-bone: #b7a68d;
+  --pigment-autumn-bone-deep: #6f6350;
+
+  /* Winter — every family greyed and pulled cool; slate leads. */
+  --pigment-winter-ochre: #86733d;
+  --pigment-winter-ochre-deep: #5c4e26;
+  --pigment-winter-russet: #8b5a4a;
+  --pigment-winter-russet-deep: #5f3a2e;
+  --pigment-winter-olive: #5f6d55;
+  --pigment-winter-olive-deep: #404b3a;
+  --pigment-winter-slate: #46626f;
+  --pigment-winter-slate-deep: #2e444f;
+  --pigment-winter-umber: #6b5a52;
+  --pigment-winter-umber-deep: #473b35;
+  --pigment-winter-bone: #a8aaa4;
+  --pigment-winter-bone-deep: #616660;
+
   /* Type. The two custom families are declared in fonts.css. */
   /*
    * Fraunces carries both display and body: the opsz axis is what lets one
@@ -206,6 +290,25 @@
   --color-selection-bg: var(--wash-neutral);
   --color-selection-ink: var(--ink-charcoal-900);
 
+  /**
+   * Specimen pigments, 1..6, in a fixed order: ochre, russet, olive, slate,
+   * umber, bone. The generator picks an index per specimen and the renderer
+   * maps it through a `data-pigment` attribute, so no illustration ever needs
+   * an inline style to be coloured. Every season must define all twelve.
+   */
+  --pigment-1: var(--pigment-archive-ochre);
+  --pigment-deep-1: var(--pigment-archive-ochre-deep);
+  --pigment-2: var(--pigment-archive-russet);
+  --pigment-deep-2: var(--pigment-archive-russet-deep);
+  --pigment-3: var(--pigment-archive-olive);
+  --pigment-deep-3: var(--pigment-archive-olive-deep);
+  --pigment-4: var(--pigment-archive-slate);
+  --pigment-deep-4: var(--pigment-archive-slate-deep);
+  --pigment-5: var(--pigment-archive-umber);
+  --pigment-deep-5: var(--pigment-archive-umber-deep);
+  --pigment-6: var(--pigment-archive-bone);
+  --pigment-deep-6: var(--pigment-archive-bone-deep);
+
   /* Derived roles — every season inherits these without restating them. */
   --color-focus-ring: var(--color-accent-strong);
   --focus-ring-width: 2px;
@@ -235,6 +338,19 @@
   --color-line: var(--line-green-200);
   --color-selection-bg: var(--wash-olive);
   --color-selection-ink: var(--ink-herbarium-900);
+
+  --pigment-1: var(--pigment-spring-ochre);
+  --pigment-deep-1: var(--pigment-spring-ochre-deep);
+  --pigment-2: var(--pigment-spring-russet);
+  --pigment-deep-2: var(--pigment-spring-russet-deep);
+  --pigment-3: var(--pigment-spring-olive);
+  --pigment-deep-3: var(--pigment-spring-olive-deep);
+  --pigment-4: var(--pigment-spring-slate);
+  --pigment-deep-4: var(--pigment-spring-slate-deep);
+  --pigment-5: var(--pigment-spring-umber);
+  --pigment-deep-5: var(--pigment-spring-umber-deep);
+  --pigment-6: var(--pigment-spring-bone);
+  --pigment-deep-6: var(--pigment-spring-bone-deep);
 }
 
 /* Summer — Dec to Feb. Sun-bleached sheets, dried grass, ochre pigment. */
@@ -251,6 +367,19 @@
   --color-line: var(--line-warm-200);
   --color-selection-bg: var(--wash-ochre);
   --color-selection-ink: var(--ink-sepia-900);
+
+  --pigment-1: var(--pigment-summer-ochre);
+  --pigment-deep-1: var(--pigment-summer-ochre-deep);
+  --pigment-2: var(--pigment-summer-russet);
+  --pigment-deep-2: var(--pigment-summer-russet-deep);
+  --pigment-3: var(--pigment-summer-olive);
+  --pigment-deep-3: var(--pigment-summer-olive-deep);
+  --pigment-4: var(--pigment-summer-slate);
+  --pigment-deep-4: var(--pigment-summer-slate-deep);
+  --pigment-5: var(--pigment-summer-umber);
+  --pigment-deep-5: var(--pigment-summer-umber-deep);
+  --pigment-6: var(--pigment-summer-bone);
+  --pigment-deep-6: var(--pigment-summer-bone-deep);
 }
 
 /* Autumn — Mar to May. Pressed leaves and walnut ink on tanned card. */
@@ -267,6 +396,19 @@
   --color-line: var(--line-cream-200);
   --color-selection-bg: var(--wash-russet);
   --color-selection-ink: var(--ink-walnut-900);
+
+  --pigment-1: var(--pigment-autumn-ochre);
+  --pigment-deep-1: var(--pigment-autumn-ochre-deep);
+  --pigment-2: var(--pigment-autumn-russet);
+  --pigment-deep-2: var(--pigment-autumn-russet-deep);
+  --pigment-3: var(--pigment-autumn-olive);
+  --pigment-deep-3: var(--pigment-autumn-olive-deep);
+  --pigment-4: var(--pigment-autumn-slate);
+  --pigment-deep-4: var(--pigment-autumn-slate-deep);
+  --pigment-5: var(--pigment-autumn-umber);
+  --pigment-deep-5: var(--pigment-autumn-umber-deep);
+  --pigment-6: var(--pigment-autumn-bone);
+  --pigment-deep-6: var(--pigment-autumn-bone-deep);
 }
 
 /* Winter — Jun to Aug. Iron-gall ink, frost-grey stock, slate rules. */
@@ -283,6 +425,19 @@
   --color-line: var(--line-cool-200);
   --color-selection-bg: var(--wash-slate);
   --color-selection-ink: var(--ink-irongall-900);
+
+  --pigment-1: var(--pigment-winter-ochre);
+  --pigment-deep-1: var(--pigment-winter-ochre-deep);
+  --pigment-2: var(--pigment-winter-russet);
+  --pigment-deep-2: var(--pigment-winter-russet-deep);
+  --pigment-3: var(--pigment-winter-olive);
+  --pigment-deep-3: var(--pigment-winter-olive-deep);
+  --pigment-4: var(--pigment-winter-slate);
+  --pigment-deep-4: var(--pigment-winter-slate-deep);
+  --pigment-5: var(--pigment-winter-umber);
+  --pigment-deep-5: var(--pigment-winter-umber-deep);
+  --pigment-6: var(--pigment-winter-bone);
+  --pigment-deep-6: var(--pigment-winter-bone-deep);
 }
 
 /**
