@@ -1,14 +1,12 @@
 import type { PathCommand, Point } from './types';
 
 /**
- * Path helpers for the beetle generator.
+ * Path helpers shared by every insect order.
  *
- * Deliberately duplicated from the plant generator's equivalents rather than
- * shared. This is a spike evaluating a *replacement* for that generator, and
- * whichever one loses gets deleted whole; a shared module would tie them
- * together exactly when they need to come apart. The PRNG is shared because it
- * is neither botanical nor entomological — these builders diverge (mirroring
- * here, tapered ribbons there) and would only accumulate flags if merged.
+ * Deliberately separate from the plant generator's equivalents. The two
+ * diverge — mirroring here, tapered ribbons there — and would only accumulate
+ * flags if merged. The PRNG is shared because it is neither botanical nor
+ * entomological; path building is not so neutral.
  */
 
 /** Rounds to 2dp. Keeps output small and comparisons stable across platforms. */

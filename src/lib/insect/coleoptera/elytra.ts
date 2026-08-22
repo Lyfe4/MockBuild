@@ -1,8 +1,9 @@
 import { jitter, type Rng } from '@/lib/random';
 
 import type { BeetleMetrics } from './metrics';
-import { lineTo, moveTo, quadTo, smoothClosedPath } from './path';
-import type { BeetleForm, BeetleMark, PathCommand, Point } from './types';
+import { lineTo, moveTo, quadTo, smoothClosedPath } from '../core';
+import type { InsectMark, PathCommand, Point } from '../core';
+import type { BeetleForm } from './types';
 
 /**
  * The elytra — the hardened wing cases that make up most of a beetle's
@@ -48,10 +49,10 @@ export function elytronOutline(form: BeetleForm, metrics: BeetleMetrics): PathCo
   return smoothClosedPath(elytronProfile(form, metrics));
 }
 
-export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): BeetleMark[] {
+export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
   const { elytraStart: y0, elytraLength: h, elytraHalfWidth: w } = metrics;
 
-  const marks: BeetleMark[] = [
+  const marks: InsectMark[] = [
     {
       kind: 'path',
       part: 'elytron',

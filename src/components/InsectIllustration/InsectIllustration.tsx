@@ -6,19 +6,19 @@ import {
   generateBeetle,
   toPathData,
   type BeetleForm,
-  type BeetleMark,
-  type PathMark,
+  type InsectMark,
 } from '@/lib/insect';
 
 import styles from './InsectIllustration.module.css';
 
 export interface InsectIllustrationProps {
+  /** The beetle to draw. */
   form: BeetleForm;
   /** Any 32-bit integer. `seedFromName` derives one from a preset name. */
   seed: number;
   /**
-   * The accessible name. There is no dataset behind the spike, so unlike
-   * `PlantIllustration` this cannot be derived from a record.
+   * The accessible name. There is no dataset behind the generator yet, so
+   * unlike `PlantIllustration` this cannot be derived from a record.
    */
   title: string;
   animate?: boolean | undefined;
@@ -29,24 +29,22 @@ export interface InsectIllustrationProps {
 /**
  * Which marks are painted with the accent, and which with ink.
  *
- * Markings are the only coloured element: on a plate they are the pigment, and
+ * Patterns are the only coloured element: on a plate they are the pigment and
  * everything else is the engraver's line. Keeping the list here rather than in
- * the CSS means the generator stays ignorant of colour entirely.
+ * the CSS means the generator stays ignorant of colour.
  */
-const ACCENT_PARTS = new Set<BeetleMark['part']>(['marking']);
+const ACCENT_PARTS = new Set<InsectMark['part']>(['marking']);
 
 /**
- * SPIKE — renders a procedurally generated beetle as inline SVG.
+ * Renders a procedurally generated insect as inline SVG.
  *
- * Follows `PlantIllustration`'s pattern deliberately, so the two can be
- * compared like for like: the generator decides *what* the animal looks like
- * and knows nothing about React or colour, and this decides *how* it is drawn
- * and knows nothing about anatomy.
+ * The generator says which surface each pattern belongs to and supplies the
+ * outlines; the renderer only has to honour it, so it never learns what a
+ * pronotum is. The geometry brings its own view box.
  *
  * Closed marks are filled with the surface token and stroked with ink — the
- * look of a pen outline over a flat wash. Open marks are strokes only. All of
- * it is presentation attributes and classes, never inline styles, so the strict
- * `style-src 'self'` CSP holds.
+ * look of a pen outline over a flat wash. All of it is presentation attributes
+ * and classes, never inline styles, so the strict `style-src 'self'` CSP holds.
  */
 export function InsectIllustration({
   form,
@@ -63,34 +61,30 @@ export function InsectIllustration({
   const geometry = useMemo(() => generateBeetle(form, seed), [form, seed]);
   const description = useMemo(() => describeBeetle(form), [form]);
 
-  /**
-   * The two wing-case outlines, reused as clip paths.
-   *
-   * The markings are already generated inside the elytron's measured profile,
-   * so this is a second line of defence rather than the mechanism: it catches
-   * the last fraction of a millimetre where a round spot meets a curving margin
-   * that a half-width sample cannot describe exactly.
-   */
-  const elytra = geometry.marks.filter(
-    (mark): mark is PathMark => mark.part === 'elytron' && mark.kind === 'path',
-  );
-
   const accessibilityProps = decorative
     ? ({ 'aria-hidden': true, role: 'presentation' } as const)
     : ({ role: 'img', 'aria-labelledby': `${titleId} ${descriptionId}` } as const);
 
-  const renderMark = (mark: BeetleMark, index: number) => {
+  const clipId = (surface: string): string => `${clipPrefix}-${surface}`;
+
+  const renderMark = (mark: InsectMark, index: number) => {
     const key = `${mark.part}-${mark.side}-${String(index)}`;
     const accent = ACCENT_PARTS.has(mark.part);
+    const tone = accent ? styles.accent : styles.ink;
 
     if (mark.kind === 'dot') {
+      // A ring rather than a disc, when the generator asked for one: an
+      // eyespot's rings must show paper between them.
+      const ringed = mark.ring !== undefined;
+
       return (
         <circle
           key={key}
-          className={cx(styles.dot, accent ? styles.accent : styles.ink)}
+          className={cx(ringed ? styles.ring : styles.dot, tone)}
           cx={mark.center.x}
           cy={mark.center.y}
           r={mark.radius}
+          {...(ringed ? { strokeWidth: mark.ring } : {})}
         />
       );
     }
@@ -98,19 +92,23 @@ export function InsectIllustration({
     return (
       <path
         key={key}
-        className={cx(
-          mark.closed ? styles.shape : styles.line,
-          accent ? styles.accent : styles.ink,
-        )}
+        className={cx(mark.closed ? styles.shape : styles.line, tone)}
         d={toPathData(mark.commands)}
         {...(mark.closed ? {} : { strokeWidth: mark.width })}
       />
     );
   };
 
-  // Markings are drawn inside a clipped group, so they are separated out here.
-  const body = geometry.marks.filter((mark) => mark.part !== 'marking');
-  const markings = geometry.marks.filter((mark) => mark.part === 'marking');
+  /**
+   * Marks are grouped by the surface they are clipped to.
+   *
+   * The generator says *which* surface each pattern belongs to and supplies the
+   * outlines; the renderer only has to honour it. That is what lets a moth have
+   * four independent clip regions and a beetle two, with no order-specific code
+   * here at all.
+   */
+  const unclipped = geometry.marks.filter((mark) => mark.clipTo === undefined);
+  const surfaces = Object.keys(geometry.clips);
 
   return (
     <svg
@@ -128,23 +126,23 @@ export function InsectIllustration({
       )}
 
       <defs>
-        {elytra.map((elytron) => (
-          <clipPath key={elytron.side} id={`${clipPrefix}-${elytron.side}`}>
-            <path d={toPathData(elytron.commands)} />
+        {surfaces.map((surface) => (
+          <clipPath key={surface} id={clipId(surface)}>
+            <path d={toPathData(geometry.clips[surface] ?? [])} />
           </clipPath>
         ))}
       </defs>
 
-      <g className={styles.body}>{body.map(renderMark)}</g>
+      <g className={styles.body}>{unclipped.map(renderMark)}</g>
 
-      {(['right', 'left'] as const).map((side) => {
-        const onThisSide = markings.filter((mark) => mark.side === side);
+      {surfaces.map((surface) => {
+        const confined = geometry.marks.filter((mark) => mark.clipTo === surface);
 
-        if (onThisSide.length === 0) return null;
+        if (confined.length === 0) return null;
 
         return (
-          <g key={side} clipPath={`url(#${clipPrefix}-${side})`}>
-            {onThisSide.map(renderMark)}
+          <g key={surface} clipPath={`url(#${clipId(surface)})`}>
+            {confined.map(renderMark)}
           </g>
         );
       })}

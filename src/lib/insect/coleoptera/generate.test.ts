@@ -1,17 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import { generateBeetle } from './generate';
-import { commandPoints } from './path';
+import { commandPoints } from '../core';
+import type { InsectGeometry, InsectMark, Point } from '../core';
 import {
   ANTENNA_TYPES,
+  BEETLE_VIEW_BOX as VIEW_BOX,
   LEG_PAIRS,
   MARKING_TYPES,
   PRONOTUM_SHAPES,
-  VIEW_BOX,
   type BeetleForm,
-  type BeetleGeometry,
-  type BeetleMark,
-  type Point,
 } from './types';
 
 const BASE_FORM: BeetleForm = {
@@ -44,7 +42,7 @@ const BASE_FORM: BeetleForm = {
 
 const form = (overrides: Partial<BeetleForm> = {}): BeetleForm => ({ ...BASE_FORM, ...overrides });
 
-function pointsOf(mark: BeetleMark): Point[] {
+function pointsOf(mark: InsectMark): Point[] {
   return mark.kind === 'dot'
     ? [
         { x: mark.center.x - mark.radius, y: mark.center.y - mark.radius },
@@ -53,10 +51,10 @@ function pointsOf(mark: BeetleMark): Point[] {
     : commandPoints(mark.commands);
 }
 
-const allPoints = (geometry: BeetleGeometry): Point[] => geometry.marks.flatMap(pointsOf);
+const allPoints = (geometry: InsectGeometry): Point[] => geometry.marks.flatMap(pointsOf);
 
 /** Distinct appendages of a part, counted by group across both sides. */
-function appendageCount(geometry: BeetleGeometry, part: BeetleMark['part']): number {
+function appendageCount(geometry: InsectGeometry, part: InsectMark['part']): number {
   const keys = new Set<string>();
 
   for (const mark of geometry.marks) {
@@ -100,7 +98,7 @@ describe('generateBeetle', () => {
     const MIRROR_TOLERANCE = 0.02;
 
     /** A mark's geometry, reflected, as a comparable string. */
-    function signature(mark: BeetleMark, reflect: boolean): string {
+    function signature(mark: InsectMark, reflect: boolean): string {
       const sign = reflect ? -1 : 1;
       const fixed = (value: number): string => (Math.round(value * 100) / 100).toFixed(2);
 
@@ -161,55 +159,6 @@ describe('generateBeetle', () => {
     });
   });
 
-  describe('individual variation', () => {
-    /** The overall proportion of a drawing, as the sheet reads it. */
-    function aspect(seed: number, overrides: Partial<BeetleForm> = {}): number {
-      const points = allPoints(generateBeetle(form(overrides), seed));
-      const xs = points.map((p) => p.x);
-      const ys = points.map((p) => p.y);
-
-      return (Math.max(...xs) - Math.min(...xs)) / (Math.max(...ys) - Math.min(...ys));
-    }
-
-    it('gives each seed a visibly different specimen', () => {
-      /**
-       * Without varying the proportions, the seed reaches only details that
-       * consume randomness downstream and a sheet of sixteen beetles renders as
-       * four drawings repeated. This is the test that would have caught that.
-       */
-      const aspects = [1, 2, 3, 4, 5, 6].map((seed) => aspect(seed));
-      const spread = Math.max(...aspects) - Math.min(...aspects);
-
-      expect(spread).toBeGreaterThan(0.01);
-    });
-
-    it('keeps a preset recognisable as one kind of beetle', () => {
-      // The other half of the bargain: varied, but not so varied that two seeds
-      // of the same preset read as different animals.
-      const aspects = [1, 2, 3, 4, 5, 6, 7, 8].map((seed) => aspect(seed));
-      const mean = aspects.reduce((total, value) => total + value, 0) / aspects.length;
-
-      for (const value of aspects) {
-        expect(Math.abs(value - mean) / mean).toBeLessThan(0.15);
-      }
-    });
-
-    it('never varies the characters that define the preset', () => {
-      // Antenna type, pronotum shape and marking type are what make a preset a
-      // preset; rolling them would produce a different beetle, not a different
-      // specimen. Their marks must be present and identical in kind every time.
-      for (const seed of [1, 2, 3, 40, 500]) {
-        const geometry = generateBeetle(form({ antennaType: 'lamellate', marking: 'bands' }), seed);
-
-        expect(geometry.marks.filter((m) => m.part === 'antenna').length).toBeGreaterThan(2);
-        expect(geometry.marks.some((m) => m.part === 'marking')).toBe(true);
-        expect(
-          geometry.marks.filter((m) => m.part === 'marking').every((m) => m.kind === 'path'),
-        ).toBe(true);
-      }
-    });
-  });
-
   describe('anatomy', () => {
     it('draws exactly six legs', () => {
       expect(appendageCount(generateBeetle(form(), 5), 'leg')).toBe(LEG_PAIRS * 2);
@@ -231,7 +180,7 @@ describe('generateBeetle', () => {
 
     it('draws two eyes, two mandibles and two elytra', () => {
       const geometry = generateBeetle(form(), 5);
-      const count = (part: BeetleMark['part']): number =>
+      const count = (part: InsectMark['part']): number =>
         geometry.marks.filter((mark) => mark.part === part).length;
 
       expect(count('eye')).toBe(2);

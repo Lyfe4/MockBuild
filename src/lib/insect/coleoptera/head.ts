@@ -1,8 +1,9 @@
 import { jitter, type Rng } from '@/lib/random';
 
 import type { BeetleMetrics } from './metrics';
-import { closePath, curveTo, lineTo, moveTo, quadTo, symmetricOutline } from './path';
-import type { BeetleForm, BeetleMark, PathCommand, Point } from './types';
+import { closePath, curveTo, lineTo, moveTo, quadTo, symmetricOutline } from '../core';
+import type { InsectMark, PathCommand, Point } from '../core';
+import type { BeetleForm } from './types';
 
 /**
  * Head capsule, eyes, mandibles and antennae.
@@ -40,9 +41,9 @@ function headCapsule(metrics: BeetleMetrics): PathCommand[] {
  * and each type adds its own terminal marks. That is also how a key reads them:
  * the shaft tells you little, the last few segments tell you the family.
  */
-function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: Rng): BeetleMark[] {
+function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: Rng): InsectMark[] {
   const reach = metrics.length * 0.42 * form.antennaLength;
-  const marks: BeetleMark[] = [];
+  const marks: InsectMark[] = [];
 
   // Sweeps forward and outward, curving away from the body.
   const tip = { x: socket.x + reach * 0.62, y: socket.y - reach * 0.78 };
@@ -51,11 +52,15 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
 
   if (form.antennaType === 'serrate') {
     /**
-     * Sawtooth: each segment throws a short triangular process off its outer
-     * edge. Drawn as one zig-zag polyline rather than separate teeth, so the
-     * shaft stays a single continuous stroke the way an engraver would cut it.
+     * Sawtooth: each segment throws a short process off its outer edge.
+     *
+     * Deliberately shallow. The teeth are a *texture* on an otherwise straight
+     * antenna — a serrate antenna in the hand looks like a file, not a zigzag —
+     * and at the amplitude this first had, the shaft stopped reading as an
+     * antenna at all. Fewer teeth, and around 40% of the former depth: the eye
+     * should register a rough edge before it registers individual points.
      */
-    const teeth = 7;
+    const teeth = 5;
     const commands: PathCommand[] = [moveTo(socket.x, socket.y)];
 
     for (let i = 1; i <= teeth; i += 1) {
@@ -64,7 +69,7 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
         x: socket.x + (tip.x - socket.x) * t,
         y: socket.y + (tip.y - socket.y) * t,
       };
-      const outward = reach * 0.09 * (1 - t * 0.4);
+      const outward = reach * 0.036 * (1 - t * 0.4);
 
       commands.push(lineTo(along.x + outward, along.y + outward * 0.35), lineTo(along.x, along.y));
     }
@@ -136,33 +141,77 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
 }
 
 /**
- * One mandible.
+ * One mandible, drawn as an antler.
  *
- * At `mandibleSize` 0 this is a short hook barely clear of the head; at 1.5 it
- * is a stag beetle's antler, longer than the head and curving back inwards.
+ * The shape a stag beetle's jaws actually make, and the one that reads as
+ * *mandibles* rather than as horns at thumbnail size: they bow outwards from
+ * the head, then sweep back **inwards** so the tips nearly meet over the
+ * midline, and the inner edge carries two or three teeth.
+ *
+ * The inward hook is what does the work. A pair of outward-curving spikes reads
+ * as antennae or as horns; a pair that closes towards each other reads as a
+ * grasping jaw, which is what it is.
+ *
+ * At `mandibleSize` 0 this collapses to a short hook barely clear of the head,
+ * with the teeth too small to see — which is right for the beetles that have
+ * ordinary jaws.
  */
 function mandible(form: BeetleForm, metrics: BeetleMetrics): PathCommand[] {
-  const reach = metrics.headLength * (0.35 + form.mandibleSize * 1.5);
+  const reach = metrics.headLength * (0.35 + form.mandibleSize * 1.6);
   const base = { x: metrics.headHalfWidth * 0.55, y: 0 };
-  const tip = { x: base.x + reach * 0.22, y: -reach };
 
-  return [
+  /**
+   * How far the tips close towards the midline, as a fraction of the outward
+   * bow. Large jaws close further — a major male's tips almost touch — so this
+   * scales with size rather than being fixed.
+   */
+  const closure = 0.35 + form.mandibleSize * 0.42;
+  const bow = reach * 0.5;
+
+  const tip = { x: base.x + bow * (1 - closure), y: -reach };
+
+  const commands: PathCommand[] = [
     moveTo(base.x, base.y),
-    // Outer edge bows away from the midline, then hooks back in at the tip.
+    // Outer edge: out and forward, then curving back in to the tip.
     curveTo(
-      { x: base.x + reach * 0.62, y: -reach * 0.3 },
-      { x: base.x + reach * 0.5, y: -reach * 0.82 },
+      { x: base.x + bow * 1.25, y: -reach * 0.34 },
+      { x: base.x + bow * 1.05, y: -reach * 0.82 },
       tip,
     ),
-    // Inner edge returns, leaving a slim jaw rather than a filled wedge.
-    quadTo({ x: base.x + reach * 0.12, y: -reach * 0.45 }, { x: base.x * 0.72, y: 0 }),
-    closePath,
   ];
+
+  /**
+   * Inner edge, walked back down towards the head with teeth cut into it. Two
+   * teeth on a modest jaw, three on a full antler — more than that turns to
+   * mush at the size this is drawn.
+   */
+  const teeth = form.mandibleSize >= 1 ? 3 : 2;
+  const innerBase = { x: base.x * 0.68, y: 0 };
+
+  for (let i = 1; i <= teeth; i += 1) {
+    const t = i / (teeth + 1);
+    // Down the inner edge from tip towards head.
+    const along = {
+      x: tip.x + (innerBase.x - tip.x) * t,
+      y: tip.y + (innerBase.y - tip.y) * t,
+    };
+    // Each tooth points inwards, towards the opposing jaw.
+    const toothDepth = reach * 0.13 * (1 - t * 0.35);
+
+    commands.push(
+      lineTo(along.x - toothDepth, along.y - toothDepth * 0.25),
+      lineTo(along.x, along.y),
+    );
+  }
+
+  commands.push(quadTo({ x: base.x * 0.5, y: -reach * 0.18 }, innerBase), closePath);
+
+  return commands;
 }
 
 /** The whole head: capsule, one eye, one mandible, one antenna. */
-export function buildHead(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): BeetleMark[] {
-  const marks: BeetleMark[] = [
+export function buildHead(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
+  const marks: InsectMark[] = [
     {
       kind: 'path',
       part: 'head',

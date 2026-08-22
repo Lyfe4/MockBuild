@@ -1,8 +1,9 @@
 import { jitter, randomBetween, type Rng } from '@/lib/random';
 
 import type { BeetleMetrics } from './metrics';
-import { lineTo, moveTo } from './path';
-import type { BeetleForm, BeetleMark, Point } from './types';
+import { lineTo, moveTo, quadTo } from '../core';
+import type { InsectMark, PathCommand, Point } from '../core';
+import type { BeetleForm } from './types';
 import { LEG_PAIRS } from './types';
 
 /**
@@ -38,7 +39,7 @@ function leg(
   angle: number,
   group: string,
   rng: Rng,
-): BeetleMark[] {
+): InsectMark[] {
   const reach = metrics.length * 0.3 * form.legLength;
   const spread = 0.3 + form.legSpread * 0.7;
 
@@ -62,13 +63,37 @@ function leg(
 
   const femurWidth = 1.5 * form.femurThickness * jitter(rng, 0.1);
 
-  const marks: BeetleMark[] = [
+  /**
+   * A segment as a shallow arc rather than a straight line.
+   *
+   * Real limbs bow; a leg built from three exactly straight sticks reads as a
+   * mechanism. The control point is pushed off the chord along its own normal,
+   * so the bow follows whatever direction the segment happens to run in.
+   *
+   * @param bow Fraction of the segment's length, signed. Small — 6–8% is a
+   *   noticeable curve at this scale and 15% is a banana.
+   */
+  const arc = (from: Point, to: Point, bow: number): PathCommand[] => {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const midpoint = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
+
+    return [
+      moveTo(from.x, from.y),
+      // Normal to the chord is (dy, -dx).
+      quadTo({ x: midpoint.x + dy * bow, y: midpoint.y - dx * bow }, to),
+    ];
+  };
+
+  // Femur and tibia bow in opposite directions, which is what gives a leg its
+  // characteristic shallow zig rather than a single smooth curve.
+  const marks: InsectMark[] = [
     {
       kind: 'path',
       part: 'leg',
       side: 'right',
       group,
-      commands: [moveTo(socket.x, socket.y), lineTo(femurEnd.x, femurEnd.y)],
+      commands: arc(socket, femurEnd, 0.08),
       closed: false,
       width: femurWidth,
     },
@@ -77,7 +102,7 @@ function leg(
       part: 'leg',
       side: 'right',
       group,
-      commands: [moveTo(femurEnd.x, femurEnd.y), lineTo(tibiaEnd.x, tibiaEnd.y)],
+      commands: arc(femurEnd, tibiaEnd, -0.07),
       closed: false,
       width: femurWidth * 0.62,
     },
@@ -86,11 +111,45 @@ function leg(
       part: 'leg',
       side: 'right',
       group,
-      commands: [moveTo(tibiaEnd.x, tibiaEnd.y), lineTo(tarsusEnd.x, tarsusEnd.y)],
+      commands: arc(tibiaEnd, tarsusEnd, 0.05),
       closed: false,
       width: femurWidth * 0.38,
     },
   ];
+
+  /**
+   * The tarsus, hinted rather than drawn out: three tick marks across the last
+   * segment standing in for its joints. A beetle's tarsus is five tiny
+   * segments, and drawing them at this scale produces a smudge — the ticks
+   * carry the idea of "jointed foot" at a fraction of the ink.
+   */
+  const tarsusVector = { x: tarsusEnd.x - tibiaEnd.x, y: tarsusEnd.y - tibiaEnd.y };
+  const tarsusLength = Math.hypot(tarsusVector.x, tarsusVector.y);
+
+  if (tarsusLength > 0) {
+    // Unit normal to the tarsus, so each tick crosses it squarely whatever
+    // direction the leg happens to run in.
+    const nx = -tarsusVector.y / tarsusLength;
+    const ny = tarsusVector.x / tarsusLength;
+    const half = reach * 0.022;
+
+    for (const t of [0.4, 0.68, 0.94]) {
+      const at = { x: tibiaEnd.x + tarsusVector.x * t, y: tibiaEnd.y + tarsusVector.y * t };
+
+      marks.push({
+        kind: 'path',
+        part: 'leg',
+        side: 'right',
+        group,
+        commands: [
+          moveTo(at.x - nx * half, at.y - ny * half),
+          lineTo(at.x + nx * half, at.y + ny * half),
+        ],
+        closed: false,
+        width: femurWidth * 0.3,
+      });
+    }
+  }
 
   if (form.tibialSpines) {
     // Two short spines off the tibia, angled towards the tarsus.
@@ -124,8 +183,8 @@ function leg(
 }
 
 /** All three right-hand legs. */
-export function buildLegs(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): BeetleMark[] {
-  const marks: BeetleMark[] = [];
+export function buildLegs(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
+  const marks: InsectMark[] = [];
 
   for (let pair = 0; pair < LEG_PAIRS; pair += 1) {
     const attachment = ATTACHMENTS[pair];

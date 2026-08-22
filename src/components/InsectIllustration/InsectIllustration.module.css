@@ -1,5 +1,5 @@
 /**
- * SPIKE — beetle illustration.
+ * Insect illustration — beetles and moths alike.
  *
  * Ink outlines over a light wash, with the markings as the only pigment. Every
  * colour is a semantic token, so a beetle recolours with the season exactly as
@@ -30,6 +30,15 @@
   stroke: none;
 }
 
+/*
+ * A ring: an eyespot's concentric bands, drawn as outlines so the paper shows
+ * between them. Filling them as stacked discs would turn a large eyespot into
+ * a blot.
+ */
+.ring {
+  fill: none;
+}
+
 .ink {
   stroke: var(--color-ink);
 }
@@ -51,7 +60,8 @@ circle.ink {
 /* Season changes ease, on the same token as the rest of the site. */
 .shape,
 .line,
-.dot {
+.dot,
+.ring {
   transition:
     fill var(--duration-palette) var(--ease-standard),
     stroke var(--duration-palette) var(--ease-standard);

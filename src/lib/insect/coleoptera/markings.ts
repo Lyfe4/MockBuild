@@ -2,8 +2,9 @@ import { randomBetween, type Rng } from '@/lib/random';
 
 import { elytronProfile } from './elytra';
 import type { BeetleMetrics } from './metrics';
-import { closePath, lineTo, moveTo } from './path';
-import type { BeetleForm, BeetleMark, Point } from './types';
+import { closePath, lineTo, moveTo } from '../core';
+import type { InsectMark, Point } from '../core';
+import type { BeetleForm } from './types';
 
 /**
  * What is painted on the elytra.
@@ -24,6 +25,9 @@ import type { BeetleForm, BeetleMark, Point } from './types';
  * Relying on the clip alone would produce geometry that lies about itself;
  * relying on the placement alone would let a spot bleed over a taper.
  */
+
+/** The clip surface markings are confined to. Mirrored with them. */
+export const ELYTRON_CLIP = 'elytron-right';
 
 /**
  * The elytron's half-width at a given `y`, by sampling its profile.
@@ -55,12 +59,12 @@ function halfWidthAt(profile: readonly Point[], y: number): number {
   return best;
 }
 
-export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): BeetleMark[] {
+export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
   if (form.marking === 'none') return [];
 
   const { elytraStart: y0, elytraLength: h } = metrics;
   const profile = elytronProfile(form, metrics);
-  const marks: BeetleMark[] = [];
+  const marks: InsectMark[] = [];
 
   switch (form.marking) {
     /** Round spots, scattered down the wing case in a loose column. */
@@ -92,7 +96,14 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
         // `x + radius <= available` both hold by construction.
         const x = radius + usable * randomBetween(rng, 0.15, 0.85);
 
-        marks.push({ kind: 'dot', part: 'marking', side: 'right', center: { x, y }, radius });
+        marks.push({
+          kind: 'dot',
+          part: 'marking',
+          side: 'right',
+          clipTo: ELYTRON_CLIP,
+          center: { x, y },
+          radius,
+        });
       }
 
       return marks;
@@ -114,6 +125,7 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
           kind: 'path',
           part: 'marking',
           side: 'right',
+          clipTo: ELYTRON_CLIP,
           // A quadrilateral following the margin, so the band narrows with the
           // taper rather than sticking out of it.
           commands: [
@@ -155,6 +167,7 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
         kind: 'path',
         part: 'marking',
         side: 'right',
+        clipTo: ELYTRON_CLIP,
         commands: [
           moveTo(inner, top),
           lineTo(outer, top),

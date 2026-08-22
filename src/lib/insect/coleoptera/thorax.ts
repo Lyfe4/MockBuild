@@ -1,6 +1,7 @@
 import type { BeetleMetrics } from './metrics';
-import { lineTo, moveTo, symmetricOutline } from './path';
-import type { BeetleForm, BeetleMark, Point } from './types';
+import { lineTo, moveTo, symmetricOutline } from '../core';
+import type { InsectMark, Point } from '../core';
+import type { BeetleForm } from './types';
 
 /**
  * The pronotum — the shield between head and elytra — and its optional horn.
@@ -43,10 +44,10 @@ function pronotumProfile(form: BeetleForm, metrics: BeetleMetrics): Point[] {
 }
 
 /** Pronotum, midline ridge and horn. */
-export function buildThorax(form: BeetleForm, metrics: BeetleMetrics): BeetleMark[] {
+export function buildThorax(form: BeetleForm, metrics: BeetleMetrics): InsectMark[] {
   const { pronotumStart: y0, pronotumLength: h } = metrics;
 
-  const marks: BeetleMark[] = [
+  const marks: InsectMark[] = [
     {
       kind: 'path',
       part: 'pronotum',

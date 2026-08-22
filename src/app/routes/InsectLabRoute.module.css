@@ -105,3 +105,27 @@
     gap: var(--space-2xl);
   }
 }
+
+.section {
+  margin-block-start: var(--space-2xl);
+}
+
+.sectionTitle {
+  padding-block-end: var(--space-2xs);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  border-block-end: 2px solid var(--color-ink);
+}
+
+/* What the seed chose. Small and dim: an instrument reading, not a caption. */
+.traits {
+  margin-block-start: var(--space-3xs);
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: 0.625rem;
+  line-height: var(--line-height-snug);
+  overflow-wrap: break-word;
+}

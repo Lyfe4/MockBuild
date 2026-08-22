@@ -5,7 +5,7 @@ import { describeBeetle, type BeetleForm } from '@/lib/insect';
 
 import { InsectIllustration } from './InsectIllustration';
 
-const FORM: BeetleForm = {
+const BEETLE: BeetleForm = {
   bodyLength: 0.85,
   bodyWidth: 0.9,
   headWidth: 0.6,
@@ -32,6 +32,8 @@ const FORM: BeetleForm = {
   markingSize: 1,
   scale: 0.92,
 };
+
+const FORM: BeetleForm = BEETLE;
 
 function svgIn(container: HTMLElement): SVGSVGElement {
   const svg = container.querySelector('svg');
@@ -116,7 +118,7 @@ describe('InsectIllustration', () => {
 
   it('draws no clipped marking group when there are no markings', () => {
     const { container } = render(
-      <InsectIllustration form={{ ...FORM, marking: 'none' }} seed={1} title="Beetle" />,
+      <InsectIllustration form={{ ...BEETLE, marking: 'none' }} seed={1} title="Beetle" />,
     );
 
     expect(container.querySelectorAll('[clip-path]')).toHaveLength(0);

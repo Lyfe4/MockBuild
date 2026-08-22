@@ -1,35 +1,41 @@
 /**
- * SPIKE — procedural beetle generator.
+ * Procedural insect generator.
  *
- * Pure TypeScript: no React, no DOM, no randomness that is not seeded. Feed it
- * a `BeetleForm` and a seed, get back plain mirrored geometry; rendering lives
- * in `components/InsectIllustration`.
- *
- * Shares only `@/lib/random` with the plant generator, so either can be deleted
- * whole when the pivot is decided.
+ * Pure TypeScript: no React, no DOM, no randomness that is not seeded. The
+ * geometry, mirroring and fitting live in `core` so a second order can share
+ * them; `coleoptera` brings the beetle anatomy.
  */
-export { describeBeetle } from './describe';
-export { generateBeetle, seedFromName } from './generate';
-export { toPathData } from './path';
 export {
   ANTENNA_TYPES,
-  INSECT_PARTS,
+  BEETLE_PRESETS,
+  BEETLE_VIEW_BOX,
+  describeBeetle,
+  generateBeetle,
   LEG_PAIRS,
   MARKING_TYPES,
+  normaliseBeetleForm,
   PRONOTUM_SHAPES,
-  VIEW_BOX,
-} from './types';
+  resolveBeetlePreset,
+  seedFromName,
+} from './coleoptera';
 export type {
   AntennaType,
   BeetleForm,
-  BeetleGeometry,
-  BeetleMark,
-  DotMark,
-  InsectPart,
+  BeetlePresetSpec,
+  BeetleRangeKey,
   MarkingType,
+  PronotumShape,
+} from './coleoptera';
+
+export { INSECT_PARTS, markPoints, toPathData } from './core';
+export type {
+  DotMark,
+  InsectGeometry,
+  InsectMark,
+  InsectPart,
   PathCommand,
   PathMark,
   Point,
-  PronotumShape,
   Side,
-} from './types';
+  ViewBox,
+} from './core';
