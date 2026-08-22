@@ -108,8 +108,10 @@ npm run dev
 
 - `/lab` — the legacy plant sheet.
 - `/lab/insects` — beetles and moths, four presets × four seeds per order.
-  `?size=large` for two-up, `?reroll=<n>` for a fresh set of seeds. The trait
-  line under each card is what that seed actually chose; it is the only way to
-  see a preset whose ranges are too narrow.
+  `?size=large` for two-up; `?beetles=<n>` and `?moths=<n>` are the reroll
+  rounds, one per order, and the **Reroll** link in each section heading bumps
+  its own. The trait line under each card is what that seed actually chose —
+  pigment, pattern layers, hatching — and it is the only way to see a preset
+  whose ranges are too narrow.
 
 Both routes and their stylesheets are temporary and get deleted with the spike.
