@@ -2,18 +2,18 @@ import { useId, useMemo } from 'react';
 
 import { cx } from '@/lib/classNames';
 import {
-  describeBeetle,
-  generateBeetle,
+  describeInsect,
+  generateInsect,
   toPathData,
-  type BeetleForm,
+  type InsectForm,
   type InsectMark,
 } from '@/lib/insect';
 
 import styles from './InsectIllustration.module.css';
 
 export interface InsectIllustrationProps {
-  /** The beetle to draw. */
-  form: BeetleForm;
+  /** The animal to draw, of whichever order. */
+  insect: InsectForm;
   /** Any 32-bit integer. `seedFromName` derives one from a preset name. */
   seed: number;
   /**
@@ -38,16 +38,17 @@ const ACCENT_PARTS = new Set<InsectMark['part']>(['marking']);
 /**
  * Renders a procedurally generated insect as inline SVG.
  *
- * The generator says which surface each pattern belongs to and supplies the
- * outlines; the renderer only has to honour it, so it never learns what a
- * pronotum is. The geometry brings its own view box.
+ * Takes an `InsectForm` and nothing else, so it never learns what a pronotum or
+ * an eyespot is — adding an order touches `lib/insect` and no component. The
+ * geometry brings its own view box, which is how a portrait beetle and a
+ * landscape moth can share one renderer.
  *
  * Closed marks are filled with the surface token and stroked with ink — the
  * look of a pen outline over a flat wash. All of it is presentation attributes
  * and classes, never inline styles, so the strict `style-src 'self'` CSP holds.
  */
 export function InsectIllustration({
-  form,
+  insect,
   seed,
   title,
   animate = false,
@@ -58,8 +59,8 @@ export function InsectIllustration({
   const descriptionId = useId();
   const clipPrefix = useId();
 
-  const geometry = useMemo(() => generateBeetle(form, seed), [form, seed]);
-  const description = useMemo(() => describeBeetle(form), [form]);
+  const geometry = useMemo(() => generateInsect(insect, seed), [insect, seed]);
+  const description = useMemo(() => describeInsect(insect), [insect]);
 
   const accessibilityProps = decorative
     ? ({ 'aria-hidden': true, role: 'presentation' } as const)

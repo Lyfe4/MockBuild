@@ -3,16 +3,25 @@ import { useSearchParams } from 'react-router';
 import { InsectIllustration } from '@/components/InsectIllustration';
 import { useDocumentTitle } from '@/hooks';
 import { cx } from '@/lib/classNames';
-import { BEETLE_PRESETS, resolveBeetlePreset, seedFromName, type BeetleForm } from '@/lib/insect';
+import {
+  BEETLE_PRESETS,
+  MOTH_PRESETS,
+  resolveBeetlePreset,
+  resolveMothPreset,
+  seedFromName,
+  type BeetleForm,
+  type InsectForm,
+  type MothForm,
+} from '@/lib/insect';
 
 import styles from './InsectLabRoute.module.css';
 
 /**
  * TEMPORARY — insect generator contact sheet.
  *
- * Four presets across four seeds each, so the generator can be judged on two
- * questions at once: does one preset hold together as a *kind* across different
- * seeds, and do the kinds read as different from one another?
+ * Four presets across four seeds each, per order, so the generator can be
+ * judged on two questions at once: does one preset hold together as a *kind*
+ * across different seeds, and do the kinds read as different from one another?
  *
  * Each card names the traits the seed actually chose, which is the only way to
  * tell a preset that is varying well from one whose ranges are too narrow to
@@ -28,7 +37,7 @@ interface Card {
   readonly key: string;
   readonly preset: string;
   readonly seed: string;
-  readonly form: BeetleForm;
+  readonly insect: InsectForm;
   /** The categorical traits the seed picked, for the line under the drawing. */
   readonly traits: readonly string[];
 }
@@ -43,6 +52,17 @@ function beetleTraits(form: BeetleForm): string[] {
   ];
 }
 
+function mothTraits(form: MothForm): string[] {
+  return [
+    form.forewingShape,
+    form.hindwingShape,
+    form.antennaType,
+    `band ${String(form.bandCount)}`,
+    `eye ${String(form.eyespotCount)}×${String(form.eyespotRings)}`,
+    ...(form.dusting ? ['dusted'] : []),
+  ];
+}
+
 const BEETLE_CARDS: readonly Card[] = BEETLE_PRESETS.flatMap((spec) =>
   SEEDS.map((seed) => {
     const key = `${spec.name}-${seed}`;
@@ -52,8 +72,23 @@ const BEETLE_CARDS: readonly Card[] = BEETLE_PRESETS.flatMap((spec) =>
       key,
       preset: spec.name,
       seed,
-      form,
+      insect: { order: 'coleoptera', form } as const,
       traits: beetleTraits(form),
+    };
+  }),
+);
+
+const MOTH_CARDS: readonly Card[] = MOTH_PRESETS.flatMap((spec) =>
+  SEEDS.map((seed) => {
+    const key = `${spec.name}-${seed}`;
+    const form = resolveMothPreset(spec, seedFromName(key));
+
+    return {
+      key,
+      preset: spec.name,
+      seed,
+      insect: { order: 'lepidoptera', form } as const,
+      traits: mothTraits(form),
     };
   }),
 );
@@ -75,7 +110,7 @@ function Section({ title, cards, legend, large }: SectionProps) {
           <figure key={card.key} className={styles.cell}>
             <div className={styles.plate}>
               <InsectIllustration
-                form={card.form}
+                insect={card.insect}
                 seed={seedFromName(card.key)}
                 title={`${card.preset}, seed ${card.seed}`}
               />
@@ -114,9 +149,9 @@ export function InsectLabRoute() {
     <section>
       <h1 tabIndex={-1}>Insect lab</h1>
       <p className={styles.intro}>
-        Four presets across four seeds each. A preset should hold together as a kind whatever the
-        seed, and the kinds should be tellable apart at thumbnail size. The line under each card is
-        what that seed actually chose.{' '}
+        Four presets across four seeds each, per order. A preset should hold together as a kind
+        whatever the seed, and the kinds should be tellable apart at thumbnail size. The line under
+        each card is what that seed actually chose.{' '}
         <a className={styles.sizeLink} href={large ? '/lab/insects' : '/lab/insects?size=large'}>
           {large ? 'View small' : 'View large'}
         </a>
@@ -126,6 +161,13 @@ export function InsectLabRoute() {
         title="Coleoptera"
         cards={BEETLE_CARDS}
         legend={BEETLE_PRESETS.map((spec) => ({ name: spec.name, note: spec.note }))}
+        large={large}
+      />
+
+      <Section
+        title="Lepidoptera"
+        cards={MOTH_CARDS}
+        legend={MOTH_PRESETS.map((spec) => ({ name: spec.name, note: spec.note }))}
         large={large}
       />
     </section>
