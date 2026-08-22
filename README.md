@@ -284,6 +284,16 @@ that outlives the certificate setup.
 
 The two CSP copies must be kept in step. If you change one, change the other.
 
+## Deployment
+
+Netlify, from `dist/`. Two files in `public/` are copied to the publish root and
+do the configuration:
+
+- **`_redirects`** — the SPA catch-all, `/* /index.html 200`. It rewrites rather
+  than redirects, so a hard load or deep link to a client-side route resolves
+  instead of hitting Netlify's 404.
+- **`_headers`** — the security headers described above.
+
 ## Contributing
 
 Conventions — exports, component layout, TypeScript flags, styling rules,

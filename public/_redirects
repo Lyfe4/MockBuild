@@ -1,0 +1,14 @@
+# Netlify redirects.
+#
+# SPA catch-all. react-router owns the URL, but the server sees a real request
+# for a real path on a hard load or a deep link — /lab, or /specimen/TBA-0042
+# later. Without this, Netlify looks for a file at that path, finds none, and
+# returns its 404 page instead of the app.
+#
+# The 200 is the important part: it rewrites rather than redirects, so the
+# browser keeps the requested URL and react-router resolves the route from it.
+# A 301/302 here would bounce every deep link to the home page.
+#
+# Last rule, and deliberately last: Netlify applies the first match, so any
+# future proxy or redirect must go above this line.
+/*  /index.html  200
