@@ -67,15 +67,34 @@
  */
 .shape {
   fill: color-mix(in srgb, var(--pigment) 22%, var(--color-surface));
-  stroke-width: 1;
   stroke-linejoin: round;
 }
 
-/* An open line: antenna shaft, leg segment, stria, seam. */
+/* An open line: antenna shaft, leg segment, stria, hatch, seam. */
 .line {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/*
+ * The line hierarchy. Three weights, ranked by the generator and given their
+ * widths here, so a plate reads before any of it resolves: the silhouette
+ * heaviest, the parts inside it a step back, the surface texture finer again.
+ *
+ * These apply to closed outlines as much as to open lines — an elytron's edge
+ * is the heaviest line in the drawing, and it is the edge of a filled shape.
+ */
+.weightOutline {
+  stroke-width: var(--insect-stroke-outline);
+}
+
+.weightStructure {
+  stroke-width: var(--insect-stroke-structure);
+}
+
+.weightDetail {
+  stroke-width: var(--insect-stroke-detail);
 }
 
 .dot {
@@ -110,14 +129,13 @@ circle.ink {
 }
 
 /*
- * Only *paths* take their weight from the stylesheet. A ringed dot carries its
- * own stroke-width as a presentation attribute — an eyespot's rings are sized
- * by the generator — and any stroke-width declared here would override it,
- * because a declaration always beats a presentation attribute.
+ * A ringed dot carries its own stroke-width as a presentation attribute — an
+ * eyespot's rings are sized by the generator, against the eyespot rather than
+ * against the plate — and it is the one stroke width the hierarchy does not
+ * set. Nothing here may declare a stroke-width on a circle: a declaration
+ * always beats a presentation attribute, and the rings would collapse to one
+ * weight.
  */
-path.pigmented {
-  stroke-width: 0.4;
-}
 
 /* Season changes ease, on the same token as the rest of the site. */
 .shape,

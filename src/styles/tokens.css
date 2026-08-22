@@ -309,6 +309,24 @@
   --pigment-6: var(--pigment-archive-bone);
   --pigment-deep-6: var(--pigment-archive-bone-deep);
 
+  /**
+   * The engraver's line hierarchy, for the specimen illustrations.
+   *
+   * Three weights and no more, in view-box units. `outline` cuts the
+   * silhouette, `structure` draws the parts inside it — a seam, an antenna
+   * shaft, a leg — and `detail` is the texture that describes a surface:
+   * striae, veins, hatching, the ticks of a tarsus.
+   *
+   * Outline must stay the heaviest. That ranking is what makes a plate read
+   * from across the room before any of it resolves, and it is the one rule
+   * here a change could quietly break.
+   *
+   * Not seasonal. Line weight is the engraver's, not the palette's.
+   */
+  --insect-stroke-outline: 1.1;
+  --insect-stroke-structure: 0.68;
+  --insect-stroke-detail: 0.34;
+
   /* Derived roles — every season inherits these without restating them. */
   --color-focus-ring: var(--color-accent-strong);
   --focus-ring-width: 2px;

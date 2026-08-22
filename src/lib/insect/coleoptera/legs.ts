@@ -1,8 +1,8 @@
-import { jitter, randomBetween, type Rng } from '@/lib/random';
+import { randomBetween, type Rng } from '@/lib/random';
 
 import type { BeetleMetrics } from './metrics';
 import { lineTo, moveTo, quadTo } from '../core';
-import type { InsectMark, PathCommand, Point } from '../core';
+import type { InsectMark, LineWeight, PathCommand, Point } from '../core';
 import type { BeetleForm } from './types';
 import { LEG_PAIRS } from './types';
 
@@ -14,6 +14,26 @@ import { LEG_PAIRS } from './types';
  * is what keeps the pose symmetric. A real pinned beetle is never quite
  * symmetric, but a plate of one is: the engraver tidies it.
  */
+
+/**
+ * How heavy a femur is drawn.
+ *
+ * `femurThickness` used to set a stroke width directly. It now selects a rank
+ * in the line hierarchy instead, which is the only thing that decides a stroke
+ * width anywhere in the drawing — a stag's swollen femur really is as heavy a
+ * line as the body outline, and a longhorn's is genuinely a detail.
+ */
+function femurWeight(thickness: number): LineWeight {
+  if (thickness >= 1.15) return 'outline';
+  if (thickness <= 0.8) return 'detail';
+
+  return 'structure';
+}
+
+/** One rank lighter, so the tibia always steps back from the femur. */
+function lighter(weight: LineWeight): LineWeight {
+  return weight === 'outline' ? 'structure' : 'detail';
+}
 
 /** Where each pair attaches, as a fraction along the body, and which way it points. */
 const ATTACHMENTS: readonly { readonly along: number; readonly angle: number }[] = [
@@ -38,10 +58,10 @@ function leg(
   socket: Point,
   angle: number,
   group: string,
+  spread: number,
   rng: Rng,
 ): InsectMark[] {
   const reach = metrics.length * 0.3 * form.legLength;
-  const spread = 0.3 + form.legSpread * 0.7;
 
   // Femur out from the body, tibia angled back, tarsus a short continuation.
   const femurAngle = angle * spread;
@@ -61,7 +81,7 @@ function leg(
     y: tibiaEnd.y + Math.sin(tarsusAngle) * reach * 0.26,
   };
 
-  const femurWidth = 1.5 * form.femurThickness * jitter(rng, 0.1);
+  const heft = femurWeight(form.femurThickness);
 
   /**
    * A segment as a shallow arc rather than a straight line.
@@ -95,7 +115,7 @@ function leg(
       group,
       commands: arc(socket, femurEnd, 0.08),
       closed: false,
-      width: femurWidth,
+      weight: heft,
     },
     {
       kind: 'path',
@@ -104,7 +124,7 @@ function leg(
       group,
       commands: arc(femurEnd, tibiaEnd, -0.07),
       closed: false,
-      width: femurWidth * 0.62,
+      weight: lighter(heft),
     },
     {
       kind: 'path',
@@ -113,7 +133,7 @@ function leg(
       group,
       commands: arc(tibiaEnd, tarsusEnd, 0.05),
       closed: false,
-      width: femurWidth * 0.38,
+      weight: 'detail',
     },
   ];
 
@@ -146,7 +166,7 @@ function leg(
           lineTo(at.x + nx * half, at.y + ny * half),
         ],
         closed: false,
-        width: femurWidth * 0.3,
+        weight: 'detail',
       });
     }
   }
@@ -174,7 +194,7 @@ function leg(
           ),
         ],
         closed: false,
-        width: 0.5,
+        weight: 'detail',
       });
     }
   }
@@ -186,10 +206,29 @@ function leg(
 export function buildLegs(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
   const marks: InsectMark[] = [];
 
+  /**
+   * The pose, varied by seed.
+   *
+   * `legSpread` says how splayed this *kind* of beetle is set; the seed then
+   * decides how this particular specimen was pinned, because no two are pinned
+   * alike. Drawn once here rather than per pair so the whole animal shares one
+   * pose instead of each leg picking its own.
+   */
+  const spread = (0.3 + form.legSpread * 0.7) * randomBetween(rng, 0.86, 1.14);
+
   for (let pair = 0; pair < LEG_PAIRS; pair += 1) {
     const attachment = ATTACHMENTS[pair];
 
     if (attachment === undefined) continue;
+
+    /**
+     * A slight offset per pair, on top of the pose. The setter works down the
+     * animal one pair at a time and never quite repeats the angle; without
+     * this the three pairs fan out with a regularity that reads as drawn
+     * rather than as pinned. Mirrored with everything else, so the two sides
+     * still match exactly.
+     */
+    const offset = randomBetween(rng, -0.16, 0.16);
 
     /**
      * Sockets sit just inside the body outline, so the leg emerges from under
@@ -204,8 +243,9 @@ export function buildLegs(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): I
         form,
         metrics,
         { x: halfWidth * 0.72, y },
-        attachment.angle,
+        attachment.angle + offset,
         `leg-${String(pair)}`,
+        spread,
         rng,
       ),
     );

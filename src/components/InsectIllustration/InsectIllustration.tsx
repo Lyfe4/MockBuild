@@ -7,6 +7,7 @@ import {
   toPathData,
   type InsectForm,
   type InsectMark,
+  type LineWeight,
 } from '@/lib/insect';
 
 import styles from './InsectIllustration.module.css';
@@ -34,6 +35,20 @@ export interface InsectIllustrationProps {
  * the CSS means the generator stays ignorant of colour.
  */
 const PIGMENTED_PARTS = new Set<InsectMark['part']>(['marking']);
+
+/**
+ * The class that carries each rank of the line hierarchy.
+ *
+ * The generator ranks a line and this maps the rank onto a class; the widths
+ * themselves are `--insect-stroke-*` tokens in the stylesheet. Nothing in the
+ * geometry is a stroke width any more, which is what stops a specimen fitted
+ * small from being drawn in finer lines than one fitted large.
+ */
+const WEIGHT_CLASS: Record<LineWeight, string | undefined> = {
+  outline: styles.weightOutline,
+  structure: styles.weightStructure,
+  detail: styles.weightDetail,
+};
 
 /**
  * Renders a procedurally generated insect as inline SVG.
@@ -98,9 +113,8 @@ export function InsectIllustration({
     return (
       <path
         key={key}
-        className={cx(mark.closed ? styles.shape : styles.line, tone)}
+        className={cx(mark.closed ? styles.shape : styles.line, tone, WEIGHT_CLASS[mark.weight])}
         d={toPathData(mark.commands)}
-        {...(mark.closed ? {} : { strokeWidth: mark.width })}
       />
     );
   };

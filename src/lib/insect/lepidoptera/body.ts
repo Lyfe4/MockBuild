@@ -59,7 +59,7 @@ function antenna(form: MothForm, metrics: MothMetrics, socket: Point, rng: Rng):
       group: ANTENNA_GROUP,
       commands: [moveTo(socket.x, socket.y), curveTo(control1, control2, tip)],
       closed: false,
-      width: form.antennaType === 'bipectinate' ? 0.9 : 0.7,
+      weight: 'structure',
     },
   ];
 
@@ -105,7 +105,7 @@ function antenna(form: MothForm, metrics: MothMetrics, socket: Point, rng: Rng):
         group: ANTENNA_GROUP,
         commands: [moveTo(along.x - nx, along.y - ny), lineTo(along.x + nx, along.y + ny)],
         closed: false,
-        width: 0.42,
+        weight: 'detail',
       });
     }
   }
@@ -122,7 +122,7 @@ export function buildBody(form: MothForm, metrics: MothMetrics, rng: Rng): Insec
       side: 'centre',
       commands: bodyOutline(metrics),
       closed: true,
-      width: 0,
+      weight: 'outline',
     },
   ];
 
@@ -147,7 +147,7 @@ export function buildBody(form: MothForm, metrics: MothMetrics, rng: Rng): Insec
       side: 'centre',
       commands: [moveTo(-halfWidth, y), lineTo(halfWidth, y)],
       closed: false,
-      width: 0.5,
+      weight: 'detail',
     });
   }
 

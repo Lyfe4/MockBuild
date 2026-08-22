@@ -67,7 +67,7 @@ function bands({ form, profile, placement, clipTo }: PatternContext): InsectMark
         closePath,
       ],
       closed: true,
-      width: 0,
+      weight: 'detail',
     });
   }
 

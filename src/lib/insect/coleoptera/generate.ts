@@ -2,19 +2,24 @@ import { clamp, hashString, mulberry32 } from '@/lib/random';
 
 import { composeAndFit, normalisePigment, type InsectGeometry, type InsectMark } from '../core';
 import { buildElytra, elytronOutline } from './elytra';
+import { buildHatching } from './hatching';
 import { buildHead } from './head';
 import { buildLegs } from './legs';
 import { buildMarkings } from './markings';
 import { metricsFor } from './metrics';
-import { buildThorax } from './thorax';
+import { buildThorax, pronotumOutline } from './thorax';
 import { BEETLE_VIEW_BOX, type BeetleForm } from './types';
 
 /**
  * Composes a beetle.
  *
  * The build order is part of the reproducibility contract: head, thorax,
- * elytra, markings, legs, each drawing from the same RNG in sequence.
+ * elytra, hatching, markings, legs, each drawing from the same RNG in sequence.
  * Reordering these calls changes every beetle.
+ *
+ * It is also the painting order. Striae and hatching describe the surface;
+ * markings are laid on top of both; the legs go last so nothing on the body
+ * crosses them.
  *
  * The form is drawn exactly as given. Variation between specimens of a kind
  * happens when a preset is resolved (`presets.ts`), not here — so a caller who
@@ -33,7 +38,7 @@ export function normaliseBeetleForm(form: BeetleForm): BeetleForm {
     headWidth: clamp(form.headWidth, 0.3, 1),
     eyeSize: clamp(form.eyeSize, 0.2, 1),
     antennaType: form.antennaType,
-    antennaLength: clamp(form.antennaLength, 0.3, 1.6),
+    antennaLength: clamp(form.antennaLength, 0.3, 1.8),
     mandibleSize: clamp(form.mandibleSize, 0, 1.5),
     pronotumShape: form.pronotumShape,
     pronotumWidth: clamp(form.pronotumWidth, 0.5, 1.2),
@@ -45,6 +50,7 @@ export function normaliseBeetleForm(form: BeetleForm): BeetleForm {
     elytraTaper: clamp(form.elytraTaper, 0, 1),
     striaeCount: clamp(Math.round(form.striaeCount), 0, 10),
     punctures: form.punctures,
+    hatching: clamp(form.hatching, 0, 1),
     legLength: clamp(form.legLength, 0.5, 1.4),
     femurThickness: clamp(form.femurThickness, 0.4, 1.4),
     legSpread: clamp(form.legSpread, 0, 1),
@@ -71,6 +77,9 @@ export function generateBeetle(form: BeetleForm, seed: number): InsectGeometry {
     ...buildHead(safeForm, metrics, rng),
     ...buildThorax(safeForm, metrics),
     ...buildElytra(safeForm, metrics, rng),
+    // Hatching before the markings, so a spot sits over the shading exactly as
+    // it sits over the striae — the surface is described first, then painted.
+    ...buildHatching(safeForm, metrics, rng),
     ...buildMarkings(safeForm, metrics, rng),
     ...buildLegs(safeForm, metrics, rng),
   ];
@@ -79,8 +88,15 @@ export function generateBeetle(form: BeetleForm, seed: number): InsectGeometry {
     viewBox: BEETLE_VIEW_BOX,
     scale: safeForm.scale,
     pigment: safeForm.pigment,
-    // Markings name this surface through `clipTo`; the left one is mirrored
-    // from it automatically, alongside the marks that reference it.
-    clips: { 'elytron-right': elytronOutline(safeForm, metrics) },
+    /**
+     * Markings and hatching name these surfaces through `clipTo`; the left of
+     * each is mirrored automatically, alongside the marks that reference it.
+     * The pronotum straddles the midline, so its two clips are the same shape —
+     * it is named `-right` only so the mirror rule reaches the hatching on it.
+     */
+    clips: {
+      'elytron-right': elytronOutline(safeForm, metrics),
+      'pronotum-right': pronotumOutline(safeForm, metrics),
+    },
   });
 }

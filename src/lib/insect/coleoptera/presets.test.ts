@@ -187,3 +187,97 @@ describe('refined beetle anatomy', () => {
     expect(frontmost.x - midline).toBeLessThan(widest * 0.8);
   });
 });
+
+describe('the longhorn', () => {
+  const longhorn = BEETLE_PRESETS.find((spec) => spec.name === 'Longhorn');
+
+  it('varies its antennae visibly from specimen to specimen', () => {
+    /**
+     * The defining character of the group, and the one a contact sheet is
+     * meant to show moving. At the bottom of the range the antennae reach the
+     * apex of the elytra; at the top they are half again as long as the whole
+     * beetle.
+     */
+    const lengths = SEEDS.map((seed) => resolveBeetlePreset(longhorn!, seed).antennaLength);
+
+    expect(Math.min(...lengths)).toBeGreaterThanOrEqual(1);
+    expect(Math.max(...lengths)).toBeLessThanOrEqual(1.8);
+    expect(Math.max(...lengths) - Math.min(...lengths)).toBeGreaterThan(0.35);
+  });
+
+  it('draws broad, near parallel-sided wing cases', () => {
+    // Longhorns are elongate, not narrow: the sides run close to straight from
+    // shoulder to apex. A pinched wedge is a ground beetle.
+    for (const seed of SEEDS) {
+      const form = resolveBeetlePreset(longhorn!, seed);
+
+      expect(form.elytraTaper).toBeLessThan(0.2);
+      expect(form.bodyWidth).toBeGreaterThan(0.6);
+    }
+  });
+
+  it('is broader than it used to be, and than the tapered ground beetle', () => {
+    const ground = BEETLE_PRESETS.find((spec) => spec.name === 'Ground');
+    const mean = (spec: typeof longhorn, key: 'elytraTaper' | 'bodyWidth'): number => {
+      const values = SEEDS.map((seed) => resolveBeetlePreset(spec!, seed)[key]);
+
+      return values.reduce((total, value) => total + value, 0) / values.length;
+    };
+
+    expect(mean(longhorn, 'elytraTaper')).toBeLessThan(mean(ground, 'elytraTaper'));
+    expect(mean(longhorn, 'bodyWidth')).toBeLessThan(mean(ground, 'bodyWidth') + 0.2);
+  });
+});
+
+describe('marking types', () => {
+  it('lets the seed pick the kind of marking, not only how many', () => {
+    /**
+     * A preset that allows three kinds of marking and always resolves to one
+     * of them has a seed that never reaches the choice — which is the same
+     * failure as a range too narrow to see, and less obvious.
+     */
+    for (const spec of BEETLE_PRESETS) {
+      const allowed = spec.choices?.marking ?? [];
+
+      if (allowed.length < 2) continue;
+
+      const chosen = new Set(SEEDS.map((seed) => resolveBeetlePreset(spec, seed).marking));
+
+      expect(chosen.size, `${spec.name} never varies its marking`).toBeGreaterThan(1);
+
+      for (const marking of chosen) expect(allowed).toContain(marking);
+    }
+  });
+
+  it('gives more than one preset a choice to make', () => {
+    const varying = BEETLE_PRESETS.filter((spec) => (spec.choices?.marking?.length ?? 0) > 1);
+
+    expect(varying.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('hatching across the presets', () => {
+  it('models the stag heavily and the ladybird barely at all', () => {
+    // A matt rugose stag against a varnished ladybird: the difference is most
+    // of what tells the two shells apart before any outline resolves.
+    const mean = (name: string): number => {
+      const spec = BEETLE_PRESETS.find((candidate) => candidate.name === name);
+      const values = SEEDS.map((seed) => resolveBeetlePreset(spec!, seed).hatching);
+
+      return values.reduce((total, value) => total + value, 0) / values.length;
+    };
+
+    expect(mean('Stag')).toBeGreaterThan(mean('Ladybird'));
+    expect(mean('Stag')).toBeGreaterThan(0.3);
+    expect(mean('Ladybird')).toBeLessThan(0.2);
+  });
+
+  it('keeps hatching off the presets that are already striated', () => {
+    // Grooving under hatching turns a wing case to noise.
+    const ground = BEETLE_PRESETS.find((spec) => spec.name === 'Ground');
+
+    for (const seed of SEEDS) {
+      expect(resolveBeetlePreset(ground!, seed).hatching).toBeLessThan(0.3);
+    }
+  });
+});

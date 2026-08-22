@@ -1,9 +1,9 @@
 import { randomBetween, type Rng } from '@/lib/random';
 
-import { elytronProfile } from './elytra';
+import { elytronProfile, halfWidthAt } from './elytra';
 import type { BeetleMetrics } from './metrics';
 import { closePath, lineTo, moveTo } from '../core';
-import type { InsectMark, Point } from '../core';
+import type { InsectMark } from '../core';
 import type { BeetleForm } from './types';
 
 /**
@@ -30,33 +30,25 @@ import type { BeetleForm } from './types';
 export const ELYTRON_CLIP = 'elytron-right';
 
 /**
- * The elytron's half-width at a given `y`, by sampling its profile.
+ * How many marks a striated wing case can carry.
  *
- * Linear interpolation between profile points is a slight underestimate against
- * the smoothed outline the renderer draws, which is the right direction to be
- * wrong in: markings end up marginally inside rather than marginally over.
+ * A deeply grooved elytron already has eight or ten lines running down it. Load
+ * the usual number of spots on top and the surface turns to noise — the striae
+ * stop reading as engraving and the spots stop reading as pattern. Real beetles
+ * do the same thing: the heavily sculptured families are the plain ones.
+ *
+ * Sparse, not absent. One or two marks over grooving is a real combination and
+ * a handsome one; six is not.
  */
-function halfWidthAt(profile: readonly Point[], y: number): number {
-  let best = 0;
+function thinnedCount(form: BeetleForm): number {
+  const asked = Math.max(1, Math.round(form.markingCount));
 
-  for (let i = 0; i < profile.length - 1; i += 1) {
-    const a = profile[i];
-    const b = profile[i + 1];
+  return form.striaeCount >= 4 ? Math.min(asked, 2) : asked;
+}
 
-    if (a === undefined || b === undefined) continue;
-    if (a.y === b.y) continue;
-
-    const low = Math.min(a.y, b.y);
-    const high = Math.max(a.y, b.y);
-
-    if (y < low || y > high) continue;
-
-    const t = (y - a.y) / (b.y - a.y);
-
-    best = Math.max(best, a.x + (b.x - a.x) * t);
-  }
-
-  return best;
+/** Marks over grooving are drawn smaller too, for the same reason. */
+function sizeOver(form: BeetleForm): number {
+  return form.striaeCount >= 4 ? form.markingSize * 0.72 : form.markingSize;
 }
 
 export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
@@ -64,13 +56,14 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
 
   const { elytraStart: y0, elytraLength: h } = metrics;
   const profile = elytronProfile(form, metrics);
+  const markingSize = sizeOver(form);
   const marks: InsectMark[] = [];
 
   switch (form.marking) {
     /** Round spots, scattered down the wing case in a loose column. */
     case 'spots': {
-      const count = Math.max(1, Math.round(form.markingCount));
-      const nominal = metrics.elytraHalfWidth * 0.17 * form.markingSize;
+      const count = thinnedCount(form);
+      const nominal = metrics.elytraHalfWidth * 0.17 * markingSize;
 
       for (let i = 0; i < count; i += 1) {
         // Spread down the elytron, kept clear of the shoulder and the apex.
@@ -111,8 +104,8 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
 
     /** Transverse bands, cut to the wing case at both of their edges. */
     case 'bands': {
-      const count = Math.max(1, Math.round(form.markingCount));
-      const thickness = h * 0.07 * form.markingSize;
+      const count = thinnedCount(form);
+      const thickness = h * 0.07 * markingSize;
 
       for (let i = 0; i < count; i += 1) {
         const centre = y0 + h * (0.18 + ((i + 0.5) / count) * 0.66);
@@ -136,7 +129,7 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
             closePath,
           ],
           closed: true,
-          width: 0,
+          weight: 'detail',
         });
       }
 
@@ -158,10 +151,7 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
       if (narrowest <= 0) return marks;
 
       const inner = Math.min(metrics.elytraHalfWidth * 0.18, narrowest * 0.25);
-      const outer = Math.min(
-        inner + metrics.elytraHalfWidth * 0.3 * form.markingSize,
-        narrowest * 0.95,
-      );
+      const outer = Math.min(inner + metrics.elytraHalfWidth * 0.3 * markingSize, narrowest * 0.95);
 
       marks.push({
         kind: 'path',
@@ -176,7 +166,7 @@ export function buildMarkings(form: BeetleForm, metrics: BeetleMetrics, rng: Rng
           closePath,
         ],
         closed: true,
-        width: 0,
+        weight: 'detail',
       });
 
       return marks;

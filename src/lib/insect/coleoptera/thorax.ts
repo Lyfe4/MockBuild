@@ -1,6 +1,6 @@
 import type { BeetleMetrics } from './metrics';
 import { lineTo, moveTo, symmetricOutline } from '../core';
-import type { InsectMark, Point } from '../core';
+import type { InsectMark, PathCommand, Point } from '../core';
 import type { BeetleForm } from './types';
 
 /**
@@ -18,7 +18,7 @@ import type { BeetleForm } from './types';
  * `angular` carries defined shoulders and a straight-cut rear margin, which is
  * most of what separates a ground beetle's outline from a ladybird's.
  */
-function pronotumProfile(form: BeetleForm, metrics: BeetleMetrics): Point[] {
+export function pronotumProfile(form: BeetleForm, metrics: BeetleMetrics): Point[] {
   const { pronotumStart: y0, pronotumLength: h, pronotumHalfWidth: w } = metrics;
 
   if (form.pronotumShape === 'angular') {
@@ -43,6 +43,11 @@ function pronotumProfile(form: BeetleForm, metrics: BeetleMetrics): Point[] {
   ];
 }
 
+/** The closed outline of the whole pronotum. The hatching clips to it. */
+export function pronotumOutline(form: BeetleForm, metrics: BeetleMetrics): PathCommand[] {
+  return symmetricOutline(pronotumProfile(form, metrics));
+}
+
 /** Pronotum, midline ridge and horn. */
 export function buildThorax(form: BeetleForm, metrics: BeetleMetrics): InsectMark[] {
   const { pronotumStart: y0, pronotumLength: h } = metrics;
@@ -52,9 +57,9 @@ export function buildThorax(form: BeetleForm, metrics: BeetleMetrics): InsectMar
       kind: 'path',
       part: 'pronotum',
       side: 'centre',
-      commands: symmetricOutline(pronotumProfile(form, metrics)),
+      commands: pronotumOutline(form, metrics),
       closed: true,
-      width: 0,
+      weight: 'outline',
     },
   ];
 
@@ -65,7 +70,7 @@ export function buildThorax(form: BeetleForm, metrics: BeetleMetrics): InsectMar
       side: 'centre',
       commands: [moveTo(0, y0 + h * 0.14), lineTo(0, y0 + h * 0.88)],
       closed: false,
-      width: 0.9,
+      weight: 'structure',
     });
   }
 
@@ -90,7 +95,7 @@ export function buildThorax(form: BeetleForm, metrics: BeetleMetrics): InsectMar
         { x: 0, y: y0 + h * 0.22 },
       ]),
       closed: true,
-      width: 0,
+      weight: 'outline',
     });
   }
 

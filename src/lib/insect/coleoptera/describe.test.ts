@@ -26,6 +26,7 @@ const BASE_FORM: BeetleForm = {
   femurThickness: 1,
   legSpread: 0.6,
   tibialSpines: true,
+  hatching: 0.4,
   pigment: 2,
   marking: 'spots',
   markingCount: 4,

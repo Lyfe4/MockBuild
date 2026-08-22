@@ -49,6 +49,38 @@ export function elytronOutline(form: BeetleForm, metrics: BeetleMetrics): PathCo
   return smoothClosedPath(elytronProfile(form, metrics));
 }
 
+/**
+ * The elytron's half-width at a given `y`, by sampling its profile.
+ *
+ * Linear interpolation between profile points is a slight underestimate against
+ * the smoothed outline the renderer draws, which is the right direction to be
+ * wrong in: anything placed against it ends up marginally inside rather than
+ * marginally over. Shared by the markings and the hatching, which both have to
+ * know how much wing case there is at a given point.
+ */
+export function halfWidthAt(profile: readonly Point[], y: number): number {
+  let best = 0;
+
+  for (let i = 0; i < profile.length - 1; i += 1) {
+    const a = profile[i];
+    const b = profile[i + 1];
+
+    if (a === undefined || b === undefined) continue;
+    if (a.y === b.y) continue;
+
+    const low = Math.min(a.y, b.y);
+    const high = Math.max(a.y, b.y);
+
+    if (y < low || y > high) continue;
+
+    const t = (y - a.y) / (b.y - a.y);
+
+    best = Math.max(best, a.x + (b.x - a.x) * t);
+  }
+
+  return best;
+}
+
 export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): InsectMark[] {
   const { elytraStart: y0, elytraLength: h, elytraHalfWidth: w } = metrics;
 
@@ -59,7 +91,7 @@ export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng):
       side: 'right',
       commands: elytronOutline(form, metrics),
       closed: true,
-      width: 0,
+      weight: 'outline',
     },
     {
       /**
@@ -72,7 +104,7 @@ export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng):
       side: 'centre',
       commands: [moveTo(0, y0), lineTo(0, y0 + h)],
       closed: false,
-      width: 1,
+      weight: 'structure',
     },
   ];
 
@@ -89,6 +121,13 @@ export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng):
     const start = { x: x * 0.9, y: y0 + h * 0.06 };
     const end = { x: x * (1 - form.elytraTaper * 0.45), y: y0 + h * 0.92 };
 
+    /**
+     * A stria is engraved, not painted: the finest weight in the hierarchy and
+     * always ink, whatever the specimen is coloured. It has to sit *under* the
+     * markings — a spot laid over a groove is what a real elytron looks like,
+     * and a groove ruled across a spot is what a diagram looks like — which the
+     * build order in `generate.ts` takes care of.
+     */
     marks.push({
       kind: 'path',
       part: 'stria',
@@ -98,7 +137,7 @@ export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng):
         quadTo({ x: x * 1.04, y: y0 + h * 0.5 }, { x: end.x, y: end.y }),
       ],
       closed: false,
-      width: 0.55,
+      weight: 'detail',
     });
 
     if (form.punctures) {
@@ -116,7 +155,7 @@ export function buildElytra(form: BeetleForm, metrics: BeetleMetrics, rng: Rng):
             x: start.x + (end.x - start.x) * t,
             y: start.y + (end.y - start.y) * t,
           },
-          radius: w * 0.022 * jitter(rng, 0.18),
+          radius: w * 0.018 * jitter(rng, 0.18),
         });
       }
     }

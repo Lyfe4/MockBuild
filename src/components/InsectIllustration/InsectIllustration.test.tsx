@@ -27,6 +27,7 @@ const BEETLE: BeetleForm = {
   femurThickness: 1,
   legSpread: 0.5,
   tibialSpines: false,
+  hatching: 0.4,
   pigment: 2,
   marking: 'spots',
   markingCount: 4,
@@ -104,28 +105,29 @@ describe('InsectIllustration', () => {
     expect(container.querySelectorAll('style')).toHaveLength(0);
   });
 
-  it('clips the markings to the wing case they sit on', () => {
+  it('clips each surface the generator names, and uses every clip it builds', () => {
     const { container } = render(<InsectIllustration insect={FORM} seed={1} title="Beetle" />);
 
     const clips = container.querySelectorAll('clipPath');
 
-    // One per elytron, and each actually referenced by a group.
-    expect(clips).toHaveLength(2);
+    // One per elytron and one per side of the pronotum, all four referenced.
+    expect(clips).toHaveLength(4);
 
     for (const clip of clips) {
       expect(container.querySelector(`[clip-path="url(#${CSS.escape(clip.id)})"]`)).not.toBeNull();
     }
   });
 
-  it('draws no clipped marking group when there are no markings', () => {
+  it('draws no clipped group when there is nothing to confine', () => {
     const { container } = render(
       <InsectIllustration
-        insect={{ order: 'coleoptera', form: { ...BEETLE, marking: 'none' } }}
+        insect={{ order: 'coleoptera', form: { ...BEETLE, marking: 'none', hatching: 0 } }}
         seed={1}
         title="Beetle"
       />,
     );
 
+    // The clip paths are still defined; nothing references them.
     expect(container.querySelectorAll('[clip-path]')).toHaveLength(0);
   });
 

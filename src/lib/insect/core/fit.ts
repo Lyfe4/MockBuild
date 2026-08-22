@@ -142,7 +142,12 @@ export function composeAndFit(
           radius: mark.radius * factor,
           ...(mark.ring === undefined ? {} : { ring: mark.ring * factor }),
         }
-      : { ...mark, commands: mapCommands(mark.commands, toCanvas), width: mark.width * factor },
+      : /**
+         * Commands are mapped; the weight is not touched. Stroke width is a
+         * property of the plate rather than of the animal, so a specimen fitted
+         * small keeps the same line hierarchy as one fitted large.
+         */
+        { ...mark, commands: mapCommands(mark.commands, toCanvas) },
   );
 
   return {

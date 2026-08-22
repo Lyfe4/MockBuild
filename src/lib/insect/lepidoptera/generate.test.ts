@@ -99,7 +99,7 @@ describe('generateMoth', () => {
         .map((p) => `${fixed(sign * (p.x - mid))},${fixed(p.y)}`)
         .join(' ');
 
-      return `path|${mark.part}|${fixed(mark.width)}|${points}`;
+      return `path|${mark.part}|${mark.weight}|${points}`;
     }
 
     it.each([...FOREWING_SHAPES])(

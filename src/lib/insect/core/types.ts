@@ -89,6 +89,7 @@ export const INSECT_PARTS = [
   'seam',
   'stria',
   'puncture',
+  'hatch',
   // Lepidoptera
   'wing',
   'vein',
@@ -98,6 +99,23 @@ export const INSECT_PARTS = [
 ] as const;
 
 export type InsectPart = (typeof INSECT_PARTS)[number];
+
+/**
+ * The engraver's line hierarchy: three weights and no others.
+ *
+ * A plate reads because its lines are ranked. The silhouette is cut heaviest,
+ * the parts *inside* it — a seam, an antenna shaft, a leg — sit a step back,
+ * and the texture that describes a surface is finer again. Four weights would
+ * be indistinguishable at plate size; one would flatten the drawing.
+ *
+ * A weight, not a number: the actual widths are `--insect-stroke-*` tokens, so
+ * the generator ranks a line and the stylesheet decides how heavy that rank is.
+ * That is also why fitting no longer scales stroke widths — line weight belongs
+ * to the plate, not to how large this particular specimen happened to be drawn.
+ */
+export const LINE_WEIGHTS = ['outline', 'structure', 'detail'] as const;
+
+export type LineWeight = (typeof LINE_WEIGHTS)[number];
 
 /**
  * Which half of the animal a mark belongs to.
@@ -137,8 +155,8 @@ export interface PathMark extends MarkBase {
   readonly kind: 'path';
   readonly commands: readonly PathCommand[];
   readonly closed: boolean;
-  /** Stroke width in canvas units. Set for open lines; ignored when closed. */
-  readonly width: number;
+  /** Where this line sits in the hierarchy. Applies to closed outlines too. */
+  readonly weight: LineWeight;
 }
 
 /** A filled circle: an eye, a puncture, a spot, one ring of an eyespot. */

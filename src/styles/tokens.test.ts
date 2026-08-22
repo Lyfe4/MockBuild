@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { PIGMENTS } from '@/lib/insect';
+import { LINE_WEIGHTS, PIGMENTS } from '@/lib/insect';
 
 // `?raw` rather than reading the file: it goes through the same resolver the
 // app uses, so the test cannot end up asserting against a stylesheet the build
@@ -104,6 +104,40 @@ describe('pigment tokens', () => {
 
       expect(values, `no primitives for ${season}`).toHaveLength(12);
       expect(new Set(values).size).toBe(12);
+    }
+  });
+});
+
+describe('the illustration line hierarchy', () => {
+  const declared = declarations(block(':root'));
+
+  it('gives every weight the generator can rank a line at a width', () => {
+    for (const weight of LINE_WEIGHTS) {
+      expect(declared.has(`--insect-stroke-${weight}`)).toBe(true);
+    }
+  });
+
+  it('keeps the outline heaviest and the detail finest', () => {
+    /**
+     * The one rule in the hierarchy a change could quietly break. Inverting
+     * two of these does not fail anything else — the drawing simply stops
+     * reading from across the room, because the texture would be shouting over
+     * the silhouette.
+     */
+    const width = (weight: string): number => Number(declared.get(`--insect-stroke-${weight}`));
+
+    expect(width('outline')).toBeGreaterThan(width('structure'));
+    expect(width('structure')).toBeGreaterThan(width('detail'));
+    expect(width('detail')).toBeGreaterThan(0);
+  });
+
+  it('does not move with the season: line weight belongs to the plate', () => {
+    for (const season of SEASONS) {
+      const seasonal = declarations(block(`:root[data-season='${season}']`));
+
+      for (const weight of LINE_WEIGHTS) {
+        expect(seasonal.has(`--insect-stroke-${weight}`)).toBe(false);
+      }
     }
   });
 });

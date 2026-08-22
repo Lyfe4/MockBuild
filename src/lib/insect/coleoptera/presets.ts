@@ -36,6 +36,7 @@ const NUMERIC_KEYS: readonly BeetleRangeKey[] = [
   'elytraWidth',
   'elytraTaper',
   'striaeCount',
+  'hatching',
   'legLength',
   'femurThickness',
   'legSpread',
@@ -111,6 +112,7 @@ const BASE: BeetleForm = {
   elytraTaper: 0.3,
   striaeCount: 0,
   punctures: false,
+  hatching: 0,
   legLength: 1,
   femurThickness: 1,
   legSpread: 0.6,
@@ -129,10 +131,10 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
     base: {
       ...BASE,
       bodyLength: 1,
-      bodyWidth: 0.52,
+      bodyWidth: 0.7,
       elytraLength: 1,
-      elytraWidth: 0.72,
-      elytraTaper: 0.18,
+      elytraWidth: 0.92,
+      elytraTaper: 0.08,
       antennaType: 'filiform',
       antennaLength: 1.4,
       eyeSize: 0.8,
@@ -144,17 +146,33 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       markingSize: 0.7,
     },
     ranges: {
-      // The defining character, and the one that varies most between specimens.
-      antennaLength: [1.05, 1.6],
-      bodyWidth: [0.46, 0.62],
-      elytraTaper: [0.1, 0.34],
+      /**
+       * The defining character, and the one that varies most between specimens.
+       * A range this wide is the point: at 1.0 the antennae reach the apex of
+       * the elytra, at 1.8 they are half again as long as the whole beetle, and
+       * two specimens from the same preset should visibly disagree about it.
+       */
+      antennaLength: [1, 1.8],
+      /**
+       * Broader and near parallel-sided. Longhorns are elongate, not narrow —
+       * the earlier ranges pinched the wing cases into a wedge, which reads as
+       * a ground beetle. The sides now run close to straight from shoulder to
+       * apex, which is the actual silhouette of the family.
+       */
+      bodyWidth: [0.62, 0.78],
+      elytraWidth: [0.86, 1],
+      elytraTaper: [0.02, 0.16],
       markingCount: [1, 3],
       markingSize: [0.5, 0.95],
+      hatching: [0, 0.4],
       legLength: [1, 1.3],
     },
     // Banded or plain: both are common in the group.
     choices: {
-      marking: ['bands', 'none'],
+      // The seed picks the kind of marking, not just how many: banded, striped
+      // down the seam, or plain. All three are common in the group, and a sheet
+      // where every specimen is banded reads as one drawing repeated.
+      marking: ['bands', 'stripe', 'none'],
       antennaType: ['filiform'],
       // Bark-dwellers: the mottled greys and browns, never a warning colour.
       pigment: [3, 5, 6],
@@ -190,6 +208,8 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       elytraWidth: [1.08, 1.2],
       elytraTaper: [0, 0.14],
       antennaLength: [0.32, 0.48],
+      // A ladybird's shell is smooth and varnished; barely modelled at all.
+      hatching: [0, 0.18],
     },
     choices: {
       marking: ['spots'],
@@ -231,6 +251,9 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       bodyWidth: [0.86, 1.05],
       femurThickness: [1.1, 1.4],
       antennaLength: [0.45, 0.68],
+      // The heavily modelled one: a stag's elytra and pronotum are matt and
+      // rugose, and the hatching is most of what says so.
+      hatching: [0.3, 0.75],
     },
     choices: {
       antennaType: ['lamellate'],
@@ -272,11 +295,15 @@ export const BEETLE_PRESETS: readonly BeetlePresetSpec[] = [
       bodyWidth: [0.64, 0.82],
       legLength: [1.15, 1.4],
       markingSize: [0.45, 0.8],
+      // Restrained: the striae are already doing the surface's work, and
+      // grooving under hatching turns the wing case to noise.
+      hatching: [0, 0.28],
     },
     choices: {
       antennaType: ['serrate', 'filiform'],
       punctures: [true, false],
-      marking: ['stripe', 'none'],
+      // Type as well as count: striped, faintly spotted, or plain.
+      marking: ['stripe', 'spots', 'none'],
       pronotumShape: ['angular'],
       // The dark, faintly metallic end: slate, umber, and a pale chalky form.
       pigment: [4, 5, 6],

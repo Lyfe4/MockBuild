@@ -49,7 +49,7 @@ export interface BeetleForm {
   eyeSize: number;
 
   antennaType: AntennaType;
-  /** Antenna length relative to body. Range 0.3–1.6; longhorns sit near the top. */
+  /** Antenna length relative to body. Range 0.3–1.8; longhorns sit near the top. */
   antennaLength: number;
 
   /**
@@ -81,6 +81,12 @@ export interface BeetleForm {
   striaeCount: number;
   /** Punctate the striae with rows of dots. */
   punctures: boolean;
+  /**
+   * How densely the outer third of each wing case and the pronotum sides are
+   * hatched. `0` leaves the shell smooth, `1` is a rugose, deeply modelled
+   * beetle. Range 0–1.
+   */
+  hatching: number;
 
   /** Leg length relative to body. Range 0.5–1.4. */
   legLength: number;

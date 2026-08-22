@@ -54,14 +54,15 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
     /**
      * Sawtooth: each segment throws a short process off its outer edge.
      *
-     * Deliberately shallow. The teeth are a *texture* on an otherwise straight
-     * antenna — a serrate antenna in the hand looks like a file, not a zigzag —
-     * and at the amplitude this first had, the shaft stopped reading as an
-     * antenna at all. Fewer teeth, and around 40% of the former depth: the eye
-     * should register a rough edge before it registers individual points.
+     * Deliberately shallow, and rounded rather than pointed. A serrate antenna
+     * in the hand looks like a file, not a zigzag: the eye should register a
+     * rough edge before it registers individual teeth. Each tooth is one
+     * quadratic bulging off the shaft, so the whole antenna is a continuous
+     * curve and nothing in the drawing has a hard corner in it.
      */
     const teeth = 5;
     const commands: PathCommand[] = [moveTo(socket.x, socket.y)];
+    const step = { x: (tip.x - socket.x) / teeth, y: (tip.y - socket.y) / teeth };
 
     for (let i = 1; i <= teeth; i += 1) {
       const t = i / teeth;
@@ -69,9 +70,12 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
         x: socket.x + (tip.x - socket.x) * t,
         y: socket.y + (tip.y - socket.y) * t,
       };
-      const outward = reach * 0.036 * (1 - t * 0.4);
+      // A quadratic reaches half way to its control, so the push is doubled.
+      const outward = reach * 0.036 * (1 - t * 0.4) * 2;
 
-      commands.push(lineTo(along.x + outward, along.y + outward * 0.35), lineTo(along.x, along.y));
+      commands.push(
+        quadTo({ x: along.x - step.x * 0.5 + outward, y: along.y - step.y * 0.5 }, along),
+      );
     }
 
     marks.push({
@@ -81,7 +85,7 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
       group: ANTENNA_GROUP,
       commands,
       closed: false,
-      width: 1,
+      weight: 'structure',
     });
 
     return marks;
@@ -94,7 +98,7 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
     group: ANTENNA_GROUP,
     commands: [moveTo(socket.x, socket.y), curveTo(control1, control2, tip)],
     closed: false,
-    width: 1.1,
+    weight: 'structure',
   });
 
   if (form.antennaType === 'clavate') {
@@ -132,7 +136,7 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
           lineTo(tip.x + Math.cos(angle) * bladeLength, tip.y + Math.sin(angle) * bladeLength),
         ],
         closed: false,
-        width: 0.9,
+        weight: 'detail',
       });
     }
   }
@@ -145,34 +149,45 @@ function antenna(form: BeetleForm, metrics: BeetleMetrics, socket: Point, rng: R
  *
  * The shape a stag beetle's jaws actually make, and the one that reads as
  * *mandibles* rather than as horns at thumbnail size: they bow outwards from
- * the head, then sweep back **inwards** so the tips nearly meet over the
+ * the head, then sweep back **inwards** so the tips very nearly meet over the
  * midline, and the inner edge carries two or three teeth.
  *
  * The inward hook is what does the work. A pair of outward-curving spikes reads
  * as antennae or as horns; a pair that closes towards each other reads as a
  * grasping jaw, which is what it is.
  *
+ * ## Everything here is a curve
+ *
+ * The whole outline is cubics and quadratics — no straight segment anywhere,
+ * including the teeth. Teeth cut as `L`-pairs made a sawtooth: at plate size
+ * the eye read the zigzag before it read the jaw, and a stag beetle's inner
+ * teeth are blunt lobes, not points. They are scallops now, each one a single
+ * quadratic whose control point is pushed towards the opposing jaw.
+ *
  * At `mandibleSize` 0 this collapses to a short hook barely clear of the head,
- * with the teeth too small to see — which is right for the beetles that have
+ * with the teeth too shallow to see — which is right for the beetles that have
  * ordinary jaws.
  */
 function mandible(form: BeetleForm, metrics: BeetleMetrics): PathCommand[] {
   const reach = metrics.headLength * (0.35 + form.mandibleSize * 1.6);
   const base = { x: metrics.headHalfWidth * 0.55, y: 0 };
+  const innerBase = { x: base.x * 0.62, y: metrics.headLength * 0.05 };
 
   /**
-   * How far the tips close towards the midline, as a fraction of the outward
-   * bow. Large jaws close further — a major male's tips almost touch — so this
-   * scales with size rather than being fixed.
+   * Where the tip lands, measured from the midline rather than from the bow.
+   *
+   * A full antler closes to almost nothing — the two tips of a major male's
+   * jaws stop a hair apart — and stating that as a distance from the midline is
+   * the only way to guarantee it. Floored well clear of zero: tips that touch
+   * read as one closed loop rather than as two jaws.
    */
-  const closure = 0.35 + form.mandibleSize * 0.42;
+  const tipX = metrics.headHalfWidth * Math.max(0.14, 0.85 - form.mandibleSize * 0.5);
   const bow = reach * 0.5;
-
-  const tip = { x: base.x + bow * (1 - closure), y: -reach };
+  const tip = { x: tipX, y: -reach };
 
   const commands: PathCommand[] = [
     moveTo(base.x, base.y),
-    // Outer edge: out and forward, then curving back in to the tip.
+    // Outer edge: out and forward in one sweep, then curving back in to the tip.
     curveTo(
       { x: base.x + bow * 1.25, y: -reach * 0.34 },
       { x: base.x + bow * 1.05, y: -reach * 0.82 },
@@ -181,30 +196,41 @@ function mandible(form: BeetleForm, metrics: BeetleMetrics): PathCommand[] {
   ];
 
   /**
-   * Inner edge, walked back down towards the head with teeth cut into it. Two
+   * Inner edge, walked back down towards the head as a run of scallops. Two
    * teeth on a modest jaw, three on a full antler — more than that turns to
    * mush at the size this is drawn.
    */
   const teeth = form.mandibleSize >= 1 ? 3 : 2;
-  const innerBase = { x: base.x * 0.68, y: 0 };
+  const along = { x: innerBase.x - tip.x, y: innerBase.y - tip.y };
+  const span = Math.hypot(along.x, along.y) || 1;
 
-  for (let i = 1; i <= teeth; i += 1) {
-    const t = i / (teeth + 1);
-    // Down the inner edge from tip towards head.
-    const along = {
-      x: tip.x + (innerBase.x - tip.x) * t,
-      y: tip.y + (innerBase.y - tip.y) * t,
-    };
-    // Each tooth points inwards, towards the opposing jaw.
-    const toothDepth = reach * 0.13 * (1 - t * 0.35);
+  /**
+   * The inward normal to the inner edge. The edge runs down and slightly out,
+   * so `(y, -x)` points away from the midline and its negation is the way a
+   * tooth has to bite.
+   */
+  const inward = { x: -along.y / span, y: along.x / span };
 
-    commands.push(
-      lineTo(along.x - toothDepth, along.y - toothDepth * 0.25),
-      lineTo(along.x, along.y),
-    );
+  const node = (t: number): Point => ({ x: tip.x + along.x * t, y: tip.y + along.y * t });
+
+  for (let i = 0; i < teeth; i += 1) {
+    const from = i / teeth;
+    const to = (i + 1) / teeth;
+    const end = node(to);
+    const middle = node((from + to) / 2);
+
+    /**
+     * A quadratic's apex sits halfway to its control point, so the control is
+     * pushed twice the depth wanted. Teeth shrink towards the head, which is
+     * how a real mandible is cut — the largest is nearest the tip.
+     */
+    const depth = reach * 0.13 * (1 - from * 0.45) * 2;
+
+    commands.push(quadTo({ x: middle.x + inward.x * depth, y: middle.y + inward.y * depth }, end));
   }
 
-  commands.push(quadTo({ x: base.x * 0.5, y: -reach * 0.18 }, innerBase), closePath);
+  // Back to the head with one last shallow curve, never a straight closing line.
+  commands.push(quadTo({ x: base.x * 0.42, y: -reach * 0.16 }, innerBase), closePath);
 
   return commands;
 }
@@ -218,7 +244,7 @@ export function buildHead(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): I
       side: 'centre',
       commands: headCapsule(metrics),
       closed: true,
-      width: 0,
+      weight: 'outline',
     },
   ];
 
@@ -237,7 +263,7 @@ export function buildHead(form: BeetleForm, metrics: BeetleMetrics, rng: Rng): I
     side: 'right',
     commands: mandible(form, metrics),
     closed: true,
-    width: 0,
+    weight: 'outline',
   });
 
   marks.push(

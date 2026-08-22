@@ -77,7 +77,7 @@ function buildWing(
       group: wing,
       commands: outline,
       closed: true,
-      width: 0,
+      weight: 'outline',
     },
   ];
 
@@ -94,7 +94,7 @@ function buildWing(
       clipTo,
       commands: [moveTo(from.x, from.y), lineTo(to.x, to.y)],
       closed: false,
-      width: 0.4,
+      weight: 'detail',
     });
   }
 
@@ -107,7 +107,7 @@ function buildWing(
       clipTo,
       commands: fringeLine(profile, placement),
       closed: false,
-      width: 0.45,
+      weight: 'detail',
     });
   }
 
