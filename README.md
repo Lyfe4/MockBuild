@@ -232,9 +232,12 @@ is contacted — the CSP allows `font-src 'self'` only.
 
 - **No third parties.** No analytics, no trackers, no external scripts, no font
   CDN, no embeds. Nothing about a visitor leaves their browser.
-- **Strict CSP** in `index.html`: `script-src 'self'` with no `unsafe-inline`
-  and no `unsafe-eval`, `style-src 'self'`, `connect-src 'self'`,
-  `object-src 'none'`, `frame-ancestors 'none'`.
+- **Strict CSP.** `script-src 'self'` with no `unsafe-inline` and no
+  `unsafe-eval`, `style-src 'self'`, `connect-src 'self'`, `object-src 'none'`.
+  Nothing in the app needs an inline script or an inline style: CSS Modules
+  compile to an external stylesheet, and the plant illustrations carry their
+  per-element values in SVG presentation attributes rather than a `style`
+  attribute.
 
   The dev server cannot satisfy that policy — Vite injects an inline Fast
   Refresh preamble, serves CSS as inline `<style>` before extraction, and opens
@@ -244,15 +247,42 @@ is contacted — the CSP allows `font-src 'self'` only.
   `build.modulePreload.polyfill` is disabled because the polyfill would
   otherwise inject an inline script the policy forbids.
 
-  If you deploy somewhere that can set response headers, move the policy to a
-  real `Content-Security-Policy` header — `frame-ancestors` is not enforceable
-  from a meta tag — and delete the tag.
-
 - **No secrets.** The site needs none. Nothing in `.env` is read at build time.
 - **Supply chain.** A short dependency list, `npm ci` in CI, and weekly
   Dependabot updates for both npm and GitHub Actions. The CI workflow requests
   `contents: read` and checks out without persisting credentials.
 - Vulnerability reports: see [SECURITY.md](SECURITY.md).
+
+### Security headers
+
+Two layers, deliberately not one.
+
+**Layer 1 — response headers (`public/_headers`).** The authoritative set,
+served by Netlify. Everything in `public/` is copied to the root of `dist/`, and
+Netlify reads `_headers` from the publish root.
+
+| Header                       | Value                                                   |
+| ---------------------------- | ------------------------------------------------------- |
+| `Content-Security-Policy`    | The full policy, **including `frame-ancestors 'none'`** |
+| `X-Content-Type-Options`     | `nosniff`                                               |
+| `Referrer-Policy`            | `strict-origin-when-cross-origin`                       |
+| `Permissions-Policy`         | Every feature denied — the archive uses none of them    |
+| `Cross-Origin-Opener-Policy` | `same-origin`                                           |
+
+**Layer 2 — the `<meta>` CSP in `index.html`.** The same policy _minus_
+`frame-ancestors`, as a fallback for when `dist/` is served by something that
+ignores `_headers`: `vite preview`, a plain static server, or a different host.
+
+`frame-ancestors` is the reason the split exists rather than being a duplicate.
+Browsers **ignore it in a `<meta>` tag** and log an error saying so, which is
+worse than useless: it looks like clickjacking protection in the markup while
+providing none. It belongs in the header, so that is the only place it appears.
+
+`Strict-Transport-Security` is absent on purpose — Netlify issues it
+automatically for HTTPS sites, and hand-setting a `max-age` risks pinning one
+that outlives the certificate setup.
+
+The two CSP copies must be kept in step. If you change one, change the other.
 
 ## Contributing
 

@@ -24,7 +24,8 @@ const DEV_CSP = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'",
+  // No `frame-ancestors`: it is ignored in a <meta> tag and only produces a
+  // console error saying so. It is served as a header from `public/_headers`.
 ].join('; ');
 
 function relaxCspForDev(): Plugin {

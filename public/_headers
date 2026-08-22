@@ -1,0 +1,61 @@
+# Netlify response headers — the primary home for this site's security headers.
+#
+# Everything in `public/` is copied verbatim to the root of `dist/`, and Netlify
+# reads `_headers` from the root of the publish directory.
+#
+# WHY HEADERS AND NOT ONLY THE <meta> TAG IN index.html
+#
+#   · `frame-ancestors` is ignored when delivered via <meta>. Clickjacking
+#     protection is only real as a header, which is the reason this file exists.
+#   · A header covers every response, not just the HTML document.
+#   · It applies before the document is parsed, rather than partway through
+#     <head>.
+#
+# The <meta> CSP in index.html is kept as a narrower fallback, for when `dist/`
+# is served by something that ignores this file — `vite preview`, a plain static
+# server, or a different host. The two policies must be kept in step; see the
+# comment in index.html.
+#
+# THE POLICY, LINE BY LINE
+#
+#   default-src 'self'       nothing loads from any other origin.
+#   script-src  'self'       no inline scripts, no eval, no third-party JS.
+#                            `build.modulePreload.polyfill` is off in
+#                            vite.config.ts so the build emits no inline script.
+#   style-src   'self'       CSS Modules compile to an external stylesheet, and
+#                            the plant illustrations use SVG presentation
+#                            attributes rather than inline styles, so nothing
+#                            here needs 'unsafe-inline'.
+#   img-src     'self' data: covers the small assets Vite inlines as data URIs.
+#   font-src    'self'       fonts are self-hosted; no font CDN is contacted.
+#   connect-src 'self'       the archive is static. Nothing phones home.
+#   object-src  'none'       no plugins, ever.
+#   frame-ancestors 'none'   the site cannot be framed. Header-only.
+#
+#   X-Content-Type-Options   trust the declared Content-Type; stop the browser
+#                            deciding for itself that a response is a script.
+#   Referrer-Policy          full URL same-origin, bare origin cross-origin,
+#                            nothing at all when downgrading HTTPS to HTTP.
+#   Permissions-Policy       the archive uses none of these features, so each is
+#                            denied outright rather than left at the browser
+#                            default. An empty allowlist `()` means no origin at
+#                            all, including this one.
+#   Cross-Origin-Opener-Policy
+#                            puts the document in its own browsing context
+#                            group, so a window it opened — or one that opened
+#                            it — cannot reach in through `window.opener`.
+#
+# Strict-Transport-Security is deliberately absent: Netlify issues it
+# automatically for sites on HTTPS, and setting it by hand risks pinning a
+# max-age that outlives the certificate setup.
+#
+# Format: an unindented path pattern, then indented `Name: value` lines. Keep
+# comments unindented and outside the block — indented `#` lines inside a block
+# are not reliably treated as comments.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=()
+  Cross-Origin-Opener-Policy: same-origin

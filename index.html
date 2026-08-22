@@ -5,14 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!--
-      Content-Security-Policy — production policy.
+      Content-Security-Policy — FALLBACK COPY.
 
-      This is the policy that ships. It is deliberately strict:
-        · script-src 'self'      no inline scripts, no eval, no third-party JS.
-        · style-src  'self'      CSS Modules compile to an external stylesheet,
-                                 so no inline <style> or style="" is needed.
-        · connect-src 'self'     the archive is fully static; nothing phones home.
-        · frame-ancestors 'none' the site cannot be framed.
+      The authoritative policy is the response header in `public/_headers`,
+      which Netlify serves. This tag is the same policy minus one directive, and
+      exists only to cover the case where `dist/` is served by something that
+      ignores that file: `vite preview`, a plain static server, or a host other
+      than Netlify. **Change one and change the other.**
+
+      `frame-ancestors` is deliberately absent here rather than merely
+      redundant. Browsers ignore it in a <meta> tag and log an error saying so,
+      and an ignored directive in the markup reads like clickjacking protection
+      that is not actually there. It lives in the header, where it works.
+
+      The rest is deliberately strict:
+        · script-src 'self'   no inline scripts, no eval, no third-party JS.
+        · style-src  'self'   CSS Modules compile to an external stylesheet and
+                              the illustrations use SVG presentation attributes,
+                              so no inline <style> or style="" is needed.
+        · connect-src 'self'  the archive is fully static; nothing phones home.
 
       For this to hold at build time, `build.modulePreload.polyfill` is disabled
       in vite.config.ts — the polyfill would otherwise inject an inline <script>.
@@ -23,15 +34,10 @@
       `vite dev`, the `thornfield:relax-csp-for-dev` plugin in vite.config.ts
       rewrites this tag's content on the dev server only. `vite build` output is
       untouched — what you see below is what users get.
-
-      A meta-tag CSP is the right tool for a static host with no control over
-      response headers. If you later deploy somewhere that can set headers, move
-      this policy to a real `Content-Security-Policy` header (and add
-      `frame-ancestors`, which meta tags cannot enforce) and delete this tag.
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 

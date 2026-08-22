@@ -45,8 +45,7 @@ long-lived versions to backport to.
 ## Out of scope
 
 - Findings from automated scanners with no demonstrated impact on a static site
-- Missing security headers that a static host, not this repository, controls
-  (`Strict-Transport-Security`, `X-Content-Type-Options`, and similar)
+- `Strict-Transport-Security`, which the host issues rather than this repository
 - Clickjacking on pages with no state-changing actions
 - Anything requiring a compromised or physically accessible developer machine
 - The placeholder `example.com` URLs in the Open Graph tags
@@ -58,8 +57,13 @@ long-lived versions to backport to.
 - Dependabot raises npm and GitHub Actions updates weekly.
 - CI runs lint, formatting, typecheck, tests and a build on every push and pull
   request.
-- `index.html` ships a strict Content-Security-Policy: `script-src 'self'` with
-  no `unsafe-inline` and no `unsafe-eval`, `connect-src 'self'`, and
-  `object-src 'none'`. The dev server relaxation is applied by a Vite plugin at
-  serve time only and never reaches a build.
+- Security headers are served from `public/_headers`: a strict
+  Content-Security-Policy with `script-src 'self'` (no `unsafe-inline`, no
+  `unsafe-eval`), `connect-src 'self'`, `object-src 'none'` and
+  `frame-ancestors 'none'`, plus `X-Content-Type-Options`, `Referrer-Policy`,
+  a fully restrictive `Permissions-Policy`, and `Cross-Origin-Opener-Policy`.
+  `index.html` carries the same CSP minus `frame-ancestors` as a fallback for
+  hosts that ignore that file. See the README's Security headers section.
+- The dev server's CSP relaxation is applied by a Vite plugin at serve time only
+  and never reaches a build.
 - No secrets are stored in this repository, and the site needs none to run.
