@@ -11,8 +11,8 @@ January.
 This repository is a portfolio piece. There is no real institution, no real
 seed, and no data is collected from anyone who visits.
 
-> **Status: scaffold.** Tooling, design tokens and the app shell are in place.
-> The catalogue and specimen views are not built yet.
+> **Status: in progress.** The app shell, catalogue and specimen pages are
+> built. The About, Journal and Request routes are linked but not yet written.
 
 ## Screenshot
 
@@ -138,10 +138,13 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
     ├── components/           reusable UI, one folder each
     │   └── VisuallyHidden/   the reference implementation of the pattern
     ├── features/             feature slices
-    │   ├── catalogue/        (empty)
+    │   ├── catalogue/        FilterPanel, SpecimenRow
     │   ├── specimen/         (empty)
-    │   └── theme/            ThemeProvider, useSeason
+    │   └── theme/            ThemeProvider, useSeason, SeasonSwitcher
+    ├── hooks/                shared React hooks
     ├── lib/                  pure utilities — no React, no DOM
+    │   ├── catalogue/        URL parsing, filtering, sorting
+    │   └── plant/            the procedural generator
     ├── styles/               index · tokens · reset · global · fonts
     ├── data/                 static specimen records (empty)
     ├── types/                shared types

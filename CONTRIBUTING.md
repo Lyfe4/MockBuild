@@ -95,6 +95,7 @@ No `any`. If a type is genuinely unknown, use `unknown` and narrow it.
 | `src/components/` | Reusable UI with no feature knowledge                            |
 | `src/features/`   | Feature slices; each owns its components, hooks, types, tests    |
 | `src/lib/`        | Pure utilities. **No React, no DOM, no imports from `features`** |
+| `src/hooks/`      | Shared React hooks. React, but no feature knowledge              |
 | `src/styles/`     | Tokens, reset, global styles, fonts                              |
 | `src/data/`       | Static specimen records, typed                                   |
 | `src/types/`      | Types shared across more than one slice                          |

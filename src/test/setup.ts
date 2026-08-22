@@ -22,6 +22,25 @@ beforeAll(() => {
    * breakpoints unmet. Override it per test when the query is the thing under
    * test.
    */
+  /**
+   * jsdom implements no IntersectionObserver. Components use it only as a
+   * progressive enhancement — deciding *when* to start an animation — so the
+   * stub never fires a callback. Anything that must be visible regardless has
+   * to render without it, and this is what keeps that honest.
+   */
+  vi.stubGlobal(
+    'IntersectionObserver',
+    class {
+      observe = vi.fn();
+      unobserve = vi.fn();
+      disconnect = vi.fn();
+      takeRecords = vi.fn((): [] => []);
+      readonly root = null;
+      readonly rootMargin = '';
+      readonly thresholds: readonly number[] = [];
+    },
+  );
+
   vi.stubGlobal(
     'matchMedia',
     vi.fn((query: string): MediaQueryList => {

@@ -1,0 +1,91 @@
+/**
+ * A segmented control drawn as a ruled strip, not as buttons: hairline borders,
+ * square corners, and the selected cell inked in rather than raised.
+ */
+
+.root {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-block-end: var(--space-2xs);
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--color-line);
+}
+
+.option + .option {
+  border-inline-start: 1px solid var(--color-line);
+}
+
+/*
+ * Hidden from sight, not from the browser. `display: none` or `visibility:
+ * hidden` would take the radio out of the tab order and cost the arrow-key
+ * behaviour that is the whole reason for using radios.
+ */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px, so the control is comfortably tappable on a phone. */
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-2xs);
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.label:hover {
+  color: var(--color-ink);
+}
+
+/* The selected season is inked in — a filled cell on a ruled form. */
+.input:checked + .label {
+  background-color: var(--color-accent-wash);
+  color: var(--color-ink);
+  font-weight: var(--font-weight-medium);
+}
+
+/*
+ * The ring has to be drawn on the label, since the input it belongs to is
+ * clipped to a pixel. `:focus-visible` on the input keeps it keyboard-only.
+ */
+.input:focus-visible + .label {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
+}
+
+@media (min-width: 48rem) {
+  .label {
+    /* Pointer users do not need the 44px target; tighten the strip up. */
+    min-block-size: 2rem;
+  }
+}

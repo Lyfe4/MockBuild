@@ -1,0 +1,155 @@
+/**
+ * The catalogue page.
+ *
+ * Mobile-first single column of ruled rows; the two-column arrangement is added
+ * with a container query on the results list, so it responds to the width of
+ * the body column rather than of the viewport — which is the width that
+ * actually decides whether two entries fit side by side.
+ */
+
+.header {
+  padding-block-end: var(--space-lg);
+  margin-block-end: var(--space-lg);
+  border-block-end: 2px solid var(--color-ink);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-display);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.title:focus {
+  outline: none;
+}
+
+/* The heading takes focus on navigation; show that only for keyboard users. */
+.title:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.description {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-xs);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-md);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-block-start: var(--space-lg);
+}
+
+.count,
+.sortLabel {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.sortSelect {
+  min-block-size: 2.75rem;
+  padding: var(--space-3xs) var(--space-xs);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.sortSelect:hover {
+  border-color: var(--color-accent);
+}
+
+.results {
+  container-type: inline-size;
+  padding: 0;
+  margin: 0;
+  /* The first row's rule is the one under the header; do not double it. */
+  border-block-start: 1px solid var(--color-line);
+}
+
+.footnote {
+  margin-block-start: var(--space-lg);
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.empty {
+  padding-block: var(--space-2xl);
+  border-block-start: 1px solid var(--color-line);
+}
+
+.emptyTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xl);
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+}
+
+.emptyBody {
+  max-inline-size: var(--measure-narrow);
+  margin-block-start: var(--space-xs);
+  color: var(--color-ink-muted);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+}
+
+.emptyAction {
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-md);
+  margin-block-start: var(--space-lg);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.emptyAction:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+@media (min-width: 48rem) {
+  .sortSelect {
+    min-block-size: 2.25rem;
+  }
+}
+
+/*
+ * Two columns once the *list* is wide enough, not the window. CSS columns
+ * rather than grid: rows have different heights, and columns let them pack
+ * without the ragged gaps a grid row would leave.
+ */
+@container (min-width: 44rem) {
+  .results {
+    columns: 2;
+    column-gap: var(--space-2xl);
+  }
+
+  .results > * {
+    /* Stop a row being split across the column boundary mid-entry. */
+    break-inside: avoid;
+  }
+}

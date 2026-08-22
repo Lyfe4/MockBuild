@@ -1,0 +1,38 @@
+/**
+ * Ledger layout: narrow margin column, wide body.
+ *
+ * Mobile is a single column with the margin above, which is also the DOM order.
+ * The desktop rule adds the second column and the hairline that divides them.
+ */
+
+.root {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.margin {
+  min-inline-size: 0;
+}
+
+.body {
+  min-inline-size: 0;
+}
+
+@media (min-width: 60rem) {
+  .root {
+    /* Narrow enough to read as a margin, wide enough for a filter label. */
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: var(--space-2xl);
+  }
+
+  .margin {
+    /* The annotations stay with the reader as the entry scrolls past. */
+    position: sticky;
+    inset-block-start: var(--space-xl);
+    align-self: start;
+    max-block-size: calc(100vh - var(--space-2xl) * 2);
+    padding-inline-end: var(--space-lg);
+    overflow-y: auto;
+    border-inline-end: 1px solid var(--color-line);
+  }
+}

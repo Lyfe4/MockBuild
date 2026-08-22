@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useState, type ReactN
 import { seasonFromDate } from '@/lib/season';
 import type { Season } from '@/types';
 
+import { readStoredSeason, seasonFromLocation, storeSeason } from './seasonStorage';
 import { ThemeContext, type ThemeContextValue } from './ThemeContext';
 
 export interface ThemeProviderProps {
@@ -13,6 +14,22 @@ export interface ThemeProviderProps {
    * omit it in the app and the archive dresses itself for the current season.
    */
   initialSeason?: Season;
+}
+
+/**
+ * Which season to open with.
+ *
+ * In precedence order: an explicit `?season=` in the link that was followed, a
+ * season the reader has chosen before, and finally today's date. A shared link
+ * showing the archive in winter should show winter even to a reader who once
+ * picked spring — the link is the more specific intent.
+ */
+function resolveInitialSeason(pinned: Season | undefined): Season {
+  if (pinned !== undefined) return pinned;
+
+  return (
+    seasonFromLocation(window.location.search) ?? readStoredSeason() ?? seasonFromDate(new Date())
+  );
 }
 
 /**
@@ -35,7 +52,7 @@ export interface ThemeProviderProps {
  * `data-theme-ready` effect below for why the cross-fade has to be held back.
  */
 export function ThemeProvider({ children, initialSeason }: ThemeProviderProps) {
-  const [season, setSeason] = useState<Season>(() => initialSeason ?? seasonFromDate(new Date()));
+  const [season, setSeason] = useState<Season>(() => resolveInitialSeason(initialSeason));
 
   useLayoutEffect(() => {
     document.documentElement.dataset.season = season;
@@ -76,9 +93,17 @@ export function ThemeProvider({ children, initialSeason }: ThemeProviderProps) {
     };
   }, []);
 
-  // Stable identity so consumers that only call setSeason never re-render.
+  /**
+   * Stable identity so consumers that only call setSeason never re-render.
+   *
+   * Persisting here rather than in an effect keyed on `season` matters: only a
+   * deliberate choice should be remembered. An effect would also write back the
+   * season that was merely derived from today's date, silently pinning the
+   * archive to whatever season a reader first happened to visit in.
+   */
   const changeSeason = useCallback((next: Season) => {
     setSeason(next);
+    storeSeason(next);
   }, []);
 
   const value = useMemo<ThemeContextValue>(

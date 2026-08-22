@@ -1,0 +1,142 @@
+/**
+ * The catalogue's margin column: a form laid out as ruled sections, in the
+ * mono label voice the rest of the metadata uses.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.legend {
+  display: block;
+  padding: 0;
+  padding-block-end: var(--space-2xs);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  border-block-end: 1px solid var(--color-line);
+  /* A legend is not a block box by default; this makes the rule span the group. */
+  inline-size: 100%;
+}
+
+.search,
+.select {
+  inline-size: 100%;
+  /* 44px tap target. */
+  min-block-size: 2.75rem;
+  padding: var(--space-2xs) var(--space-xs);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.search:hover,
+.select:hover {
+  border-color: var(--color-accent);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  /* 44px row, so each option is tappable without hitting its neighbour. */
+  min-block-size: 2.75rem;
+}
+
+.checkbox input {
+  inline-size: 1rem;
+  block-size: 1rem;
+  accent-color: var(--color-accent-strong);
+  flex: none;
+}
+
+/*
+ * The label fills the whole row, not just its text box. The row was already
+ * 44px tall, but a label sized to its own text gave a 20px target inside it —
+ * the padding around the words did nothing when tapped.
+ */
+.checkbox label {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-block-size: 2.75rem;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  cursor: pointer;
+}
+
+.checkbox:hover label {
+  color: var(--color-accent-strong);
+}
+
+.clear {
+  align-self: start;
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-md);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.clear:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+.clear:disabled {
+  color: var(--color-ink-muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (min-width: 60rem) {
+  /* Pointer users do not need the 44px rows; tighten the list up. */
+  .checkbox,
+  .checkbox label {
+    min-block-size: 1.75rem;
+  }
+
+  .search,
+  .select {
+    min-block-size: 2.25rem;
+  }
+
+  .clear {
+    min-block-size: 2.25rem;
+  }
+}

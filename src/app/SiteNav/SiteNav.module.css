@@ -1,0 +1,103 @@
+/**
+ * Primary navigation.
+ *
+ * Mobile-first: a disclosure button and a stacked list. The horizontal list is
+ * the enhancement, added at the breakpoint the component also watches from JS.
+ */
+
+.root {
+  --nav-rule: 1px solid var(--color-line);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  /* 44px tap target. */
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-xs);
+  margin-inline-start: calc(var(--space-xs) * -1);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+/* Three rules, drawn rather than downloaded. */
+.rules {
+  inline-size: 1.25rem;
+  block-size: 0.8rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.5;
+}
+
+.panel {
+  padding-block: var(--space-xs);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-block-end: var(--nav-rule);
+}
+
+/*
+ * Hover thickens the rule and darkens the ink. No transforms: a nav item that
+ * grows under the pointer belongs to a different kind of site than this one.
+ */
+.link:hover {
+  color: var(--color-accent-strong);
+  border-block-end-color: var(--color-accent);
+}
+
+.linkActive {
+  color: var(--color-accent-strong);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (min-width: 48rem) {
+  .toggle {
+    display: none;
+  }
+
+  .panel {
+    padding-block: 0;
+  }
+
+  .list {
+    flex-direction: row;
+    gap: var(--space-lg);
+  }
+
+  .link {
+    min-block-size: auto;
+    padding-block: var(--space-3xs);
+    border-block-end: 2px solid transparent;
+  }
+
+  .link:hover {
+    border-block-end-color: var(--color-accent);
+  }
+
+  .linkActive,
+  .linkActive:hover {
+    border-block-end-color: var(--color-accent-strong);
+  }
+}

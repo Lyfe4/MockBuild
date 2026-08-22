@@ -1,0 +1,102 @@
+/**
+ * A catalogue entry as a ruled row.
+ *
+ * No card, no shadow, no radius: the separation is a hairline and the space
+ * around it, which is how a specimen sheet or a ledger separates entries.
+ */
+
+.root {
+  border-block-end: 1px solid var(--color-line);
+}
+
+.link {
+  display: grid;
+  /* Fixed plate column so every row's text starts on the same vertical. */
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: var(--space-md);
+  align-items: start;
+  padding-block: var(--space-md);
+  color: inherit;
+  text-decoration: none;
+}
+
+/*
+ * A reserved box for the illustration. Fixed aspect and size, so the row has
+ * its final height before the SVG is generated and nothing shifts as the
+ * catalogue fills in.
+ */
+.plate {
+  display: block;
+  inline-size: 4.5rem;
+  aspect-ratio: 3 / 4;
+  padding: var(--space-2xs);
+  border: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-inline-size: 0;
+}
+
+.scientific {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+  line-height: var(--line-height-snug);
+  text-wrap: balance;
+}
+
+.common {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+}
+
+.meta {
+  margin-block-start: var(--space-2xs);
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.accession {
+  color: var(--color-ink);
+  font-weight: var(--font-weight-medium);
+}
+
+/*
+ * Hover inks the name and thickens its underline. Nothing moves and nothing
+ * scales — the row is a line in a register, not a button.
+ */
+.link:hover .scientific {
+  color: var(--color-accent-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+.link:hover .plate {
+  border-color: var(--color-accent);
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (min-width: 30rem) {
+  .link {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .plate {
+    inline-size: 5.5rem;
+  }
+}

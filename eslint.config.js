@@ -49,6 +49,15 @@ export default tseslint.config(
       ...jsxA11y.flatConfigs.recommended.rules,
 
       /**
+       * `<ul role="list">` is redundant on paper and load-bearing in practice.
+       * Safari removes a list's semantics when `list-style: none` is applied —
+       * VoiceOver stops announcing it as a list of N items — and restating the
+       * role is the standard way to put them back. Every list in this project
+       * is unstyled, so the exception is the rule here.
+       */
+      'jsx-a11y/no-redundant-roles': ['error', { ul: ['list'] }],
+
+      /**
        * Import hygiene only. `import/no-unresolved` and friends are deliberately
        * left off: they would need `eslint-import-resolver-typescript` to understand
        * the `@/` alias, and `tsc` already reports unresolved imports with better

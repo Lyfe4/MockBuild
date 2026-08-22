@@ -1,5 +1,6 @@
 import { render, type RenderOptions, type RenderResult } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 
 import { ThemeProvider } from '@/features/theme';
 import type { Season } from '@/types';
@@ -10,26 +11,36 @@ export interface RenderWithProvidersOptions extends Omit<RenderOptions, 'wrapper
    * suite happens to run — a component asserted against summer tokens would
    * otherwise start failing in March.
    */
-  season?: Season;
+  season?: Season | undefined;
+  /** Initial URL, including any search params the component reads. */
+  route?: string | undefined;
 }
 
 /**
- * Renders a component inside the app's provider stack.
+ * Renders a component inside the app's provider stack and a real router.
  *
- * Use this instead of Testing Library's bare `render` for anything that reads
- * context. Components that do not — like `VisuallyHidden` — should use `render`
- * directly, so the test says plainly that no context is involved.
+ * The router is `createMemoryRouter` rather than a hand-rolled context: several
+ * components read and write the URL through `useSearchParams`, and a fake would
+ * not round-trip a navigation. With a real memory router a test can assert on
+ * what the URL became, which is where the catalogue keeps its state.
  *
- * Router context is deliberately absent: routes are exercised through the data
- * router itself with `createMemoryRouter`, which is closer to the real thing
- * than wrapping a component in a fake location.
+ * `ThemeProvider` sits outside the router, exactly as it does in the app, so
+ * the season resolution order under test matches production.
  */
 export function renderWithProviders(
   ui: ReactElement,
-  { season = 'autumn', ...options }: RenderWithProvidersOptions = {},
+  { season = 'autumn', route = '/', ...options }: RenderWithProvidersOptions = {},
 ): RenderResult {
   function Wrapper({ children }: { children: ReactNode }) {
-    return <ThemeProvider initialSeason={season}>{children}</ThemeProvider>;
+    const router = createMemoryRouter([{ path: '*', element: children }], {
+      initialEntries: [route],
+    });
+
+    return (
+      <ThemeProvider initialSeason={season}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    );
   }
 
   return render(ui, { wrapper: Wrapper, ...options });

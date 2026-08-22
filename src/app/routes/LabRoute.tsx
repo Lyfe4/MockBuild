@@ -1,5 +1,6 @@
 import { PlantIllustration } from '@/components/PlantIllustration';
 import { SPECIMENS } from '@/data';
+import { useDocumentTitle } from '@/hooks';
 
 import styles from './LabRoute.module.css';
 
@@ -15,6 +16,8 @@ import styles from './LabRoute.module.css';
  * file, its stylesheet and the router branch once the catalogue view exists.
  */
 export function LabRoute() {
+  useDocumentTitle('Generator lab');
+
   return (
     <section>
       <h1>Generator lab</h1>

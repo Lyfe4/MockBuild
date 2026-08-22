@@ -1,0 +1,92 @@
+/**
+ * Colophon. Three ruled columns, mono throughout — the back of the catalogue
+ * card rather than a marketing footer.
+ */
+
+.root {
+  border-block-start: 1px solid var(--color-line);
+  margin-block-start: var(--space-3xl);
+}
+
+.inner {
+  inline-size: 100%;
+  max-inline-size: var(--layout-max-width);
+  padding-block: var(--space-2xl);
+  padding-inline: var(--layout-gutter);
+  margin-inline: auto;
+}
+
+.columns {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.heading {
+  padding-block-end: var(--space-2xs);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  border-block-end: 1px solid var(--color-line);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: 0;
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-normal);
+}
+
+.link {
+  /* A 44px target on a phone; the list gaps absorb it at wider sizes. */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  color: inherit;
+  text-decoration-color: var(--color-line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+/* Hover thickens the rule under the word rather than moving anything. */
+.link:hover {
+  color: var(--color-ink);
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 2px;
+}
+
+.disclaimer {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-xl);
+  padding-block-start: var(--space-md);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  font-style: italic;
+  line-height: var(--line-height-relaxed);
+  border-block-start: 1px solid var(--color-line);
+}
+
+@media (min-width: 48rem) {
+  .link {
+    min-block-size: auto;
+  }
+
+  .columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2xl);
+  }
+}
