@@ -13,10 +13,15 @@ body {
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-relaxed);
 
-  /* Seasons cross-fade rather than snapping. Zeroed under reduced-motion. */
+  /**
+   * Seasons cross-fade rather than snapping — but only after the first paint.
+   * --duration-palette is 0ms until ThemeProvider marks the document ready, so
+   * the initial season is applied instantly rather than animated in from the
+   * neutral default. Reduced-motion zeroes it too.
+   */
   transition:
-    background-color var(--duration-slow) var(--ease-standard),
-    color var(--duration-slow) var(--ease-standard);
+    background-color var(--duration-palette) var(--ease-standard),
+    color var(--duration-palette) var(--ease-standard);
 }
 
 /**

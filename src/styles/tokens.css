@@ -151,6 +151,16 @@
   --duration-base: 220ms;
   --duration-slow: 420ms;
 
+  /**
+   * How long a seasonal palette change takes to cross-fade.
+   *
+   * Zero until ThemeProvider marks the document ready (see below), so the
+   * season applied on the first paint snaps into place instead of animating
+   * from the neutral default. Use this — not --duration-slow — for anything
+   * that should ease between palettes.
+   */
+  --duration-palette: 0ms;
+
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -256,6 +266,21 @@
   --color-line: var(--line-cool-200);
   --color-selection-bg: var(--wash-slate);
   --color-selection-ink: var(--ink-irongall-900);
+}
+
+/**
+ * Palette transitions, armed.
+ *
+ * ThemeProvider adds `data-theme-ready` to <html> one full frame after the
+ * first paint. Until then --duration-palette stays 0ms and a season change is
+ * instantaneous, which is exactly what the initial render needs: the correct
+ * palette, with no animation from the neutral default.
+ *
+ * Deriving the value from --duration-slow rather than restating a number means
+ * the reduced-motion block below still zeroes it for free.
+ */
+:root[data-theme-ready] {
+  --duration-palette: var(--duration-slow);
 }
 
 /**
