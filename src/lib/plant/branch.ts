@@ -59,6 +59,15 @@ const LENGTH_DECAY = 0.72;
 /** Stroke width of the main stem, in plant units. */
 const BASE_WIDTH = 3.2;
 
+/**
+ * How much of `BASE_WIDTH` an upright plant starts with.
+ *
+ * Only this habit is lightened: a tuft's blades and a rosette's stubs already
+ * set their own widths, and an arching or trailing stem genuinely is the
+ * heaviest line in its drawing.
+ */
+const UPRIGHT_WIDTH_SCALE = 0.7;
+
 /** Fraction by which a branch's angle and length are randomised. */
 const ANGLE_JITTER = 0.35;
 const LENGTH_JITTER = 0.18;
@@ -173,6 +182,58 @@ interface GrowthOptions {
   angleBias?: (depth: number) => number;
   /** Droop passed to each segment, by depth. */
   droop?: (depth: number) => number;
+  /** Multiplier on the main stem's starting width. */
+  widthScale?: number;
+  /**
+   * Fork one dominant stem and the rest as subordinates, rather than fanning
+   * children symmetrically. See `forkChild`.
+   */
+  asymmetric?: boolean;
+}
+
+/** How much longer the leader is than a subordinate branch off the same fork. */
+const LEADER_LENGTH = 0.94;
+const SUBORDINATE_LENGTH = 0.62;
+
+/** The leader's lean, and the subordinate's divergence, as multiples of branchAngle. */
+const LEADER_LEAN = 0.22;
+const SUBORDINATE_DIVERGENCE = 1.35;
+
+interface ChildSpec {
+  angleOffset: number;
+  lengthScale: number;
+}
+
+/**
+ * Where one child of a fork goes.
+ *
+ * Symmetric mode fans children evenly either side of the parent's direction.
+ * That is right for a dichotomising plant, but on an ordinary upright herb it
+ * reads as a wishbone — the eye finds no main axis, and every fork looks like
+ * the same decision made twice.
+ *
+ * Asymmetric mode is monopodial instead: child 0 is the **leader**, continuing
+ * the parent's axis with only a slight lean and nearly its full length, and the
+ * rest diverge steeply on the other side and stay short. The result has a stem
+ * you can follow from the base to the tip, which is what an upright plant looks
+ * like and what makes a plate legible.
+ *
+ * Widths are deliberately not touched: they are set by depth alone, which is
+ * what keeps `BASE_TO_TIP_WIDTH_RATIO` a property of the whole plant rather
+ * than something that drifts with fan-out.
+ */
+function forkChild(index: number, leanSign: number, base: number): ChildSpec {
+  if (index === 0) {
+    return { angleOffset: leanSign * base * LEADER_LEAN, lengthScale: LEADER_LENGTH };
+  }
+
+  // Subordinates go to the other side, spreading further out with each one.
+  const rank = index - 1;
+
+  return {
+    angleOffset: -leanSign * base * (SUBORDINATE_DIVERGENCE + rank * 0.3),
+    lengthScale: SUBORDINATE_LENGTH * (1 - rank * 0.08),
+  };
 }
 
 /**
@@ -221,25 +282,44 @@ function growRecursive(
 
     const children = childCountAt(form, depth);
 
+    // Which side the leader leans to, decided once per fork so a plant does not
+    // stagger left and right at every node.
+    const leanSign = rng() < 0.5 ? -1 : 1;
+
     for (let i = 0; i < children; i += 1) {
-      /**
-       * Children fan symmetrically around the parent's direction: with two
-       * children, one goes left and one right. `spread` is -1..1 across the fan
-       * and is 0 for a lone child, which keeps single-child chains growing
-       * roughly straight instead of drifting to one side.
-       */
-      const spread = children === 1 ? 0 : (i / (children - 1)) * 2 - 1;
+      let angleOffset: number;
+      let lengthScale: number;
+
+      if (options.asymmetric === true && children > 1) {
+        ({ angleOffset, lengthScale } = forkChild(i, leanSign, baseAngleRadians));
+      } else {
+        /**
+         * Children fan symmetrically around the parent's direction: with two
+         * children, one goes left and one right. `spread` is -1..1 across the
+         * fan and is 0 for a lone child, which keeps single-child chains growing
+         * roughly straight instead of drifting to one side.
+         */
+        const spread = children === 1 ? 0 : (i / (children - 1)) * 2 - 1;
+
+        angleOffset = spread * baseAngleRadians;
+        lengthScale = 1;
+      }
+
       const childAngle =
-        angle +
-        spread * baseAngleRadians * jitter(rng, ANGLE_JITTER) +
-        (options.angleBias?.(depth + 1) ?? 0);
-      const childLength = length * LENGTH_DECAY * jitter(rng, LENGTH_JITTER);
+        angle + angleOffset * jitter(rng, ANGLE_JITTER) + (options.angleBias?.(depth + 1) ?? 0);
+      const childLength = length * LENGTH_DECAY * lengthScale * jitter(rng, LENGTH_JITTER);
 
       grow(node.end, childAngle, childLength, tipWidth, depth + 1);
     }
   }
 
-  grow({ x: 0, y: 0 }, initialAngle, BASE_LENGTH * form.height, BASE_WIDTH, 0);
+  grow(
+    { x: 0, y: 0 },
+    initialAngle,
+    BASE_LENGTH * form.height,
+    BASE_WIDTH * (options.widthScale ?? 1),
+    0,
+  );
 
   return nodes;
 }
@@ -247,7 +327,15 @@ function growRecursive(
 /** Straight up, branching evenly. The default shrub or herb. */
 function growUpright(form: PlantForm, rng: Rng): BranchNode[] {
   // A touch of lean off vertical so no two plants stand to attention.
-  return growRecursive(form, rng, randomBetween(rng, -0.08, 0.08));
+  return growRecursive(form, rng, randomBetween(rng, -0.08, 0.08), {
+    /**
+     * Lighter in the base than the other habits. An upright herb is not a tree:
+     * at the previous weight the main stem read as a trunk and pulled the eye
+     * away from the foliage, which is where the interest is.
+     */
+    widthScale: UPRIGHT_WIDTH_SCALE,
+    asymmetric: true,
+  });
 }
 
 /**

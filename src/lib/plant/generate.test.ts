@@ -283,6 +283,88 @@ describe('generatePlant', () => {
       expect(geometry.stems.every((stem) => stem.depth === 0)).toBe(true);
     });
 
+    describe('upright', () => {
+      it('starts lighter in the base than the habits that carry a real trunk', () => {
+        const widthOf = (habit: 'upright' | 'arching' | 'trailing'): number =>
+          Math.max(...generatePlant(form({ habit, scale: 1 }), 30).stems.map((stem) => stem.width));
+
+        // Compared before the fit rescales everything, the upright base is the
+        // lightest of the branching habits.
+        expect(widthOf('upright')).toBeLessThan(widthOf('arching'));
+        expect(widthOf('upright')).toBeLessThan(widthOf('trailing'));
+      });
+
+      it('forks into one dominant stem and a shorter subordinate', () => {
+        /**
+         * A symmetric fork gives the eye no main axis — it reads as a wishbone.
+         * The leader must be clearly the longer of the two children, which is
+         * what lets a viewer follow one stem from base to tip.
+         */
+        const geometry = generatePlant(
+          form({ habit: 'upright', branchCount: 2, branchDepth: 1 }),
+          3,
+        );
+        const children = geometry.stems.filter((stem) => stem.depth === 1);
+
+        expect(children).toHaveLength(2);
+
+        const lengths = children.map((stem) => stem.length).sort((a, b) => b - a);
+
+        expect(lengths[0]! / lengths[1]!).toBeGreaterThan(1.2);
+      });
+
+      it('sends the subordinate branch off at a steeper angle than the leader', () => {
+        const geometry = generatePlant(
+          form({ habit: 'upright', branchCount: 2, branchDepth: 1 }),
+          3,
+        );
+        const trunk = geometry.stems.find((stem) => stem.depth === 0);
+        const children = geometry.stems.filter((stem) => stem.depth === 1);
+
+        expect(trunk).toBeDefined();
+        expect(children).toHaveLength(2);
+
+        // Compare each child's overall direction against the trunk's.
+        const heading = (stem: (typeof children)[number]): number => {
+          const points = commandPoints(stem.commands);
+          const first = points[0]!;
+          const last = points[Math.floor(points.length / 2)]!;
+
+          return Math.atan2(last.x - first.x, last.y - first.y);
+        };
+
+        const trunkHeading = heading(trunk!);
+        const divergences = children
+          .map((stem) => Math.abs(heading(stem) - trunkHeading))
+          .sort((a, b) => a - b);
+
+        expect(divergences[1]!).toBeGreaterThan(divergences[0]! * 1.5);
+      });
+
+      it('forks more unevenly than the habits that stayed symmetric', () => {
+        /**
+         * Averaged across seeds, not asserted on one. Symmetric forks still
+         * carry ±18% length jitter, so a single pair can differ by a quarter by
+         * chance; what separates the modes is the systematic bias underneath
+         * that noise.
+         */
+        const meanForkRatio = (habit: 'upright' | 'arching'): number => {
+          const ratios = [3, 11, 27, 44, 91].map((seed) => {
+            const lengths = generatePlant(form({ habit, branchCount: 2, branchDepth: 1 }), seed)
+              .stems.filter((stem) => stem.depth === 1)
+              .map((stem) => stem.length)
+              .sort((a, b) => b - a);
+
+            return lengths[0]! / lengths[1]!;
+          });
+
+          return ratios.reduce((total, ratio) => total + ratio, 0) / ratios.length;
+        };
+
+        expect(meanForkRatio('upright')).toBeGreaterThan(meanForkRatio('arching') * 1.25);
+      });
+    });
+
     it('gathers a rosette its foliage at the base, unlike an upright plant', () => {
       /**
        * Not an aspect-ratio test: a rosette in flower is genuinely taller than
