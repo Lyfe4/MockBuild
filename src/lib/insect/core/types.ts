@@ -118,6 +118,25 @@ export const LINE_WEIGHTS = ['outline', 'structure', 'detail'] as const;
 export type LineWeight = (typeof LINE_WEIGHTS)[number];
 
 /**
+ * What a mark is painted with.
+ *
+ * Four tones and no colours: the renderer resolves each against the season and
+ * the specimen's pigment, so the generator can say "this ring is the deep tone
+ * and this centre is bare paper" without ever learning what either looks like.
+ *
+ * `ink` is the engraver's line. `pigment` is the wash at strength, `deep` the
+ * same earth ground darker, and `pale` is the paper showing through — which an
+ * eyespot needs at its centre and nothing else does.
+ *
+ * Optional, because almost nothing needs to say: a mark with no tone takes the
+ * default for its part, which keeps the rule that markings are pigment and
+ * everything else is ink in one place.
+ */
+export const MARK_TONES = ['ink', 'pigment', 'deep', 'pale'] as const;
+
+export type MarkTone = (typeof MARK_TONES)[number];
+
+/**
  * Which half of the animal a mark belongs to.
  *
  * `centre` means the mark straddles the midline and is symmetric in itself —
@@ -129,6 +148,8 @@ export type Side = 'left' | 'right' | 'centre';
 interface MarkBase {
   readonly part: InsectPart;
   readonly side: Side;
+  /** What to paint this with. Omitted means "whatever this part usually is". */
+  readonly tone?: MarkTone;
   /**
    * Which appendage this mark belongs to, for parts drawn from several marks.
    *

@@ -27,6 +27,36 @@ export const MOTH_ANTENNA_TYPES = ['filiform', 'clubbed', 'bipectinate'] as cons
 export type MothAntennaType = (typeof MOTH_ANTENNA_TYPES)[number];
 
 /**
+ * The pattern layers a wing can carry.
+ *
+ * A moth's wing is not "patterned" or "plain" — it is one to three layers laid
+ * over each other, and which layers those are is more of what tells two
+ * families apart than how many spots either has. A preset names the layers its
+ * kind is found with and the seed picks a few, so a sheet of one preset varies
+ * in *kind* of pattern rather than only in quantity.
+ *
+ * Declaration order is painting order, back to front: dusting is the ground the
+ * rest sits on, an eyespot is the last thing an engraver puts down.
+ */
+export const WING_PATTERNS = [
+  /** A field of fine scale dots across the whole wing. */
+  'dusting',
+  /** A band parallel to the outer edge, following its curve rather than cutting across it. */
+  'marginalBand',
+  /** A wedge of colour in the corner at the wing tip. */
+  'apexPatch',
+  /** A single solid mark in the middle of the wing, where the discal cell is. */
+  'discalSpot',
+  /** Concentric rings around a pale centre. */
+  'eyespot',
+] as const;
+
+export type WingPattern = (typeof WING_PATTERNS)[number];
+
+/** The most layers one wing may carry. Beyond three the wing turns to mud. */
+export const MAX_PATTERN_LAYERS = 3;
+
+/**
  * The parameters that define a moth or butterfly.
  *
  * As with beetles, a `MothForm` fully determines the drawing; variation between
@@ -40,7 +70,13 @@ export interface MothForm {
   wingSpan: number;
   /** Wing breadth relative to its length. Range 0.35–1. Low is a hawkmoth. */
   wingAspect: number;
-  /** How much smaller the hindwing is than the forewing. Range 0.45–1. */
+  /**
+   * The hindwing's length as a fraction of the forewing's. Range 0.5–1.15.
+   *
+   * Above 1 on the broad-winged families, which is right: a saturniid's
+   * hindwing is no smaller than its forewing, and drawing it as a token lobe
+   * behind one was the single thing that made these read as diagrams.
+   */
   hindwingScale: number;
 
   /** Body length. Range 0.5–1.2. */
@@ -55,14 +91,24 @@ export interface MothForm {
   /** Veins radiating from each wing base. `0` leaves the wing plain. Range 0–9. */
   veinCount: number;
 
-  /** Transverse bands across each wing. Range 0–4. */
+  /**
+   * Which pattern layers this wing carries, painted in `WING_PATTERNS` order.
+   * Between none and three; duplicates and unknown names are dropped.
+   */
+  patterns: readonly WingPattern[];
+
+  /** Bands across each wing, when `marginalBand` is one of the layers. Range 0–4. */
   bandCount: number;
-  /** Eyespots per wing. Range 0–3. */
+  /** How broad each band is drawn. Range 0.4–1.6. */
+  bandWidth: number;
+  /** Eyespots per wing, when `eyespot` is one of the layers. Range 0–3. */
   eyespotCount: number;
   /** Eyespot radius. Range 0.3–1.4. */
   eyespotSize: number;
-  /** Concentric rings around each eyespot's pupil. Range 1–3. */
+  /** Concentric rings around each eyespot's pale centre. Range 1–3. */
   eyespotRings: number;
+  /** Give the eyespot a dark pupil at its centre. */
+  eyespotPupil: boolean;
 
   /**
    * Which of the six plate pigments this specimen is washed and patterned in.
@@ -73,10 +119,14 @@ export interface MothForm {
   /** Draw the scalloped fringe line just inside the outer margin. */
   fringe: boolean;
 
-  /** Scatter fine dots across the wings. */
-  dusting: boolean;
-  /** How thickly, when dusted. Range 0–1. */
+  /** How thickly the wings are dusted, when `dusting` is one of the layers. Range 0–1. */
   dustingDensity: number;
+
+  /**
+   * How densely the base of each wing — the part nearest the body — is hatched.
+   * `0` leaves it clean. Range 0–1.
+   */
+  hatching: number;
 
   /** How much of the view box the fitted drawing fills. Range 0.5–1. */
   scale: number;
@@ -98,8 +148,10 @@ export interface MothPresetSpec {
     readonly hindwingShape?: readonly HindwingShape[];
     readonly antennaType?: readonly MothAntennaType[];
     readonly fringe?: readonly boolean[];
-    readonly dusting?: readonly boolean[];
+    readonly eyespotPupil?: readonly boolean[];
     readonly pigment?: readonly Pigment[];
+    /** The layers this kind is found with. The seed picks one to three. */
+    readonly patterns?: readonly WingPattern[];
   };
 }
 

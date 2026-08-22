@@ -1,5 +1,7 @@
-import type { Point } from '../core';
-import { lineTo, moveTo, smoothClosedPath } from '../core';
+import { randomBetween, type Rng } from '@/lib/random';
+
+import { lineTo, moveTo, quadTo, smoothClosedPath } from '../core';
+import type { PathCommand, Point } from '../core';
 import type { ForewingShape, HindwingShape, MothForm } from './types';
 
 /**
@@ -20,6 +22,19 @@ import type { ForewingShape, HindwingShape, MothForm } from './types';
  */
 
 /**
+ * A tail lobe hanging off the trailing margin.
+ *
+ * `at` is where along the wing it springs from, `length` how far past the
+ * margin it reaches and `width` how broad it is at the root — all in the wing's
+ * own units, so a tail stays in proportion whatever the wing is scaled to.
+ */
+export interface WingTail {
+  readonly at: number;
+  readonly length: number;
+  readonly width: number;
+}
+
+/**
  * A wing outline, as margin offsets sampled evenly from base to apex.
  *
  * Two margins because a wing is not symmetric about its own axis: a forewing's
@@ -28,8 +43,8 @@ import type { ForewingShape, HindwingShape, MothForm } from './types';
 export interface WingProfile {
   readonly leading: readonly number[];
   readonly trailing: readonly number[];
-  /** A tail lobe off the trailing margin near the apex, for swallowtails. */
-  readonly tail?: { readonly length: number; readonly width: number };
+  /** A tail lobe off the trailing margin, for swallowtails. */
+  readonly tail?: WingTail;
 }
 
 const FOREWING_PROFILES: Record<ForewingShape, WingProfile> = {
@@ -59,11 +74,19 @@ const HINDWING_PROFILES: Record<HindwingShape, WingProfile> = {
     leading: [0.16, 0.34, 0.44, 0.5, 0.52, 0.5, 0.44, 0.32, 0.1],
     trailing: [0.14, 0.3, 0.4, 0.46, 0.48, 0.46, 0.39, 0.27, 0.08],
   },
-  /** Rounded, plus a long narrow lobe trailing from the anal angle. */
+  /**
+   * Rounded, plus a broad lobe hanging off the trailing margin.
+   *
+   * The tail used to be spliced in past the apex, which put it *ahead* of the
+   * wing — a swallowtail's tails hang off the outer margin near the anal angle
+   * and sweep away from the body, which is the whole silhouette of the group.
+   * Broad at the root and only gently tapered: a hairline tail reads as a
+   * scratch on the plate rather than as part of the animal.
+   */
   tailed: {
     leading: [0.16, 0.34, 0.44, 0.5, 0.52, 0.5, 0.43, 0.3, 0.09],
     trailing: [0.15, 0.32, 0.42, 0.48, 0.5, 0.47, 0.38, 0.24, 0.07],
-    tail: { length: 0.52, width: 0.07 },
+    tail: { at: 0.74, length: 0.46, width: 0.16 },
   },
   /** The margin cut into shallow lobes, as on many geometrids. */
   scalloped: {
@@ -85,6 +108,58 @@ export function offsetAt(margin: readonly number[], u: number): number {
   const b = margin[index + 1] ?? a;
 
   return a + (b - a) * t;
+}
+
+/** The widest the given margin ever gets. */
+export function widestOffset(margin: readonly number[]): number {
+  return margin.reduce((best, value) => Math.max(best, value), 0);
+}
+
+/**
+ * How far out along the wing the outer edge lies, at a given offset across it.
+ *
+ * The inverse of the profile, near the apex: for a point `v` across the wing,
+ * the largest `u` at which the margin still reaches that far. It is what makes
+ * a band that *follows the outer edge* possible — offset this curve inwards and
+ * you have the shape an engraver actually draws, rather than a line ruled
+ * across the wing at a constant `u`.
+ *
+ * Sampled rather than solved. The profile is piecewise linear through nine
+ * points and a closed-form inverse would be more machinery than the half-unit
+ * of precision is worth here.
+ */
+export function outerEdgeAt(margin: readonly number[], v: number): number {
+  const target = Math.abs(v);
+  const samples = 48;
+
+  for (let i = samples; i >= 0; i -= 1) {
+    const u = i / samples;
+
+    if (offsetAt(margin, u) >= target) return u;
+  }
+
+  return 0;
+}
+
+/**
+ * Pulls an offset across the wing back inside the margin at that point.
+ *
+ * The two margins are not symmetric, so which one bounds a point depends on
+ * which side of the axis it is on — clamping against a single limit would let a
+ * vein run off the narrow side while leaving room on the wide one.
+ *
+ * Every vein anchor *and every control point* goes through this. A quadratic
+ * does not pass through its control point, but the renderer clips to the
+ * outline and the tests measure the control points too, so a control outside
+ * the wing is a mark that lies about where it is.
+ *
+ * @param safety Fraction of the available offset to allow, under 1.
+ */
+export function clampAcross(profile: WingProfile, u: number, v: number, safety: number): number {
+  const margin = v >= 0 ? profile.leading : profile.trailing;
+  const limit = offsetAt(margin, u) * safety;
+
+  return v >= 0 ? Math.min(v, limit) : Math.max(v, -limit);
 }
 
 /** Where a wing sits on the body and how it is scaled into moth space. */
@@ -122,41 +197,86 @@ export function hindwingProfile(shape: HindwingShape): WingProfile {
 }
 
 /**
+ * The tail lobe, as the run of points that replaces part of the margin walk.
+ *
+ * ## Which margin a tail hangs off
+ *
+ * The `+v` side, which for a hindwing is the one that reads as the rear edge.
+ * A hindwing is set at a positive angle — its axis runs outward *and* backward
+ * — so `+v`, being the axis normal, points mostly straight back down the plate.
+ * That is where a swallowtail's tails go: off the outer margin near the anal
+ * angle, sweeping away from the body and slightly inwards.
+ *
+ * The tail used to be spliced past the apex on the `-v` side, which on that
+ * same reasoning pointed *forwards*, over the forewing. It read as a spur on
+ * the wrong edge of the animal.
+ *
+ * Spliced into the outline rather than drawn as a separate shape, so the wing
+ * stays one closed path and one clip — a tail that was its own mark would need
+ * its own clip and would show a join where it met the wing.
+ */
+function tailPoints(profile: WingProfile, placement: WingPlacement, tail: WingTail): Point[] {
+  const marginAt = (u: number): number => offsetAt(profile.leading, u);
+
+  // The two roots on the margin, in ascending `u`: the walk runs base to apex.
+  const rootFar = Math.max(0.06, tail.at - tail.width);
+  const rootNear = Math.min(0.97, tail.at + tail.width);
+
+  // Straight out from the margin, and a little further along the wing.
+  const reach = marginAt(tail.at) + tail.length;
+  const tipU = tail.at + tail.length * 0.26;
+
+  return [
+    { u: rootFar, v: marginAt(rootFar) },
+    // Broad most of the way down, then closing to a blunt point.
+    { u: tipU - tail.width * 0.34, v: reach * 0.62 },
+    { u: tipU + tail.width * 0.16, v: reach },
+    { u: tipU + tail.width * 0.5, v: reach * 0.66 },
+    { u: rootNear, v: marginAt(rootNear) },
+  ].map(({ u, v }) => toMothSpace(placement, u, v));
+}
+
+/**
  * The closed outline of one wing, in moth space.
  *
  * Walks out along the leading margin and back along the trailing one. A
  * scalloped hindwing has a small sine cut into the trailing return; a tailed
- * one has a lobe spliced in at the anal angle.
+ * one has its lobe spliced into the outward walk at the anal angle.
  */
 export function wingOutline(
   profile: WingProfile,
   placement: WingPlacement,
   scalloped: boolean,
 ): Point[] {
-  const samples = 18;
+  /**
+   * Sampled finely enough that the chord between two samples never cuts inside
+   * the true margin by more than a hair.
+   *
+   * That matters for more than smoothness: patterns are placed against the
+   * *smooth* profile, so a coarse outline would let a mark generated correctly
+   * still land outside the polygon the renderer clips to, near the apex where
+   * the margin curves most.
+   */
+  const samples = 30;
   const points: Point[] = [];
+
+  const tail = profile.tail;
+  const skipFrom = tail === undefined ? 2 : Math.max(0.06, tail.at - tail.width);
+  const skipTo = tail === undefined ? -1 : Math.min(0.97, tail.at + tail.width);
+  let tailSpliced = tail === undefined;
 
   for (let i = 0; i <= samples; i += 1) {
     const u = i / samples;
 
+    // Where the tail springs from, the tail *is* the margin.
+    if (!tailSpliced && tail !== undefined && u >= skipFrom) {
+      points.push(...tailPoints(profile, placement, tail));
+      tailSpliced = true;
+    }
+
+    if (u >= skipFrom && u <= skipTo) continue;
+
     points.push(toMothSpace(placement, u, offsetAt(profile.leading, u)));
-  }
-
-  if (profile.tail !== undefined) {
-    /**
-     * The tail: out past the apex on the trailing side and back, as a narrow
-     * lobe. Spliced into the outline rather than drawn as a separate shape, so
-     * the wing stays one closed path and one clip.
-     */
-    const { length, width } = profile.tail;
-    const tipU = 1 + length;
-
-    points.push(
-      toMothSpace(placement, 1.02, -offsetAt(profile.trailing, 0.94) * 0.35),
-      toMothSpace(placement, tipU * 0.7, -0.16 - width),
-      toMothSpace(placement, tipU, -0.2),
-      toMothSpace(placement, tipU * 0.72, -0.16 + width * 0.5),
-    );
   }
 
   for (let i = samples; i >= 0; i -= 1) {
@@ -183,26 +303,78 @@ export function wingPath(profile: WingProfile, placement: WingPlacement, scallop
 /**
  * Veins radiating from the wing base.
  *
- * Drawn thin and stopping just short of the margin, the way an engraver
- * indicates venation without diagramming it. Fanned across the wing's full
- * span rather than following real vein topology — this is a plate, not a key.
+ * Curved, and forking once or twice on the way out. Straight rays from a common
+ * point read as a fan or a sunburst — the one thing venation must not look
+ * like; a real vein leaves the base on a shallow arc and divides before it
+ * reaches the margin, and reproducing just that much is what makes the wing
+ * look like a membrane rather than a shape.
+ *
+ * Fanned across the wing's full span rather than following real vein topology.
+ * This is a plate, not a key.
+ *
+ * @returns One entry per vein, each holding the main stroke and its branches.
+ *   Grouped rather than flattened so a vein stays one thing to count however
+ *   many strokes it happens to be drawn with.
  */
 export function wingVeins(
   form: MothForm,
   profile: WingProfile,
   placement: WingPlacement,
-): Point[][] {
+  rng: Rng,
+): PathCommand[][][] {
   const count = Math.round(form.veinCount);
-  const veins: Point[][] = [];
+  const veins: PathCommand[][][] = [];
+
+  /** How much of the wing a vein may use at any point along it. */
+  const SAFETY = 0.78;
+
+  const at = (u: number, v: number): Point =>
+    toMothSpace(placement, u, clampAcross(profile, u, v, SAFETY));
+
+  const root = toMothSpace(placement, 0.08, 0);
 
   for (let i = 0; i < count; i += 1) {
     // Spread across the wing from the trailing margin to the leading one.
     const across = count === 1 ? 0 : (i / (count - 1)) * 2 - 1;
-    const endU = 0.82 - Math.abs(across) * 0.14;
+    const endU = 0.8 - Math.abs(across) * 0.14;
     const margin = across >= 0 ? profile.leading : profile.trailing;
     const endV = across * offsetAt(margin, endU) * 0.82;
 
-    veins.push([toMothSpace(placement, 0.08, 0), toMothSpace(placement, endU, endV)]);
+    /**
+     * The bow. Pushed off the straight run by a fraction that grows towards the
+     * margins, so the outermost veins curve most — which is what a wing does,
+     * and it stops the middle vein from reading as an axis.
+     */
+    const bow = 0.06 + Math.abs(across) * 0.07;
+    const bend = -Math.sign(across || 1) * bow;
+
+    const end = at(endU, endV);
+    const control = at(endU * 0.5, endV * 0.5 + bend);
+
+    const strokes: PathCommand[][] = [[moveTo(root.x, root.y), quadTo(control, end)]];
+
+    /**
+     * One branch, or two on a longer vein. They fork off past the midpoint and
+     * run to the margin either side of the parent, which is roughly what a
+     * radial sector does and reads correctly at plate size.
+     */
+    const branches = endU > 0.72 ? 2 : 1;
+
+    for (let b = 0; b < branches; b += 1) {
+      const forkU = endU * randomBetween(rng, 0.52, 0.68);
+      const forkV = endV * (forkU / endU) + bend * 0.6;
+      const fork = at(forkU, forkV);
+
+      // Branches diverge away from the parent, alternating side.
+      const spread = (b === 0 ? 1 : -1) * randomBetween(rng, 0.1, 0.2);
+      const tipU = Math.min(0.9, endU + randomBetween(rng, 0.02, 0.08));
+      const tip = at(tipU, endV + spread);
+      const forkControl = at((forkU + tipU) / 2, (forkV + endV + spread) / 2 + spread * 0.3);
+
+      strokes.push([moveTo(fork.x, fork.y), quadTo(forkControl, tip)]);
+    }
+
+    veins.push(strokes);
   }
 
   return veins;

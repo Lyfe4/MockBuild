@@ -69,7 +69,15 @@ export function metricsFor(form: MothForm): MothMetrics {
       base: { x: thoraxHalfWidth * 0.68, y: thoraxStart + thoraxLength * 0.82 },
       angle: 0.42,
       length: forewingLength * form.hindwingScale,
-      chord: forewingLength * form.hindwingScale * form.wingAspect,
+      /**
+       * Broader than the forewing for its length, by a fixed margin.
+       *
+       * A hindwing is not a small forewing: it is shorter and rounder, and
+       * scaling both dimensions by `hindwingScale` alone drew it as a token
+       * lobe tucked behind the front pair. Widening the chord is what gives the
+       * spread specimen its second pair of wings rather than a shadow.
+       */
+      chord: forewingLength * form.hindwingScale * form.wingAspect * 1.14,
     },
   } satisfies MothMetrics & { forewing: { base: Point } };
 }

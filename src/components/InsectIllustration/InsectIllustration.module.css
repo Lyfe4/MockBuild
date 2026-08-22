@@ -110,21 +110,53 @@
   fill: none;
 }
 
-.ink {
+/*
+ * The four tones.
+ *
+ * A mark says which one it wants and the season decides what that resolves to.
+ * `ink` is the engraver's line, `deep` the pigment ground dark, `pigment` the
+ * same earth let down towards the paper, and `pale` the paper itself — which an
+ * eyespot needs at its centre and nothing else does.
+ *
+ * Circles carry their colour in the fill rather than the stroke: an eye, a
+ * puncture and a spot are solid marks, not outlined ones. The exception is a
+ * ring, handled below.
+ */
+.toneInk {
   stroke: var(--color-ink);
 }
 
-/*
- * Dots have no stroke, so their ink has to come from the fill. Eyes and
- * punctures are solid marks, not outlined ones.
- */
-circle.ink {
+circle.toneInk {
   fill: var(--color-ink);
 }
 
-/* Markings: the pigment at full strength, which is the only place it appears. */
-.pigmented {
+.toneDeep {
   fill: var(--pigment-deep);
+  stroke: var(--pigment-deep);
+}
+
+/*
+ * Not the pigment at full strength: let down towards the paper, so an
+ * eyespot's field sits between its deep ring and its pale centre instead of
+ * competing with the ring.
+ */
+.tonePigment {
+  fill: color-mix(in srgb, var(--pigment) 62%, var(--color-surface));
+  stroke: none;
+}
+
+.tonePale {
+  fill: var(--color-surface);
+  stroke: none;
+}
+
+/* A ring is drawn in its tone rather than filled with it. */
+circle.ring.toneDeep,
+circle.ring.tonePigment {
+  fill: none;
+}
+
+circle.ring.toneDeep {
   stroke: var(--pigment-deep);
 }
 

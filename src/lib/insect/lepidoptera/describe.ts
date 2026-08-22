@@ -1,5 +1,5 @@
 import { pigmentWord } from '../core';
-import type { ForewingShape, HindwingShape, MothAntennaType, MothForm } from './types';
+import type { ForewingShape, HindwingShape, MothAntennaType, MothForm, WingPattern } from './types';
 
 /**
  * Turns a form into a sentence, for the illustration's accessible description.
@@ -45,6 +45,37 @@ function countWord(count: number): string {
 }
 
 /**
+ * What each pattern layer is called.
+ *
+ * A layer that needs a number — bands, eyespots — takes it from the form; the
+ * rest read the same however the specimen came out. Returns `null` for a layer
+ * whose count happens to be zero, so the sentence does not promise a band that
+ * was never drawn.
+ */
+function patternClause(pattern: WingPattern, form: MothForm): string | null {
+  switch (pattern) {
+    case 'dusting':
+      return 'a fine dusting of scales';
+    case 'marginalBand':
+      return form.bandCount > 0
+        ? `${countWord(form.bandCount)} bands following the wing margins`
+        : null;
+    case 'apexPatch':
+      return 'a dark patch at each wing tip';
+    case 'discalSpot':
+      return 'a single spot in the middle of each wing';
+    case 'eyespot': {
+      if (form.eyespotCount <= 0) return null;
+
+      const scale = form.eyespotSize >= 1 ? 'large' : form.eyespotSize <= 0.5 ? 'small' : '';
+      const eyespots = scale === '' ? 'ringed eyespots' : `${scale} ringed eyespots`;
+
+      return `${countWord(form.eyespotCount)} ${eyespots} on each wing`;
+    }
+  }
+}
+
+/**
  * A one-sentence description of the moth a form will draw.
  *
  * @example
@@ -60,18 +91,17 @@ export function describeMoth(form: MothForm): string {
     ANTENNA_WORDS[form.antennaType],
   ];
 
-  if (form.bandCount > 0) {
-    clauses.push(`${countWord(form.bandCount)} bands across the wings`);
+  /**
+   * The pattern layers, in painting order, so the sentence describes the wing
+   * the way it was built up. Reading the form's own list rather than inspecting
+   * each count in turn is what keeps the description and the drawing in step
+   * when a layer is added.
+   */
+  for (const pattern of form.patterns) {
+    const clause = patternClause(pattern, form);
+
+    if (clause !== null) clauses.push(clause);
   }
-
-  if (form.eyespotCount > 0) {
-    const scale = form.eyespotSize >= 1 ? 'large' : form.eyespotSize <= 0.5 ? 'small' : '';
-    const eyespots = scale === '' ? 'eyespots' : `${scale} eyespots`;
-
-    clauses.push(`${countWord(form.eyespotCount)} ${eyespots} on each wing`);
-  }
-
-  if (form.dusting) clauses.push('a fine dusting of scales');
 
   // Colour in the opening, with the size: every specimen has one, so it is
   // not a character to be listed alongside the ones that vary.

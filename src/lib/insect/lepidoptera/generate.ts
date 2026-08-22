@@ -1,17 +1,10 @@
 import { clamp, mulberry32 } from '@/lib/random';
 
-import {
-  composeAndFit,
-  lineTo,
-  moveTo,
-  normalisePigment,
-  type InsectGeometry,
-  type InsectMark,
-} from '../core';
+import { composeAndFit, normalisePigment, type InsectGeometry, type InsectMark } from '../core';
 import { buildBody } from './body';
 import { metricsFor } from './metrics';
 import { buildWingPatterns, wingClip } from './patterns';
-import { MOTH_VIEW_BOX, type MothForm } from './types';
+import { MAX_PATTERN_LAYERS, MOTH_VIEW_BOX, WING_PATTERNS, type MothForm } from './types';
 import {
   fringeLine,
   forewingProfile,
@@ -33,26 +26,45 @@ import {
  * happens when a preset is resolved.
  */
 
+/**
+ * Pulls a list of pattern layers into shape.
+ *
+ * Deduped, restricted to layers that exist, capped at three, and re-ordered
+ * into painting order. The cap is the load-bearing part: a wing carrying every
+ * layer at once is mud, and a form arriving from a slider should degrade to the
+ * first three rather than draw it.
+ */
+function normalisePatterns(
+  patterns: readonly MothForm['patterns'][number][],
+): MothForm['patterns'] {
+  const chosen = new Set(patterns);
+
+  return WING_PATTERNS.filter((pattern) => chosen.has(pattern)).slice(0, MAX_PATTERN_LAYERS);
+}
+
 export function normaliseMothForm(form: MothForm): MothForm {
   return {
     forewingShape: form.forewingShape,
     hindwingShape: form.hindwingShape,
     wingSpan: clamp(form.wingSpan, 0.6, 1.4),
     wingAspect: clamp(form.wingAspect, 0.35, 1),
-    hindwingScale: clamp(form.hindwingScale, 0.45, 1),
+    hindwingScale: clamp(form.hindwingScale, 0.5, 1.15),
     bodyLength: clamp(form.bodyLength, 0.5, 1.2),
     bodyThickness: clamp(form.bodyThickness, 0.3, 1.2),
     antennaType: form.antennaType,
     antennaLength: clamp(form.antennaLength, 0.3, 1.1),
     veinCount: clamp(Math.round(form.veinCount), 0, 9),
+    patterns: normalisePatterns(form.patterns),
     bandCount: clamp(Math.round(form.bandCount), 0, 4),
+    bandWidth: clamp(form.bandWidth, 0.4, 1.6),
     eyespotCount: clamp(Math.round(form.eyespotCount), 0, 3),
     eyespotSize: clamp(form.eyespotSize, 0.3, 1.4),
     eyespotRings: clamp(Math.round(form.eyespotRings), 1, 3),
+    eyespotPupil: form.eyespotPupil,
     pigment: normalisePigment(form.pigment),
     fringe: form.fringe,
-    dusting: form.dusting,
     dustingDensity: clamp(form.dustingDensity, 0, 1),
+    hatching: clamp(form.hatching, 0, 1),
     scale: clamp(form.scale, 0.5, 1),
   };
 }
@@ -81,21 +93,26 @@ function buildWing(
     },
   ];
 
-  for (const [index, vein] of wingVeins(form, profile, placement).entries()) {
-    const [from, to] = vein;
-
-    if (from === undefined || to === undefined) continue;
-
-    marks.push({
-      kind: 'path',
-      part: 'vein',
-      side: 'right',
-      group: `${wing}-vein-${String(index)}`,
-      clipTo,
-      commands: [moveTo(from.x, from.y), lineTo(to.x, to.y)],
-      closed: false,
-      weight: 'detail',
-    });
+  /**
+   * Veins, each a curve that forks once or twice on the way out.
+   *
+   * A vein and its branches share a group, so "one vein" stays one thing to
+   * count however many strokes it turns out to be drawn with — the same rule
+   * that lets a feathered antenna be a dozen marks and still be one antenna.
+   */
+  for (const [vein, strokes] of wingVeins(form, profile, placement, rng).entries()) {
+    for (const commands of strokes) {
+      marks.push({
+        kind: 'path',
+        part: 'vein',
+        side: 'right',
+        group: `${wing}-vein-${String(vein)}`,
+        clipTo,
+        commands,
+        closed: false,
+        weight: 'detail',
+      });
+    }
   }
 
   if (form.fringe) {

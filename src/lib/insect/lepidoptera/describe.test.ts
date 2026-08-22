@@ -19,10 +19,13 @@ const BASE_FORM: MothForm = {
   eyespotCount: 1,
   eyespotSize: 0.8,
   eyespotRings: 2,
+  eyespotPupil: true,
+  bandWidth: 1,
+  patterns: ['marginalBand', 'eyespot'],
   pigment: 3,
   fringe: true,
-  dusting: false,
   dustingDensity: 0.4,
+  hatching: 0.3,
   scale: 0.94,
 };
 
@@ -81,27 +84,49 @@ describe('describeMoth', () => {
     expect(describeMoth(form({ hindwingShape: 'tailed' }))).toContain('tails');
   });
 
-  it('mentions bands only when there are some', () => {
-    expect(describeMoth(form({ bandCount: 2 }))).toContain('bands');
-    expect(describeMoth(form({ bandCount: 0 }))).not.toContain('bands');
+  it('mentions bands only when the layer is carried and there are some', () => {
+    expect(describeMoth(form({ patterns: ['marginalBand'], bandCount: 2 }))).toContain('bands');
+    expect(describeMoth(form({ patterns: ['marginalBand'], bandCount: 0 }))).not.toContain('bands');
+    expect(describeMoth(form({ patterns: ['dusting'], bandCount: 2 }))).not.toContain('bands');
   });
 
-  it('mentions eyespots only when there are some', () => {
-    expect(describeMoth(form({ eyespotCount: 2 }))).toContain('eyespots');
-    expect(describeMoth(form({ eyespotCount: 0 }))).not.toContain('eyespot');
+  it('says the bands follow the margin, which is the whole point of them', () => {
+    expect(describeMoth(form({ patterns: ['marginalBand'], bandCount: 2 }))).toContain(
+      'following the wing margins',
+    );
+  });
+
+  it('mentions eyespots only when the layer is carried and there are some', () => {
+    expect(describeMoth(form({ patterns: ['eyespot'], eyespotCount: 2 }))).toContain('eyespots');
+    expect(describeMoth(form({ patterns: ['eyespot'], eyespotCount: 0 }))).not.toContain('eyespot');
+    expect(describeMoth(form({ patterns: ['dusting'], eyespotCount: 2 }))).not.toContain('eyespot');
   });
 
   it('mentions dusting only when it is drawn', () => {
-    expect(describeMoth(form({ dusting: true }))).toContain('dusting');
-    expect(describeMoth(form({ dusting: false }))).not.toContain('dusting');
+    expect(describeMoth(form({ patterns: ['dusting'] }))).toContain('dusting');
+    expect(describeMoth(form({ patterns: ['discalSpot'] }))).not.toContain('dusting');
+  });
+
+  it('names the new pattern layers', () => {
+    expect(describeMoth(form({ patterns: ['apexPatch'] }))).toContain('wing tip');
+    expect(describeMoth(form({ patterns: ['discalSpot'] }))).toContain(
+      'in the middle of each wing',
+    );
+  });
+
+  it('describes the layers in painting order, so it reads as the wing was built', () => {
+    const text = describeMoth(form({ patterns: ['dusting', 'apexPatch', 'eyespot'] }));
+
+    expect(text.indexOf('dusting')).toBeLessThan(text.indexOf('wing tip'));
+    expect(text.indexOf('wing tip')).toBeLessThan(text.indexOf('eyespots'));
   });
 
   it('still reads correctly with nothing optional to say', () => {
-    const text = describeMoth(form({ bandCount: 0, eyespotCount: 0, dusting: false }));
+    const text = describeMoth(form({ patterns: [] }));
 
     expect(text).not.toContain(' and .');
     expect(text).not.toContain(', .');
-    expect(text).toMatch(/antennae\.$/);
+    expect(text).toMatch(/antennae[.]$/);
   });
 
   describe('colouring', () => {

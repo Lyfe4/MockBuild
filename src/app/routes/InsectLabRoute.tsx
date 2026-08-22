@@ -59,7 +59,7 @@ function mothTraits(form: MothForm): string[] {
     form.antennaType,
     `band ${String(form.bandCount)}`,
     `eye ${String(form.eyespotCount)}×${String(form.eyespotRings)}`,
-    ...(form.dusting ? ['dusted'] : []),
+    ...form.patterns,
   ];
 }
 

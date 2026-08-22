@@ -8,6 +8,7 @@ import {
   type InsectForm,
   type InsectMark,
   type LineWeight,
+  type MarkTone,
 } from '@/lib/insect';
 
 import styles from './InsectIllustration.module.css';
@@ -28,13 +29,30 @@ export interface InsectIllustrationProps {
 }
 
 /**
- * Which marks are painted with the specimen's pigment, and which with ink.
+ * Which parts take the pigment when a mark does not say otherwise.
  *
  * Markings are the pigmented element: on a plate they are the colour and
- * everything else is the engraver's line. Keeping the list here rather than in
- * the CSS means the generator stays ignorant of colour.
+ * everything else is the engraver's line. Keeping the default here rather than
+ * in the CSS means the generator stays ignorant of colour, and a mark that
+ * needs to break the rule — the pale centre of an eyespot, its dark pupil —
+ * says so with a `tone` instead of the renderer learning what an eyespot is.
  */
 const PIGMENTED_PARTS = new Set<InsectMark['part']>(['marking']);
+
+/** The class that paints each tone. The tokens behind them live in the CSS. */
+const TONE_CLASS: Record<MarkTone, string | undefined> = {
+  ink: styles.toneInk,
+  pigment: styles.tonePigment,
+  deep: styles.toneDeep,
+  pale: styles.tonePale,
+};
+
+/** A mark's tone, or the default for its part. */
+function toneOf(mark: InsectMark): MarkTone {
+  if (mark.tone !== undefined) return mark.tone;
+
+  return PIGMENTED_PARTS.has(mark.part) ? 'deep' : 'ink';
+}
 
 /**
  * The class that carries each rank of the line hierarchy.
@@ -91,7 +109,7 @@ export function InsectIllustration({
 
   const renderMark = (mark: InsectMark, index: number) => {
     const key = `${mark.part}-${mark.side}-${String(index)}`;
-    const tone = PIGMENTED_PARTS.has(mark.part) ? styles.pigmented : styles.ink;
+    const tone = TONE_CLASS[toneOf(mark)];
 
     if (mark.kind === 'dot') {
       // A ring rather than a disc, when the generator asked for one: an

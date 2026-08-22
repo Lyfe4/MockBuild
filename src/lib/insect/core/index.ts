@@ -18,13 +18,14 @@ export {
   symmetricOutline,
   toPathData,
 } from './path';
-export { INSECT_PARTS, LINE_WEIGHTS, PIGMENTS } from './types';
+export { INSECT_PARTS, LINE_WEIGHTS, MARK_TONES, PIGMENTS } from './types';
 export type {
   DotMark,
   InsectGeometry,
   InsectMark,
   InsectPart,
   LineWeight,
+  MarkTone,
   PathCommand,
   PathMark,
   Pigment,

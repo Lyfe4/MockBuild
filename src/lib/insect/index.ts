@@ -93,13 +93,22 @@ export type {
   MothPresetSpec,
 } from './lepidoptera';
 
-export { INSECT_PARTS, LINE_WEIGHTS, markPoints, PIGMENTS, pigmentWord, toPathData } from './core';
+export {
+  INSECT_PARTS,
+  LINE_WEIGHTS,
+  markPoints,
+  MARK_TONES,
+  PIGMENTS,
+  pigmentWord,
+  toPathData,
+} from './core';
 export type {
   DotMark,
   InsectGeometry,
   InsectMark,
   InsectPart,
   LineWeight,
+  MarkTone,
   PathCommand,
   PathMark,
   Pigment,
