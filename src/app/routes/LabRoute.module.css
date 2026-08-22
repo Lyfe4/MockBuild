@@ -1,0 +1,48 @@
+/**
+ * Throwaway styling for the generator preview. Deliberately plain — this is a
+ * contact sheet, not a design. It goes when the route goes.
+ */
+
+.grid {
+  /* The list itself carries no card styling; the figure inside each item does. */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--space-lg);
+  margin-block-start: var(--space-xl);
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.figure {
+  /* A fixed frame so every plant is judged at the same size. */
+  aspect-ratio: 3 / 4;
+  margin: 0;
+}
+
+.illustration {
+  height: 100%;
+}
+
+.caption {
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-snug);
+}
+
+.name {
+  font-style: italic;
+}
+
+.meta {
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
+}

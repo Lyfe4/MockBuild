@@ -11,9 +11,9 @@ export interface VisuallyHiddenProps {
    * pass `'div'` inside flow content, or `'li'` inside a list, where a `span`
    * would be invalid markup.
    */
-  as?: ElementType;
+  as?: ElementType | undefined;
   /** Appended to the component's own class, not a replacement for it. */
-  className?: string;
+  className?: string | undefined;
 }
 
 /**

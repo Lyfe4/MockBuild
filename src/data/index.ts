@@ -1,0 +1,1 @@
+export { SPECIMENS } from './specimens';

@@ -70,7 +70,18 @@ Consequences worth knowing before they surprise you:
 - Indexing an array or record yields `T | undefined`. Handle it; do not assert
   it away.
 - With `exactOptionalPropertyTypes`, `{ season?: Season }` will not accept an
-  explicit `undefined`. Omit the property instead.
+  explicit `undefined`. For internal config objects, omit the property instead.
+  For **component props**, write `?: T | undefined`:
+
+  ```tsx
+  className?: string | undefined;
+  ```
+
+  Callers pass these through conditionally — and a CSS Module class is
+  `string | undefined` under `noUncheckedIndexedAccess` — so a prop that cannot
+  accept `undefined` forces every caller into a workaround. Accepting it is the
+  honest signature.
+
 - With `verbatimModuleSyntax`, type-only imports must say `import type`. ESLint
   fixes this for you.
 
