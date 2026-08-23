@@ -115,6 +115,13 @@ SpeciesPlate    ──┘        │
   as a class, never an inline style.
 - **Containment is proved in the data, not by the clip.** The plate test samples
   every clipped stroke against its surface's outline.
+- **`sizing` is `fit` by default, and `scale` is opt-in.** `Species.scale` is
+  _true relative size_ — it only says anything when another specimen is on
+  screen to be compared against. Every view the archive has today shows one
+  specimen at a time, so they all take the default and the plate fills its frame
+  from its own bounds. `sizing="relative"` is reserved for a compare or drawer
+  view. Applying `scale` to a lone drawing does not communicate size; it draws a
+  small animal small with nothing to be small against.
 - **Three ranks.** `--plate-stroke-*` are large numbers because plate space is
   large; a stroke of 1 in a box 1300 units tall is a hairline. Outline must stay
   the heaviest — that ranking is what makes one drawing work at 80 pixels and at 600.

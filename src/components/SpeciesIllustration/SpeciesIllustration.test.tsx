@@ -28,6 +28,11 @@ function svgIn(container: HTMLElement): SVGSVGElement {
   return svg;
 }
 
+/** The third number of the view box: how wide a frame the drawing was given. */
+function frameWidth(container: HTMLElement): number {
+  return Number((svgIn(container).getAttribute('viewBox') ?? '').split(' ')[2]);
+}
+
 describe('SpeciesIllustration', () => {
   it('exposes the drawing as a named image', () => {
     render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
@@ -233,15 +238,16 @@ describe('SpeciesIllustration', () => {
       }
     });
 
-    it('scales the frame by the species scale rather than the drawing', () => {
+    it('scales the frame by the species scale rather than the drawing, under relative', () => {
       const smaller: Species = { ...LUCANUS_CERVUS, scale: 0.5 };
-      const full = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
-      const half = render(<SpeciesIllustration species={smaller} plate={PLATE} />);
+      const full = render(
+        <SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} sizing="relative" />,
+      );
+      const half = render(
+        <SpeciesIllustration species={smaller} plate={PLATE} sizing="relative" />,
+      );
 
-      const widthOf = (container: HTMLElement): number =>
-        Number((svgIn(container).getAttribute('viewBox') ?? '').split(' ')[2]);
-
-      expect(widthOf(half.container) / widthOf(full.container)).toBeCloseTo(2, 1);
+      expect(frameWidth(half.container) / frameWidth(full.container)).toBeCloseTo(2, 1);
 
       // And the geometry is byte-for-byte the same drawing, so the line weights
       // it was authored with survive being drawn small.
@@ -249,6 +255,30 @@ describe('SpeciesIllustration', () => {
         container.querySelector('path')?.getAttribute('d') ?? null;
 
       expect(path(half.container)).toBe(path(full.container));
+    });
+
+    it('fits the frame to the drawing by default, whatever the record says about scale', () => {
+      // The default is `fit`, and `fit` must not consult `scale` at all: a
+      // ladybird alone in a box should fill it exactly as a stag beetle does.
+      const smaller: Species = { ...LUCANUS_CERVUS, scale: 0.32 };
+      const asIs = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
+      const scaled = render(<SpeciesIllustration species={smaller} plate={PLATE} />);
+
+      expect(frameWidth(scaled.container)).toBe(frameWidth(asIs.container));
+    });
+
+    it('draws a small species larger under fit than under relative', () => {
+      // The whole point of the split. Same plate, same record; the frame is
+      // three times tighter when nothing is on screen to compare it against, so
+      // the ink lands three times larger in a box of a given size.
+      const smaller: Species = { ...LUCANUS_CERVUS, scale: 0.32 };
+      const fit = render(<SpeciesIllustration species={smaller} plate={PLATE} />);
+      const relative = render(
+        <SpeciesIllustration species={smaller} plate={PLATE} sizing="relative" />,
+      );
+
+      expect(frameWidth(fit.container)).toBeLessThan(frameWidth(relative.container));
+      expect(frameWidth(relative.container) / frameWidth(fit.container)).toBeCloseTo(1 / 0.32, 1);
     });
 
     it('is responsive: no width or height attribute, so the container decides', () => {

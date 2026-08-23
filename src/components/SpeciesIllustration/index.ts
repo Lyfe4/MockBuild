@@ -1,2 +1,2 @@
-export { SpeciesIllustration } from './SpeciesIllustration';
-export type { SpeciesIllustrationProps } from './SpeciesIllustration';
+export { PLATE_SIZINGS, SpeciesIllustration } from './SpeciesIllustration';
+export type { PlateSizing, SpeciesIllustrationProps } from './SpeciesIllustration';

@@ -186,21 +186,20 @@ export interface Species {
   /** Which of the six plate pigments the drawing is inked in. */
   readonly pigment: SpeciesPigment;
   /**
-   * How large this species is drawn relative to the others, 0.1 to 1.
+   * How large this animal is **relative to the others**, 0.3 to 1.
    *
-   * Not a linear ratio of millimetres. A seven-spot ladybird is a tenth of the
-   * length of a stag beetle, and drawn at 0.1 it would be nine pixels wide on a
-   * contact sheet — legible as a dot and nothing else. The values are the
+   * True relative size, and the one number that carries the real world into the
+   * drawing: derived from `sizeMm` rather than picked, with the largest beetle
+   * in Europe at 1 and a ladybird a fraction of it. Not a linear ratio of
+   * millimetres — a seven-spot is a tenth the length of a stag beetle and at
+   * 0.1 would be nine pixels of ink on a contact sheet. The values are the
    * square root of the ratio against the largest animal in the collection,
-   * which keeps the ordering true and every plate readable.
-   */
-  /**
-   * How large to draw this animal relative to the plate frame, 0.3–1.
+   * which keeps the ordering true and every plate legible.
    *
-   * A collection sheet in which every specimen fills its own box tells the
-   * reader nothing about size. This is the one number that carries real-world
-   * scale into the drawing, so it is derived from `sizeMm` rather than picked:
-   * the largest beetle in Europe gets 1, and a ladybird gets a fraction of it.
+   * **Opt-in.** It is only meaningful where another specimen is on screen to be
+   * compared against, so `SpeciesIllustration` ignores it unless asked for
+   * `sizing="relative"`. A lone drawing shrunk to 0.32 is not communicating
+   * scale; it is a small animal in a mostly empty box.
    */
   readonly scale: number;
 }

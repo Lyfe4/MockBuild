@@ -16,11 +16,39 @@ import type { Species } from '@/types';
 
 import styles from './SpeciesIllustration.module.css';
 
+/**
+ * How much of its frame a plate is allowed to fill.
+ *
+ * Two different questions, and conflating them was a bug. `fit` asks "how do I
+ * draw this animal as large as this box allows", which is what a list row, a
+ * specimen sheet and the contact sheet all want: one specimen, alone in its
+ * frame, and nothing on screen to compare it against. `relative` asks "how
+ * large is this animal beside the others", which is only answerable when the
+ * others are on screen too.
+ *
+ * `species.scale` is true relative size — the largest beetle in Europe against
+ * a ladybird — so it only means anything under `relative`. Applying it to a
+ * lone drawing does not communicate scale; it just draws a small animal small,
+ * with nothing to be small *against*, and wastes two thirds of the frame.
+ */
+export const PLATE_SIZINGS = ['fit', 'relative'] as const;
+
+export type PlateSizing = (typeof PLATE_SIZINGS)[number];
+
 export interface SpeciesIllustrationProps {
   /** The record the plate was traced against. Supplies pigment, scale and alt text. */
   species: Species;
   /** The drawing. */
   plate: SpeciesPlate;
+  /**
+   * Whether to fill the frame, or to honour `species.scale`.
+   *
+   * Defaults to `fit`, because every view the archive currently has shows one
+   * specimen at a time. Pass `relative` only where two plates are side by side
+   * and the comparison is the point — a compare view, or a drawer of several
+   * specimens at once. See `PLATE_SIZINGS`.
+   */
+  sizing?: PlateSizing | undefined;
   /**
    * The accessible name.
    *
@@ -104,6 +132,14 @@ function binomial(species: Species): string {
  * here the thing behind it is the point. `validatePlate` rejects the flag on
  * anything that is not a wing.
  *
+ * ## Sizing
+ *
+ * Defaults to `fit`: the frame is the drawing's own measured bounds, so the
+ * animal fills whatever box it is given. `species.scale` is *true relative
+ * size* and is opt-in through `sizing="relative"`, because it only says
+ * anything when another specimen is on screen to be compared against. See
+ * `PLATE_SIZINGS`.
+ *
  * ## Colour
  *
  * The pigment index travels as a `data-pigment` attribute and the stylesheet
@@ -115,6 +151,7 @@ function binomial(species: Species): string {
 export function SpeciesIllustration({
   species,
   plate,
+  sizing = 'fit',
   title,
   animate = false,
   decorative = false,
@@ -124,9 +161,20 @@ export function SpeciesIllustration({
   const descriptionId = useId();
   const clipPrefix = useId();
 
+  /**
+   * The frame: the drawing's own bounds, or those bounds grown by `scale`.
+   *
+   * `fit` passes no scale at all rather than passing 1, so the two modes differ
+   * in whether the record's number is consulted rather than in what it happens
+   * to hold — a species that has not had its scale worked out yet draws the
+   * same under `fit` as one that has.
+   */
   const viewBox = useMemo(
-    () => viewBoxAttribute(plateViewBox(plate, species.scale)),
-    [plate, species.scale],
+    () =>
+      viewBoxAttribute(
+        sizing === 'relative' ? plateViewBox(plate, species.scale) : plateViewBox(plate),
+      ),
+    [plate, sizing, species.scale],
   );
 
   const description = useMemo(

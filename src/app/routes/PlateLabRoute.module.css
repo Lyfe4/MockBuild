@@ -72,12 +72,21 @@
   font-size: var(--font-size-sm);
 }
 
+/*
+ * The frames scroll rather than shrink.
+ *
+ * `align-items: flex-start` sizes each frame to itself, which is what makes the
+ * three sizes comparable — but it also means a frame wider than the column has
+ * to go somewhere. It goes sideways. Squeezing it instead is exactly the bug
+ * this page exists to catch, so the overflow is deliberate and visible.
+ */
 .stack {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-lg);
   margin-block-start: var(--space-md);
+  overflow-x: auto;
 }
 
 .cell {
@@ -114,10 +123,20 @@
   block-size: 240px;
 }
 
+/*
+ * 600 pixels, and actually 600 pixels.
+ *
+ * This was `min(600px, 100%)` with an `aspect-ratio`, which measured 306 —
+ * because a flex item sized to itself treats the percentage as indefinite and
+ * falls back to the svg's intrinsic 300px default. The frame labelled 600
+ * was a quarter larger than the one labelled 240, and the page whose entire
+ * job is comparing sizes was lying about the only number on it. A definite
+ * length on both axes, like the other two frames, and `.stack` scrolls when a
+ * column cannot hold it.
+ */
 .frame600 {
-  inline-size: min(600px, 100%);
-  block-size: auto;
-  aspect-ratio: 1;
+  inline-size: 600px;
+  block-size: 600px;
 }
 
 .caption {
