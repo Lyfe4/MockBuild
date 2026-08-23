@@ -220,13 +220,24 @@ describe('CatalogueRoute', () => {
       expect(router.state.location.search).toContain(`family=${family}`);
     });
 
-    it('puts the chosen order in the query string', async () => {
+    it('puts the chosen sort in the query string', async () => {
       const user = userEvent.setup();
       const router = renderCatalogue();
 
-      await user.selectOptions(screen.getByLabelText('Order'), 'name');
+      await user.selectOptions(screen.getByLabelText('Sort'), 'name');
 
       expect(router.state.location.search).toContain('sort=name');
+    });
+
+    it('does not label two different controls Order', () => {
+      // The sort control used to be labelled Order, a few centimetres from the
+      // filter for the taxonomic Order. `getByRole` throwing on the ambiguity
+      // is the point: one Order on the page, and it is the animal's.
+      renderCatalogue();
+
+      expect(screen.getByRole('group', { name: 'Order' })).toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: 'Sort' })).toBeInTheDocument();
+      expect(screen.queryByRole('combobox', { name: 'Order' })).toBeNull();
     });
 
     it('keeps the season parameter while filtering', async () => {

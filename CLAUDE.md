@@ -186,7 +186,12 @@ about the animal; the panel and the specimen sheet both say so in words.
 
 ## Known dead weight
 
-`src/lib/random` (a seeded `mulberry32` and `seedFromName`) has no callers now
-that the generators are gone. It is kept deliberately — nothing in the plate
-pipeline is random, so if it is still unused next time this file is read, delete
-it and its test.
+None. `src/lib/random` — a seeded `mulberry32` and `seedFromName` — was the
+last of it, kept one round in case the plate pipeline ever wanted a repeatable
+jitter. It never did: nothing about a traced drawing is random, and a builder
+that produced a different file on each run could not be verified. Deleted with
+its test.
+
+Keep this section. Something else will fall out of use, and the note that a
+thing is deliberately unused is the only thing that stops the next reader
+reinventing it or leaving it another year.

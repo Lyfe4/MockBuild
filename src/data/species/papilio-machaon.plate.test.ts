@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { boundsOf, parsePathData, pathPoints, REQUIRED_PARTS, type PlatePartId } from '@/lib/plate';
+import {
+  boundsOf,
+  parsePathData,
+  pathPoints,
+  PLATE_BODY_LENGTH,
+  REQUIRED_PARTS,
+  type PlatePartId,
+} from '@/lib/plate';
 import { describePlateContract } from '@/test/plateContract';
-import { allPoints } from '@/test/plateGeometry';
+import { allPoints, flattenClosed, type Point } from '@/test/plateGeometry';
 
 import { PAPILIO_MACHAON as SPECIES } from './papilio-machaon';
 import { PAPILIO_MACHAON_PLATE as PLATE } from './papilio-machaon.plate';
@@ -24,6 +31,11 @@ function boundsOfPart(id: PlatePartId) {
   const part = PLATE.parts.find((candidate) => candidate.id === id);
 
   return boundsOf(pathPoints(parsePathData(part?.d ?? 'M0 0')));
+}
+
+/** The hindwing measured on the curve, so the tail tip is where the ink is. */
+function hindwingBounds() {
+  return boundsOf(flattenClosed(PLATE.parts.find((part) => part.id === 'hindwing')?.d ?? 'M0 0'));
 }
 
 describe('the Papilio machaon plate', () => {
@@ -65,6 +77,75 @@ describe('the Papilio machaon plate', () => {
     // The tail hangs below the tip of the abdomen. Without it the outline is a
     // fritillary.
     expect(hindwing?.maxY ?? 0).toBeGreaterThan(abdomen?.maxY ?? 0);
+  });
+
+  it('runs the tail out to the length the reference gives it', () => {
+    // Measured off `references/papilio-machaon.jpg`: the tail tip sits 185 px
+    // below the abdomen tip on a body 340 px long, so 0.54 of a body length.
+    // The first pass reached 0.47 and the tail read as a torn corner rather
+    // than as the thing the family is named for. A range, not a number — the
+    // coordinates are traced by hand and will be adjusted.
+    const hindwing = boundsOfPart('hindwing');
+    const abdomen = boundsOfPart('abdomen');
+    const drop = ((hindwing?.maxY ?? 0) - (abdomen?.maxY ?? 0)) / PLATE_BODY_LENGTH;
+
+    expect(drop).toBeGreaterThan(0.5);
+    expect(drop).toBeLessThan(0.62);
+  });
+
+  it('draws the tail narrow, and inks it', () => {
+    // A tail as wide as it is long is a lobe. The reference gives roughly three
+    // to one, and the ink runs to the tip rather than stopping at the margin.
+    const outline = flattenClosed(PLATE.parts.find((part) => part.id === 'hindwing')?.d ?? 'M0 0');
+    const abdomen = boundsOfPart('abdomen');
+    const below = outline.filter((point) => point.y > (abdomen?.maxY ?? 0) + 330);
+    const widest = Math.max(...below.map((p) => p.x)) - Math.min(...below.map((p) => p.x));
+
+    expect(below.length).toBeGreaterThan(0);
+    expect(widest).toBeLessThan(70);
+
+    const inked = PLATE.parts.filter(
+      (part) =>
+        part.id === 'wing-marking' && part.clipTo === 'hindwing' && part.fill === 'pigment-deep',
+    );
+    const reach = Math.max(...inked.flatMap((part) => flattenClosed(part.d).map((p) => p.y)));
+
+    // Within a stroke's width of the tip, so no pale spike is left hanging off
+    // the end of a black tail.
+    expect((hindwingBounds()?.maxY ?? 0) - reach).toBeLessThan(20);
+  });
+
+  it('shades the costa rather than blotting the wing base', () => {
+    // The lithograph darkens the front third of the forewing, from the base out
+    // to where the apical border takes over. An earlier pass put that ink in a
+    // rounded patch at the *trailing* corner of the wing base, which read as a
+    // smudge. Two things say it is a costal band and not a blob: it runs most
+    // of the length of the wing, and at every station along it the ink stays in
+    // the half of the wing nearest the leading edge.
+    const forewing = flattenClosed(PLATE.parts.find((part) => part.id === 'forewing')?.d ?? 'M0 0');
+    const band = PLATE.parts.find(
+      (part) =>
+        part.id === 'wing-marking' && part.clipTo === 'forewing' && part.fill === 'pigment-deep',
+    );
+    const ink = flattenClosed(band?.d ?? 'M0 0');
+
+    const span = (points: Point[]): number =>
+      Math.max(...points.map((p) => p.x)) - Math.min(...points.map((p) => p.x));
+
+    expect(span(ink) / span(forewing)).toBeGreaterThan(0.75);
+
+    for (const x of [300, 600, 900, 1150]) {
+      const wing = forewing.filter((p) => Math.abs(p.x - x) < 30).map((p) => p.y);
+      const dark = ink.filter((p) => Math.abs(p.x - x) < 30).map((p) => p.y);
+
+      expect(dark.length, `no ink at x = ${String(x)}`).toBeGreaterThan(0);
+
+      const costa = Math.min(...wing);
+      const depth = Math.max(...wing) - costa;
+
+      // The whole band, not just its middle, inside the costal half.
+      expect((Math.max(...dark) - costa) / depth, `band at x = ${String(x)}`).toBeLessThan(0.5);
+    }
   });
 
   it('spans far wider than it is long, because the wings are the animal', () => {

@@ -21,6 +21,22 @@ import type { SpeciesPlate } from '@/lib/plate';
  * corner. The stipple is left behind — this is an engraving — but the border,
  * the lunules and the ocellus stay, because those are what a key would ask for.
  *
+ * ## What the first pass got wrong
+ *
+ * The tail, and the shading at the front of the forewing, both measured off the
+ * reference the second time round.
+ *
+ * The tail reached 0.47 of a body length below the abdomen tip where the
+ * reference gives 0.54, and it was half again too wide, so it read as a torn
+ * corner rather than as the thing the family is named for. It is now longer,
+ * narrower, and inked to the tip — the reference draws it solid, not pale with
+ * an outline round it.
+ *
+ * The shading was a rounded patch at the *trailing* corner of the wing base:
+ * the wrong edge of the wing, and a smudge rather than a character. The
+ * lithograph darkens the costal third, from the base out to where the apical
+ * border takes over, and that is what is drawn now.
+ *
  * ## No legs
  *
  * A machaon with its wings spread shows none from above, so none are drawn, and
@@ -56,7 +72,7 @@ export const PAPILIO_MACHAON_PLATE: SpeciesPlate = {
       id: 'hindwing',
       rank: 'outline',
       fill: 'pigment',
-      d: 'M89.55 391.04 C129.3 359.75 284.63 408.21 358.21 420.9 C431.79 433.59 548.91 461.99 608.96 480.6 C669.01 499.21 742.34 526.87 782.09 552.24 C821.84 577.61 869.25 628.41 889.55 659.7 C909.85 690.99 925.37 743.53 925.37 773.13 C925.37 802.73 899.7 842.44 889.55 868.66 C879.4 894.88 866.42 934.53 853.73 958.21 C841.04 981.89 810.99 1012.98 800 1035.82 C789.01 1058.66 782.89 1087.26 776.12 1119.4 C769.35 1151.54 762.39 1210.25 752.24 1262.69 C742.09 1315.13 718.01 1482.78 704.48 1489.55 C690.95 1496.32 667.71 1350.2 656.72 1310.45 C645.73 1270.7 640.4 1216.57 626.87 1208.96 C613.34 1201.35 579.8 1258.41 561.19 1256.72 C542.58 1255.03 515.82 1198.7 495.52 1197.01 C475.22 1195.32 439.05 1247.32 417.91 1244.78 C396.77 1242.24 367.41 1185.87 346.27 1179.1 C325.13 1172.33 288.11 1206.31 268.66 1197.01 C249.21 1187.71 225.88 1140.49 208.96 1113.43 C192.04 1086.37 164.47 1044.03 149.25 1005.97 C134.03 967.91 111.64 896.37 101.49 844.78 C91.34 793.19 79.3 706.07 77.61 641.79 C75.92 577.51 49.8 422.33 89.55 391.04 Z',
+      d: 'M89.55 391.04 C129.3 359.75 284.63 408.21 358.21 420.9 C431.79 433.59 548.91 461.99 608.96 480.6 C669.01 499.21 742.34 526.87 782.09 552.24 C821.84 577.61 869.25 628.41 889.55 659.7 C909.85 690.99 925.37 743.53 925.37 773.13 C925.37 802.73 899.7 842.44 889.55 868.66 C879.4 894.88 866.42 934.53 853.73 958.21 C841.04 981.89 810.99 1012.98 800 1035.82 C789.01 1058.66 782.89 1087.26 776.12 1119.4 C769.35 1151.54 762.39 1210.25 752.24 1262.69 C751.37 1274.24 749.37 1305.78 747 1332 C744.63 1358.22 740.83 1392.33 738 1420 C735.17 1447.67 732 1474.82 730 1498 C728 1521.18 729 1547.56 726 1559.07 C723 1570.58 716.17 1577.08 712 1567.07 C707.83 1557.06 704.5 1523.68 701 1499 C697.5 1474.32 694.67 1446.17 691 1419 C687.33 1391.83 684.71 1354.09 679 1336 C673.29 1317.91 660.43 1314.71 656.72 1310.45 C645.73 1270.7 640.4 1216.57 626.87 1208.96 C613.34 1201.35 579.8 1258.41 561.19 1256.72 C542.58 1255.03 515.82 1198.7 495.52 1197.01 C475.22 1195.32 439.05 1247.32 417.91 1244.78 C396.77 1242.24 367.41 1185.87 346.27 1179.1 C325.13 1172.33 288.11 1206.31 268.66 1197.01 C249.21 1187.71 225.88 1140.49 208.96 1113.43 C192.04 1086.37 164.47 1044.03 149.25 1005.97 C134.03 967.91 111.64 896.37 101.49 844.78 C91.34 793.19 79.3 706.07 77.61 641.79 C75.92 577.51 49.8 422.33 89.55 391.04 Z',
     },
     {
       id: 'wing-vein',
@@ -164,6 +180,19 @@ export const PAPILIO_MACHAON_PLATE: SpeciesPlate = {
       clipTo: 'hindwing',
     },
     {
+      // The tail itself, inked.
+      //
+      // The black marginal band stops at the anal angle, and the tail below it
+      // is solid in the reference rather than pale with an outline round it.
+      // Drawn as its own part rather than by extending the band, because the
+      // band is a ring and the tail is not.
+      id: 'wing-marking',
+      rank: 'structure',
+      fill: 'pigment-deep',
+      d: 'M744 1254 C752.88 1264.38 740.63 1323.75 739 1345 C737.38 1366.25 732.88 1405 731 1424 C729.13 1443 725.38 1481.25 724 1497 C722.63 1512.75 721.63 1542.25 720 1550 C718.38 1557.75 713.25 1565.25 711 1559 C708.75 1552.75 704.13 1516.88 702 1500 C699.88 1483.13 696 1443.38 694 1424 C692 1404.63 689.25 1365.25 686 1345 C682.75 1324.75 660.75 1273.38 668 1262 C675.25 1250.63 735.13 1243.63 744 1254 Z',
+      clipTo: 'hindwing',
+    },
+    {
       id: 'wing-marking',
       rank: 'structure',
       fill: 'pigment',
@@ -226,10 +255,19 @@ export const PAPILIO_MACHAON_PLATE: SpeciesPlate = {
       clipTo: 'forewing',
     },
     {
+      // The dark costal third, not a basal blob.
+      //
+      // The lithograph darkens the front third of the forewing from the wing
+      // base out towards the apex, where it runs into the black border. An
+      // earlier pass drew that as a rounded patch at the trailing corner of the
+      // wing base — the wrong edge of the wing, and it read as a smudge rather
+      // than as the costal shading a key would name. Measured off the
+      // reference: the band hugs the costa, is at its deepest where the wing
+      // meets the thorax, and thins to nothing where the apical border starts.
       id: 'wing-marking',
       rank: 'structure',
       fill: 'pigment-deep',
-      d: 'M138.16 166.34 C161.22 187.43 226.76 196.33 269.24 219.05 C311.72 241.76 392.25 303.84 421.36 317.77 C450.47 331.69 457.25 319.12 463.33 311.88 C469.41 304.65 481.82 296.81 461.88 269.53 C441.95 242.25 369.62 163.48 330.43 130.05 C291.23 96.62 232.84 54.39 200.6 46.64 C168.37 38.9 124.89 60.44 115.52 78.39 C106.15 96.34 115.1 145.24 138.16 166.34 Z',
+      d: 'M112 112 C123.11 101.56 182.44 57.22 212 40 C241.56 22.78 334.22 -23.67 378 -43 C421.78 -62.33 560.67 -117 606 -134 C651.33 -151 745.78 -183.78 786 -196 C826.22 -208.22 927.33 -233.89 968 -244 C1008.67 -254.11 1122 -280.22 1152 -287 C1182 -293.78 1219.56 -301.22 1238 -305 C1256.44 -308.78 1309.11 -321.67 1318 -321 C1326.89 -320.33 1326.89 -307.89 1318 -299 C1309.11 -290.11 1256.44 -252.78 1238 -241 C1219.56 -229.22 1182 -206.89 1152 -193 C1122 -179.11 1008.67 -130.11 968 -116 C927.33 -101.89 826.22 -78.22 786 -66 C745.78 -53.78 651.33 -21.56 606 -6 C560.67 9.56 421.78 59.33 378 74 C334.22 88.67 241.56 119.33 212 126 C182.44 132.67 123.11 135.56 112 134 C100.89 132.44 100.89 122.44 112 112 Z',
       clipTo: 'forewing',
     },
     {

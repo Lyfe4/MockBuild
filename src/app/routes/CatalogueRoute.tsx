@@ -83,9 +83,16 @@ export function CatalogueRoute() {
               : `${String(results.length)} of ${String(SPECIES.length)} species`}
           </p>
 
+          {/*
+            "Sort", not "Order". The taxonomic Order is a filter a few
+            centimetres to the left of this control, and a page with two things
+            labelled Order is a page where a reader has to work out which one a
+            label belongs to. The animal's Order is the one with a claim to the
+            word.
+          */}
           <div className={styles.sort}>
             <label className={styles.sortLabel} htmlFor="catalogue-sort">
-              Order
+              Sort
             </label>
             <select
               id="catalogue-sort"
