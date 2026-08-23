@@ -83,8 +83,28 @@ export const MONTHS: readonly Month[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
  * wrong: it put a bug in with the hornets on the character that separates them.
  * A key asking `elytra` or `membranous` of a shield bug is a key that cannot
  * reach it.
+ *
+ * `tegmina` arrived with the field cricket and for the same reason. An
+ * orthopteran's forewings are leathery rather than hard, and they *overlap*
+ * across the back rather than meeting at a seam — which is precisely what
+ * `elytra` says they do not. Neither of the two nearest answers was true, so
+ * the list grew rather than the record being made to lie.
+ *
+ * It was inserted in the middle, between `hemelytra` and `membranous`, which is
+ * where the character belongs. That used to be a breaking change: answers
+ * travelled in a URL as their position in this list, so inserting one here
+ * renumbered `membranous`, `scaled` and `absent` and turned every shared key
+ * link naming one of them into a link naming another. `src/lib/key/answers.ts`
+ * hashes the *name* now, and this insertion is what that was for.
  */
-export const WING_COVERS = ['elytra', 'hemelytra', 'membranous', 'scaled', 'absent'] as const;
+export const WING_COVERS = [
+  'elytra',
+  'hemelytra',
+  'tegmina',
+  'membranous',
+  'scaled',
+  'absent',
+] as const;
 
 export type WingCover = (typeof WING_COVERS)[number];
 

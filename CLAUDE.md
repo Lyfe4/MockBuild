@@ -11,12 +11,15 @@ easy to get wrong.
 institution. It is a portfolio piece: no real institution, nothing is collected
 from a visitor.
 
-The institution is invented; the **collection is not**. Eight real species,
-across five orders — _Lucanus cervus_, _Coccinella septempunctata_, _Cetonia
-aurata_, _Papilio machaon_, _Aeshna cyanea_, _Bombus terrestris_, _Vespa
-crabro_, _Palomena prasina_ — each carrying a real, sourced record (taxonomy,
-distribution, phenology, and the morphological characters a later
-identification key will filter on) and a **hand-authored plate** traced in a
+The institution is invented; the **collection is not**. Sixteen real species
+across six orders — Coleoptera (_Lucanus cervus_, _Coccinella septempunctata_,
+_Cetonia aurata_, _Carabus violaceus_, _Chrysolina coerulans_), Lepidoptera
+(_Papilio machaon_, _Aglais io_, _Acherontia atropos_), Odonata (_Aeshna
+cyanea_, _Ischnura elegans_), Hymenoptera (_Bombus terrestris_, _Vespa crabro_,
+_Formica rufa_), Hemiptera (_Palomena prasina_, _Graphosoma italicum_) and
+Orthoptera (_Gryllus campestris_) — each carrying a real, sourced record
+(taxonomy, distribution, phenology, and the morphological characters the
+identification key filters on) and a **hand-authored plate** traced in a
 simplified engraving style from a public-domain reference.
 
 Two generations of code have been removed. Read the history if you need them —
@@ -103,11 +106,18 @@ SpeciesPlate    ──┘        │
   on the wrong side and the mirror puts a second one on top of it, so the plate
   renders, looks nearly right, and has five legs.
 - **`REQUIRED_PARTS` is per order** — Coleoptera, Lepidoptera, Odonata,
-  Hymenoptera, Hemiptera. It lists the parts whose _absence_ is a mistake in a
-  dorsal drawing, not every organ the animal has: a dragonfly is not asked for
-  antennae (two bristles), a spread-wing butterfly is not asked for legs (none
-  show), and a true bug is not asked for the hindwings folded under its
-  scutellum. Read the comment above the map before adding an order.
+  Hymenoptera, Hemiptera, Orthoptera. It lists the parts whose _absence_ is a
+  mistake in a dorsal drawing, not every organ the animal has: a dragonfly is
+  not asked for antennae (two bristles), a spread-wing butterfly is not asked
+  for legs (none show), a true bug is not asked for the hindwings folded under
+  its scutellum, and a cricket is not asked for the vestigial ones under its
+  tegmina. Read the comment above the map before adding an order.
+- **Hymenoptera is not asked for wings**, which is the one entry that has been
+  taken away rather than added. Winglessness is normal in that order rather
+  than exceptional — every ant worker has none — so requiring them made the
+  wood ant's plate unbuildable, and the fix was not to draw wings the animal
+  does not have. The bumblebee's and the hornet's own tests assert their four,
+  which is where a fact about one species belongs.
 - **`opacity: 'membrane'`** makes a wing a window: a real `fill-opacity`, and
   the one place in the project where a fill is composited rather than
   `color-mix`ed into the surface token. Four dragonfly wings overlap each other
@@ -135,11 +145,14 @@ SpeciesPlate    ──┘        │
   whose licence forbids redistribution is gitignored and recorded by URL
   instead. Nothing in `references/` is ever bundled.
 
-- **The four plates share one test contract.** `src/test/plateContract.ts` asks
-  the six things that go wrong on every plate — validator, reference, clipped
-  strokes, view box, line ranks, agreement with the record — and each species
-  file adds only what is true of that animal. `src/test/plateGeometry.ts` holds
-  the geometry helpers they all need.
+- **The sixteen plates share one test contract.** `src/test/plateContract.ts`
+  asks the six things that go wrong on every plate — validator, reference,
+  clipped strokes, view box, line ranks, agreement with the record — and each
+  species file adds only what is true of that animal.
+  `src/test/plateGeometry.ts` holds the geometry helpers they all need, and a
+  species test that wants to say "narrower than that one" imports the other
+  plate and measures both: every plate runs the body from y = 0 to y = 1000, so
+  the numbers are comparable.
 
 ## The plate builder
 
@@ -245,14 +258,21 @@ its union an answer, and `buildKey` chooses at every node the question with the
 most information gain over the species still in play. A species is therefore
 keyable the moment its record exists, and no branch mentions an animal.
 
+- **A character state may be added when nothing true fits.** `hemelytra` was
+  added for the shield bug and `tegmina` for the cricket, both because the
+  nearest existing answer would have made the record lie — a cricket's
+  forewings are leathery and overlap, which is precisely what `elytra` says
+  they do not. Adding one in the _middle_ of the union used to break every
+  shared key link; now that the codes hash the value's name it does not, and
+  `tegmina` sits between `hemelytra` and `membranous` where it belongs.
 - **The lay label is the product.** The record says `lamellate`; the key asks
   "What do the antennae look like?" and offers "Ending in a stack of flat
   plates". Labels are `Record<Union, string>`, so a new character state fails
   the build here until somebody writes words a visitor could act on.
 - **Information gain, weighted, and colour held back.** Raw gain favours
   breadth, colour has the most states, and the first key therefore opened by
-  asking a reader to pick a colour out of seven and keyed out seven of eight
-  species on that one screen. Two questions, and it read as a menu rather than
+  asking a reader to pick a colour out of seven and keyed out seven of the
+  eight species it then held on that one screen. Two questions, and it read as a menu rather than
   a key. So `TRAIT_PRIORITY` weights gain — structure ahead of surface, wing
   cover first, colour at a fifth — and `LAST_RESORT` is a separate hard rule
   that will not ask a colour question above `LAST_RESORT_DEPTH` unless nothing
@@ -277,9 +297,10 @@ keyable the moment its record exists, and no branch mentions an animal.
   headroom over a forty-pair vocabulary, and the test asserts every code is
   distinct.
 - **Depth is pinned by a test that prints it**, under a ceiling of five — three
-  questions for eight species, today. A record that makes the key deeper has to
-  be looked at rather than absorbed, and the same test prints the opening
-  question, which must not be colour.
+  questions for sixteen species, and sixteen leaves, so every record keys out
+  on its own. A record that makes the key deeper has to be looked at rather
+  than absorbed, and the same test prints the opening question, which must not
+  be colour.
 
 `/key` is the page, and it is one route for the intro, every question and every
 leaf, because the answers live in the query string rather than the path.

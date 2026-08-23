@@ -184,6 +184,27 @@ function bugPlate(overrides: readonly PlatePart[] = []): SpeciesPlate {
   ]);
 }
 
+function cricketPlate(overrides: readonly PlatePart[] = []): SpeciesPlate {
+  return winged('test-cricket', 'orthoptera', [
+    ...HEAD_AND_EYE,
+    { id: 'antenna', rank: 'structure', fill: 'none', d: 'M25 70 C80 20 160 -60 220 -140' },
+    {
+      id: 'pronotum',
+      rank: 'outline',
+      fill: 'pigment-deep',
+      d: 'M0 200 L140 210 L130 400 L0 410 Z',
+    },
+    { id: 'forewing', rank: 'outline', fill: 'pigment', d: 'M0 410 L150 440 L110 880 L0 900 Z' },
+    ABDOMEN,
+    // The pair of tails, which is the part this order is asked for and no other.
+    { id: 'cercus', rank: 'detail', fill: 'pigment-deep', d: 'M40 960 C90 1040 140 1120 170 1200' },
+    ...legs('foreleg'),
+    ...legs('midleg'),
+    ...legs('hindleg'),
+    ...overrides,
+  ]);
+}
+
 /** One complete plate per order, so the required-parts lists are satisfiable. */
 const COMPLETE: Record<PlateOrder, () => SpeciesPlate> = {
   coleoptera: () => beetlePlate(),
@@ -191,6 +212,7 @@ const COMPLETE: Record<PlateOrder, () => SpeciesPlate> = {
   odonata: () => dragonflyPlate(),
   hymenoptera: () => beePlate(),
   hemiptera: () => bugPlate(),
+  orthoptera: () => cricketPlate(),
 };
 
 function codes(plate: SpeciesPlate): PlateErrorCode[] {
@@ -421,11 +443,24 @@ describe('validatePlate', () => {
       expect(codes(plate)).toEqual(['missing-part']);
     });
 
-    it('asks every winged order for both wings, and a beetle for neither', () => {
-      for (const order of ['lepidoptera', 'odonata', 'hymenoptera'] as const) {
+    it('asks for a wing only where every member of the order has one', () => {
+      // The two orders where four spread wings are the drawing.
+      for (const order of ['lepidoptera', 'odonata'] as const) {
         expect(REQUIRED_PARTS[order], order).toContain('forewing');
         expect(REQUIRED_PARTS[order], order).toContain('hindwing');
       }
+
+      // Hymenoptera is not one of them, and the reason is a caste rather than a
+      // species: an ant worker has no wings at all, and requiring them made the
+      // wood ant's plate unbuildable. The bumblebee's and the hornet's own tests
+      // assert their four, which is where a per-species fact belongs.
+      expect(REQUIRED_PARTS.hymenoptera).not.toContain('forewing');
+
+      // A cricket's forewings are leathery covers and are asked for; its
+      // hindwings are vestigial and folded away underneath, and are not.
+      expect(REQUIRED_PARTS.orthoptera).toContain('forewing');
+      expect(REQUIRED_PARTS.orthoptera).not.toContain('hindwing');
+      expect(REQUIRED_PARTS.orthoptera).toContain('cercus');
 
       expect(REQUIRED_PARTS.coleoptera).not.toContain('forewing');
       expect(REQUIRED_PARTS.coleoptera).toContain('elytron');

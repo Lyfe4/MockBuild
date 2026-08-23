@@ -1,14 +1,30 @@
 import type { SpeciesPlate } from '@/lib/plate';
 import type { Species } from '@/types';
 
+import { ACHERONTIA_ATROPOS } from './acherontia-atropos';
+import { ACHERONTIA_ATROPOS_PLATE } from './acherontia-atropos.plate';
 import { AESHNA_CYANEA } from './aeshna-cyanea';
 import { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
+import { AGLAIS_IO } from './aglais-io';
+import { AGLAIS_IO_PLATE } from './aglais-io.plate';
 import { BOMBUS_TERRESTRIS } from './bombus-terrestris';
 import { BOMBUS_TERRESTRIS_PLATE } from './bombus-terrestris.plate';
+import { CARABUS_VIOLACEUS } from './carabus-violaceus';
+import { CARABUS_VIOLACEUS_PLATE } from './carabus-violaceus.plate';
 import { CETONIA_AURATA } from './cetonia-aurata';
 import { CETONIA_AURATA_PLATE } from './cetonia-aurata.plate';
+import { CHRYSOLINA_COERULANS } from './chrysolina-coerulans';
+import { CHRYSOLINA_COERULANS_PLATE } from './chrysolina-coerulans.plate';
 import { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
 import { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
+import { FORMICA_RUFA } from './formica-rufa';
+import { FORMICA_RUFA_PLATE } from './formica-rufa.plate';
+import { GRAPHOSOMA_ITALICUM } from './graphosoma-italicum';
+import { GRAPHOSOMA_ITALICUM_PLATE } from './graphosoma-italicum.plate';
+import { GRYLLUS_CAMPESTRIS } from './gryllus-campestris';
+import { GRYLLUS_CAMPESTRIS_PLATE } from './gryllus-campestris.plate';
+import { ISCHNURA_ELEGANS } from './ischnura-elegans';
+import { ISCHNURA_ELEGANS_PLATE } from './ischnura-elegans.plate';
 import { LUCANUS_CERVUS } from './lucanus-cervus';
 import { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
 import { PALOMENA_PRASINA } from './palomena-prasina';
@@ -17,7 +33,6 @@ import { PAPILIO_MACHAON } from './papilio-machaon';
 import { PAPILIO_MACHAON_PLATE } from './papilio-machaon.plate';
 import { VESPA_CRABRO } from './vespa-crabro';
 import { VESPA_CRABRO_PLATE } from './vespa-crabro.plate';
-
 /**
  * The entomological collection.
  *
@@ -43,6 +58,14 @@ export const SPECIES: readonly Species[] = [
   BOMBUS_TERRESTRIS,
   VESPA_CRABRO,
   CETONIA_AURATA,
+  CARABUS_VIOLACEUS,
+  CHRYSOLINA_COERULANS,
+  AGLAIS_IO,
+  ACHERONTIA_ATROPOS,
+  ISCHNURA_ELEGANS,
+  FORMICA_RUFA,
+  GRAPHOSOMA_ITALICUM,
+  GRYLLUS_CAMPESTRIS,
 ];
 
 const PLATES: readonly SpeciesPlate[] = [
@@ -54,6 +77,14 @@ const PLATES: readonly SpeciesPlate[] = [
   BOMBUS_TERRESTRIS_PLATE,
   VESPA_CRABRO_PLATE,
   CETONIA_AURATA_PLATE,
+  CARABUS_VIOLACEUS_PLATE,
+  CHRYSOLINA_COERULANS_PLATE,
+  AGLAIS_IO_PLATE,
+  ACHERONTIA_ATROPOS_PLATE,
+  ISCHNURA_ELEGANS_PLATE,
+  FORMICA_RUFA_PLATE,
+  GRAPHOSOMA_ITALICUM_PLATE,
+  GRYLLUS_CAMPESTRIS_PLATE,
 ];
 
 /** The prefix on every accession number. Thornfield Entomological Archive. */
@@ -95,14 +126,30 @@ export function findPlate(id: string): SpeciesPlate | undefined {
   return PLATES.find((plate) => plate.species === id);
 }
 
+export { ACHERONTIA_ATROPOS } from './acherontia-atropos';
+export { ACHERONTIA_ATROPOS_PLATE } from './acherontia-atropos.plate';
 export { AESHNA_CYANEA } from './aeshna-cyanea';
 export { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
+export { AGLAIS_IO } from './aglais-io';
+export { AGLAIS_IO_PLATE } from './aglais-io.plate';
 export { BOMBUS_TERRESTRIS } from './bombus-terrestris';
 export { BOMBUS_TERRESTRIS_PLATE } from './bombus-terrestris.plate';
+export { CARABUS_VIOLACEUS } from './carabus-violaceus';
+export { CARABUS_VIOLACEUS_PLATE } from './carabus-violaceus.plate';
 export { CETONIA_AURATA } from './cetonia-aurata';
 export { CETONIA_AURATA_PLATE } from './cetonia-aurata.plate';
+export { CHRYSOLINA_COERULANS } from './chrysolina-coerulans';
+export { CHRYSOLINA_COERULANS_PLATE } from './chrysolina-coerulans.plate';
 export { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
 export { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
+export { FORMICA_RUFA } from './formica-rufa';
+export { FORMICA_RUFA_PLATE } from './formica-rufa.plate';
+export { GRAPHOSOMA_ITALICUM } from './graphosoma-italicum';
+export { GRAPHOSOMA_ITALICUM_PLATE } from './graphosoma-italicum.plate';
+export { GRYLLUS_CAMPESTRIS } from './gryllus-campestris';
+export { GRYLLUS_CAMPESTRIS_PLATE } from './gryllus-campestris.plate';
+export { ISCHNURA_ELEGANS } from './ischnura-elegans';
+export { ISCHNURA_ELEGANS_PLATE } from './ischnura-elegans.plate';
 export { LUCANUS_CERVUS } from './lucanus-cervus';
 export { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
 export { PALOMENA_PRASINA } from './palomena-prasina';

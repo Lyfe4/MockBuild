@@ -216,6 +216,7 @@ export const PLATE_ORDERS = [
   'odonata',
   'hymenoptera',
   'hemiptera',
+  'orthoptera',
 ] as const;
 
 export type PlateOrder = (typeof PLATE_ORDERS)[number];
@@ -316,11 +317,28 @@ export const REQUIRED_PARTS: Record<PlateOrder, readonly PlatePartId[]> = {
   // and it is drawn as the gap between the two parts rather than as a part of
   // its own. A stinger is not required — most Hymenoptera do not show one from
   // above, and many do not have one.
-  hymenoptera: ['head', 'eye', 'antenna', 'thorax', 'abdomen', 'forewing', 'hindwing', ...LEGS],
+  //
+  // Neither are the wings, which is the entry that has changed. Winglessness is
+  // normal in this order rather than exceptional: every ant worker has none,
+  // and so do the females of a good many other families. Requiring them here
+  // made a wood ant plate unbuildable, and the fix is not to draw wings that
+  // are not on the animal. The bumblebee's and the hornet's tests each assert
+  // their own four wings, which is where a per-species fact belongs.
+  hymenoptera: ['head', 'eye', 'antenna', 'thorax', 'abdomen', ...LEGS],
   // True bugs: the big triangular scutellum between the folded forewings is
   // what identifies the order from above. The hindwings are underneath it and
   // are not required.
   hemiptera: ['head', 'eye', 'antenna', 'pronotum', 'scutellum', 'forewing', 'abdomen', ...LEGS],
+  // Crickets, grasshoppers and their kin. The saddle-shaped pronotum, the
+  // leathery tegmina folded flat over the abdomen, and the pair of cerci at the
+  // tip are what a dorsal drawing of this order has to show; the cerci are the
+  // reason `cercus` was in `PLATE_PART_IDS` before any plate used it.
+  //
+  // No hindwings and no scutellum. A field cricket's hindwings are vestigial
+  // and folded away under the tegmina where nothing can see them, and an
+  // orthopteran has no scutellum to speak of — asking for either would be
+  // asking an author to draw something the animal does not show.
+  orthoptera: ['head', 'eye', 'antenna', 'pronotum', 'forewing', 'abdomen', 'cercus', ...LEGS],
 };
 
 /** The length of the body axis, head end to abdomen tip, in plate units. */

@@ -80,6 +80,7 @@ export interface KeyTrait {
 const WING_COVER_LABELS: Record<WingCover, string> = {
   elytra: 'Hard cases meeting in a line',
   hemelytra: 'Part-hardened, tips clear',
+  tegmina: 'Leathery covers, one overlapping the other',
   scaled: 'Scaled, patterned wings',
   membranous: 'Clear membrane wings',
   absent: 'No wings visible',

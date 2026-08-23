@@ -1,0 +1,550 @@
+{
+  "species": "acherontia-atropos",
+  "constant": "ACHERONTIA_ATROPOS_PLATE",
+  "order": "lepidoptera",
+  "sex": "unsexed",
+  "hallmark": "the skull on the thorax, and the banded abdomen with its grey dorsal stripe",
+  "reference": {
+    "title": "British and European Butterflies and Moths (Macrolepidoptera), plate XIII figure 1",
+    "artist": "H. Deuchert and Shirley Slocombe",
+    "year": 1895,
+    "source": "https://commons.wikimedia.org/wiki/File:British_and_European_butterflies_and_moths_(Macrolepidoptera)_(Plate_XIII)_(6466294171).jpg",
+    "licence": "Public domain (PD-old-70-expired)"
+  },
+  "doc": [
+    "*Acherontia atropos*, upperside, wings spread — the death's-head hawkmoth.",
+    "",
+    "Traced from figure 1 of plate XIII of Kirby's *British and European",
+    "Butterflies and Moths*, the same book and the same hands as the peacock two",
+    "accessions earlier. `references/acherontia-atropos.jpg` is the plate; the",
+    "moth is the upper figure and 1a is its larva.",
+    "",
+    "Unlike the peacock, this figure is drawn square to the page and symmetric,",
+    "so the proportions came off it directly: 425 pixels from the front of the",
+    "head to the tip of the abdomen, 122 units across the thorax and a half-span",
+    "of 1150 — which is 1.15 body lengths, and matches the animal's 90 to 130",
+    "millimetres of wing against 55 of body.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **skull**, obviously. It is a real marking and not a trick of the light:",
+    "a pale patch on the thorax with two dark sockets in it and a dark vertical",
+    "mouth below, and it is the reason the animal has been an omen in three",
+    "languages. Drawn as those three shapes clipped to the thorax — the pale",
+    "ground, the pair of sockets, the mouth — because one shape would be a patch",
+    "and the arrangement is the whole thing.",
+    "",
+    "Then the **abdomen**, which is the other half of the identification: broad,",
+    "banded across, and split lengthwise by a wide grey-blue dorsal stripe. Six",
+    "bands and a stripe, and the stripe drawn on the axis where it belongs.",
+    "",
+    "Then the **hindwing bands**. Two dark bands on an orange ground, both",
+    "following the outer margin, and they are drawn as three strips on one traced",
+    "edge at three depths — dark to 96, pigment over it to 52, dark again over",
+    "that to 20. What shows is band, ground, band. Offsetting three edges by hand",
+    "instead would put each of them a few units wrong all the way round.",
+    "",
+    "## No legs",
+    "",
+    "A hawkmoth at rest holds its legs under the thorax and a spread figure shows",
+    "none, which is why `REQUIRED_PARTS.lepidoptera` does not ask for them. The",
+    "palps are drawn, because a Sphingid's are large, upturned and visible from",
+    "above.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front of the head, y = 1000 at the tip of the abdomen. The",
+    "forewing apex is at x = 1150, and the antennae reach above y = -180."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The hind wing first, so the forewing overlaps its base — which is the way",
+        "round a spread moth is put together and the reason the orange only shows",
+        "below the forewing's trailing edge."
+      ],
+      "id": "hindwing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [100, 356],
+          [280, 382],
+          [460, 424],
+          [600, 486],
+          [686, 566],
+          [686, 646],
+          [600, 700],
+          [470, 722],
+          [340, 700],
+          [220, 634],
+          [128, 520],
+          [92, 430]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The two dark bands, as three strips on one edge.",
+        "",
+        "Deepest first: dark to 96 units in from the margin, the orange ground",
+        "over it to 52, dark again over that to 20. What is left showing is a",
+        "narrow band at the margin, the ground, and a second band inside — which",
+        "is what the reference has, and it is one measured edge rather than three."
+      ],
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [590, 506],
+          [664, 570],
+          [664, 642],
+          [588, 678],
+          [468, 700],
+          [344, 678],
+          [232, 616]
+        ],
+        "depth": 96
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [590, 506],
+          [664, 570],
+          [664, 642],
+          [588, 678],
+          [468, 700],
+          [344, 678],
+          [232, 616]
+        ],
+        "depth": 52
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [590, 506],
+          [664, 570],
+          [664, 642],
+          [588, 678],
+          [468, 700],
+          [344, 678],
+          [232, 616]
+        ],
+        "depth": 20
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [140, 420],
+          [380, 470],
+          [600, 570]
+        ],
+        "to": [
+          [145, 515],
+          [330, 640],
+          [520, 680]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "The fore wing: long, narrow and pointed, swept back from a costa that is",
+        "nearly straight. A hawkmoth's wing is built for a hundred kilometres of",
+        "migration and it looks like it — this animal reaches Britain from north",
+        "Africa under its own power."
+      ],
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [104, 132],
+          [300, 86],
+          [560, 34],
+          [820, -4],
+          [1030, -26],
+          [1150, -34],
+          [1120, 86],
+          [1000, 206],
+          [840, 320],
+          [660, 392],
+          [460, 412],
+          [280, 404],
+          [150, 376]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [180, 180],
+          [560, 140],
+          [1040, 40]
+        ],
+        "to": [
+          [200, 340],
+          [520, 360],
+          [820, 300]
+        ],
+        "count": 7
+      }
+    },
+    {
+      "note": [
+        "The transverse fasciae — the paler zigzag bands across the forewing. Four",
+        "strokes, from a guide near the wing base to one out towards the apex.",
+        "",
+        "Kirby's lithograph carries them as mottling in three or four browns. An",
+        "engraving has line and nothing else, so what is kept is where the bands",
+        "run and not what colour they are."
+      ],
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [320, 110],
+          [350, 250],
+          [320, 380]
+        ],
+        "to": [
+          [900, 20],
+          [930, 140],
+          [880, 250]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "note": [
+        "The two pale flecks near the middle of each forewing. Small, and drawn",
+        "because they are the only two hard-edged marks on a wing that is",
+        "otherwise all gradation."
+      ],
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [700, 120],
+        "radii": [16, 12]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [640, 194],
+        "radii": [12, 10]
+      }
+    },
+    {
+      "note": [
+        "The abdomen. Broad and heavy — a hawkmoth carries the flight muscle and",
+        "the fuel for it — with the bands across and the grey dorsal stripe down."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 352],
+          [86, 372],
+          [99, 470],
+          [97, 600],
+          [88, 730],
+          [72, 840],
+          [48, 930],
+          [24, 978],
+          [0, 1000],
+          [-24, 978],
+          [-48, 930],
+          [-72, 840],
+          [-88, 730],
+          [-97, 600],
+          [-99, 470],
+          [-86, 372]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The bands, as seven strokes each crossing the axis — the fan case the",
+        "validator allows on the midline, because both guides are centred on it.",
+        "The strokes narrow as they go back, which is the abdomen tapering rather",
+        "than the bands changing."
+      ],
+      "id": "abdomen-segment",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [-92, 430],
+          [0, 430],
+          [92, 430]
+        ],
+        "to": [
+          [-40, 930],
+          [0, 930],
+          [40, 930]
+        ],
+        "count": 7
+      }
+    },
+    {
+      "note": [
+        "The dorsal stripe: broad, grey-blue on the animal, and the reason the",
+        "bands read as bands rather than as rings. Drawn on the axis and once."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [0, 380],
+          [0, 960]
+        ],
+        "width": 44
+      }
+    },
+    {
+      "note": ["The thorax, furred and heavy, and the surface the skull is on."],
+      "id": "thorax",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 10],
+          [70, 30],
+          [104, 90],
+          [122, 180],
+          [116, 268],
+          [96, 330],
+          [56, 358],
+          [0, 366],
+          [-56, 358],
+          [-96, 330],
+          [-116, 268],
+          [-122, 180],
+          [-104, 90],
+          [-70, 30]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The skull: the pale ground, then the two sockets, then the mouth.",
+        "",
+        "Three shapes rather than one, because a single pale oval on a moth's back",
+        "is a pale oval. What makes it a skull is that there are two dark spots",
+        "high in it and one dark mark low and central, and a reader's eye does the",
+        "rest — which is exactly what the moth is relying on."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "surface",
+      "mirror": false,
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "ellipse",
+        "at": [0, 170],
+        "radii": [70, 88]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "ink",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "ellipse",
+        "at": [30, 124],
+        "radii": [20, 17]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "ink",
+      "mirror": false,
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "ellipse",
+        "at": [0, 222],
+        "radii": [15, 26]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [96, 120],
+          [106, 210],
+          [94, 306]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [70, 46],
+          [82, 92],
+          [74, 140]
+        ]
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -16],
+          [54, -4],
+          [76, 44],
+          [62, 90],
+          [34, 112],
+          [0, 120],
+          [-34, 112],
+          [-62, 90],
+          [-76, 44],
+          [-54, -4]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [56, 46],
+        "radii": [21, 19]
+      }
+    },
+    {
+      "note": [
+        "A palp. Large, upturned and scaled, and one of the few Sphingid",
+        "characters that shows from above — which is why `palp` is in",
+        "`PLATE_PART_IDS` at all and this is the first plate to use it."
+      ],
+      "id": "palp",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [26, 14],
+          [42, -20],
+          [36, -48]
+        ],
+        "width": [32, 24, 11]
+      }
+    },
+    {
+      "note": [
+        "The antenna: stout at the base and tapering to a fine point, which is a",
+        "hawkmoth's and is why the record says `filiform` where the peacock says",
+        "`clavate`. Three joints, drawn heavier than any other antenna here."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [46, 16],
+          [92, -40]
+        ],
+        "width": [23, 19]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [94, -46],
+          [144, -110]
+        ],
+        "width": [19, 14]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [146, -116],
+          [188, -182]
+        ],
+        "width": [14, 4]
+      }
+    }
+  ]
+}

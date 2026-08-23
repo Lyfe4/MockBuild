@@ -1,0 +1,595 @@
+{
+  "species": "aglais-io",
+  "constant": "AGLAIS_IO_PLATE",
+  "order": "lepidoptera",
+  "sex": "unsexed",
+  "hallmark": "the four eyespots, one on each wing, each ringed and lit with a bright pupil",
+  "reference": {
+    "title": "British and European Butterflies and Moths (Macrolepidoptera), plate VIII figure 3",
+    "artist": "H. Deuchert and Shirley Slocombe",
+    "year": 1895,
+    "source": "https://commons.wikimedia.org/wiki/File:British_and_European_butterflies_and_moths_(Macrolepidoptera)_(Plate_VIII)_(6466291101).jpg",
+    "licence": "Public domain (PD-old-70-expired)"
+  },
+  "doc": [
+    "*Aglais io*, upperside, wings spread — the peacock butterfly.",
+    "",
+    "Traced from figure 3 of plate VIII of W. E. Kirby's *British and European",
+    "Butterflies and Moths*, captioned under the old name *Vanessa io*, with the",
+    "larva beside it as 3a. `references/aglais-io.jpg` is the plate and",
+    "`references/SOURCES.md` has the provenance.",
+    "",
+    "The figure is drawn at an angle across the sheet rather than square to it,",
+    "which is normal for a book that fits six butterflies on a page and is why",
+    "nothing here is a coordinate lifted off the scan. What was taken is the",
+    "wing shape, the eyespot positions and the proportions; the plate is drawn",
+    "square, because a plate that inherited the page's layout would be a drawing",
+    "of a book.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **eyespots**, and there is nothing else close. Four of them, one to a",
+    "wing, and they are why the animal is called a peacock: a dark outer ring, a",
+    "paler inner ring, and a bright off-centre pupil that reads as a highlight.",
+    "Each is drawn as those three parts rather than as one shape, because a",
+    "single ellipse is a spot and the ringing is the whole effect. `markings:",
+    "'eyespots'` is the only record in the archive that says so, and this is the",
+    "drawing of that word.",
+    "",
+    "Then the **forewing apex**, which on a peacock is squared off and very",
+    "slightly hooked, with a shallow scoop out of the outer margin below it. A",
+    "rounded apex turns it into a tortoiseshell — which is figure 2 on the same",
+    "plate, and the animal it is most often confused with.",
+    "",
+    "The **dark border** round both wings, with the paler band just inside it, is",
+    "drawn as two strips: the margin traced, and a depth inwards. Bands that keep",
+    "their width round a curve, rather than wedges.",
+    "",
+    "## No legs",
+    "",
+    "A nymphalid with its wings spread shows none from above, and",
+    "`REQUIRED_PARTS.lepidoptera` does not ask for them. This family has only",
+    "four walking legs anyway — the forelegs are reduced to brushes held against",
+    "the thorax — and none of that is visible in dorsal view.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front of the head, y = 1000 at the tip of the abdomen. The",
+    "forewing apex reaches x = 1420 and y = -336; the hindwing reaches y = 1010.",
+    "The body is a tenth of the span, which is what a nymphalid is."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The hind wing first, so the forewing overlaps it at the base, which is",
+        "the way round a spread butterfly is put together."
+      ],
+      "id": "hindwing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [80, 368],
+          [300, 394],
+          [560, 434],
+          [790, 492],
+          [962, 566],
+          [1054, 668],
+          [1054, 780],
+          [978, 880],
+          [848, 952],
+          [690, 996],
+          [520, 1010],
+          [360, 986],
+          [240, 930],
+          [150, 844],
+          [96, 720],
+          [70, 560]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The venation, as nine strokes fanning from the wing base to the margin.",
+        "Kirby's lithograph carries the veins as breaks in the colour rather than",
+        "as lines; drawn as lines here, because an engraving has no other way to",
+        "say a wing is a membrane on a frame."
+      ],
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [160, 420],
+          [560, 540],
+          [900, 720]
+        ],
+        "to": [
+          [140, 640],
+          [440, 880],
+          [700, 890]
+        ],
+        "count": 9
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [794, 522],
+          [944, 592],
+          [1026, 672],
+          [1026, 776],
+          [956, 858],
+          [832, 924],
+          [684, 966],
+          [520, 980],
+          [364, 958],
+          [254, 904]
+        ],
+        "depth": 74
+      },
+      "note": [
+        "The pale band and the dark border, as two strips on one traced margin.",
+        "",
+        "The pale one is drawn first and reaches seventy-four units in from the edge;",
+        "the border is drawn over it and reaches fifty-six. What shows of the",
+        "wider strip is the band, which is how an engraver would get it and",
+        "means one measured edge rather than two — the second of which would be",
+        "the first offset by hand, and wrong by a few units all the way round."
+      ]
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [794, 522],
+          [944, 592],
+          [1026, 672],
+          [1026, 776],
+          [956, 858],
+          [832, 924],
+          [684, 966],
+          [520, 980],
+          [364, 958],
+          [254, 904]
+        ],
+        "depth": 56
+      }
+    },
+    {
+      "note": [
+        "The hindwing eyespot: three parts, drawn outward in. A dark outer ring, a",
+        "paler inner ring, and an off-centre pupil in bare paper.",
+        "",
+        "One shape would be a spot. What makes an eyespot is that it is ringed and",
+        "that the highlight is not in the middle of it, which is the trick every",
+        "animal with eyespots is playing and the reason they work at all."
+      ],
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [720, 700],
+        "radii": [136, 124]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [720, 700],
+        "radii": [92, 82]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [686, 662],
+        "radii": [36, 30]
+      }
+    },
+    {
+      "note": [
+        "The fore wing. The apex is squared off and faintly hooked and the outer",
+        "margin is scooped just below it — a rounded apex would make this a small",
+        "tortoiseshell, which is figure 2 on the same plate."
+      ],
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [80, 84],
+          [300, 20],
+          [620, -56],
+          [950, -134],
+          [1210, -186],
+          [1358, -214],
+          [1398, -140],
+          [1374, -20],
+          [1272, 112],
+          [1108, 214],
+          [906, 268],
+          [646, 290],
+          [382, 262],
+          [140, 192]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [180, 120],
+          [600, -10],
+          [1150, -140]
+        ],
+        "to": [
+          [200, 176],
+          [660, 180],
+          [1150, 60]
+        ],
+        "count": 9
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [1348, -190],
+          [1372, -140],
+          [1350, -26],
+          [1252, 100],
+          [1096, 192],
+          [900, 242],
+          [646, 264],
+          [400, 238]
+        ],
+        "depth": 74
+      },
+      "note": [
+        "The pale band and the dark border, as two strips on one traced margin.",
+        "",
+        "The pale one is drawn first and reaches seventy-four units in from the edge;",
+        "the border is drawn over it and reaches fifty-six. What shows of the",
+        "wider strip is the band, which is how an engraver would get it and",
+        "means one measured edge rather than two — the second of which would be",
+        "the first offset by hand, and wrong by a few units all the way round."
+      ]
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [1348, -190],
+          [1372, -140],
+          [1350, -26],
+          [1252, 100],
+          [1096, 192],
+          [900, 242],
+          [646, 264],
+          [400, 238]
+        ],
+        "depth": 56
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [1140, -16],
+        "radii": [112, 102]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [1140, -16],
+        "radii": [74, 66]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [1108, -52],
+        "radii": [30, 26]
+      }
+    },
+    {
+      "note": [
+        "The abdomen. Stout for a butterfly and short — a peacock overwinters as",
+        "an adult and carries the fat to do it."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 364],
+          [52, 382],
+          [56, 520],
+          [50, 680],
+          [40, 830],
+          [28, 940],
+          [16, 986],
+          [0, 1000],
+          [-16, 986],
+          [-28, 940],
+          [-40, 830],
+          [-50, 680],
+          [-56, 520],
+          [-52, 382]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-52, 470],
+          [0, 476],
+          [52, 470]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-48, 580],
+          [0, 586],
+          [48, 580]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-42, 690],
+          [0, 696],
+          [42, 690]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-34, 800],
+          [0, 806],
+          [34, 800]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-26, 900],
+          [0, 906],
+          [26, 900]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The thorax, furred, and drawn once on the axis. The three hatching",
+        "strokes are the fur; a filled shape would be a beetle's pronotum."
+      ],
+      "id": "thorax",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 8],
+          [74, 40],
+          [104, 120],
+          [110, 220],
+          [100, 300],
+          [80, 352],
+          [44, 376],
+          [0, 386],
+          [-44, 376],
+          [-80, 352],
+          [-100, 300],
+          [-110, 220],
+          [-104, 120],
+          [-74, 40]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [24, 70],
+          [14, 200],
+          [26, 320]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [54, 78],
+          [64, 206],
+          [54, 318]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [84, 110],
+          [92, 206],
+          [80, 296]
+        ]
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -30],
+          [62, -8],
+          [84, 44],
+          [62, 68],
+          [34, 84],
+          [0, 90],
+          [-34, 84],
+          [-62, 68],
+          [-84, 44],
+          [-62, -8]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [66, 34],
+        "radii": [24, 22]
+      }
+    },
+    {
+      "note": [
+        "A clubbed antenna, which is what puts this animal with the butterflies",
+        "rather than the moths — and the character that separates it from the",
+        "death's-head hawkmoth two accessions later, whose antennae taper to a",
+        "point. Two strokes for the shaft and a filled club at the end."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [40, 30],
+          [130, -46],
+          [236, -126]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [236, -126],
+          [300, -176],
+          [348, -206]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [352, -208],
+          [396, -240]
+        ],
+        "width": [42, 30]
+      }
+    }
+  ]
+}

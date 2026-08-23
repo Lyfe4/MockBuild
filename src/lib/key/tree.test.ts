@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { SPECIES } from '@/data';
 import type { Species } from '@/types';
 
+import type { KeyAnswer } from './answers';
 import { KEY_TRAITS, type KeyTraitId } from './traits';
 import {
   advance,
@@ -344,19 +345,49 @@ describe('advance', () => {
   });
 
   it('stops at a state no remaining species has, and drops what follows', () => {
-    const first = TREE.kind === 'question' ? TREE : undefined;
-    const offered = new Set(first?.branches.map((branch) => branch.option.value));
-    const deadEnd = first?.trait.options.find((option) => !offered.has(option.value));
+    // Found by walking rather than taken off the root, because the root does
+    // not always have a dead end to offer: the collection now covers every one
+    // of the six wing coverings, so the opening question has no unused answer.
+    // Somewhere below it always does — that is what pruning the branches means.
+    const dead = (
+      node: KeyNode,
+      answers: readonly KeyAnswer[],
+    ): { answers: readonly KeyAnswer[]; node: KeyNode; value: string } | undefined => {
+      if (node.kind === 'leaf') return undefined;
 
-    expect(deadEnd, 'the first question offers every state, so pick another case').toBeDefined();
+      const offered = new Set(node.branches.map((branch) => branch.option.value));
+      const unused = node.trait.options.find((option) => !offered.has(option.value));
 
+      if (unused !== undefined) return { answers, node, value: unused.value };
+
+      for (const branch of node.branches) {
+        const found = dead(branch.node, [
+          ...answers,
+          { trait: node.trait.id, value: branch.option.value },
+        ]);
+
+        if (found !== undefined) return found;
+      }
+
+      return undefined;
+    };
+
+    const found = dead(TREE, []);
+
+    expect(found, 'every question in the tree offers every state').toBeDefined();
+
+    const at = found!;
+    const node = at.node.kind === 'question' ? at.node : undefined;
     const position = advance(TREE, [
-      { trait: first!.trait.id, value: deadEnd!.value },
-      { trait: first!.trait.id, value: first!.branches[0]!.option.value },
+      ...at.answers,
+      { trait: node!.trait.id, value: at.value },
+      // And one more, which must be dropped along with the dead end: the
+      // answers are a path, and the path ended where the tree stopped agreeing.
+      { trait: node!.trait.id, value: node!.branches[0]!.option.value },
     ]);
 
-    expect(position.node).toBe(TREE);
-    expect(position.answers).toStrictEqual([]);
+    expect(position.node).toBe(at.node);
+    expect(position.answers).toStrictEqual(at.answers);
   });
 
   it('ignores answers past the leaf', () => {

@@ -1,0 +1,644 @@
+{
+  "species": "gryllus-campestris",
+  "constant": "GRYLLUS_CAMPESTRIS_PLATE",
+  "order": "orthoptera",
+  "sex": "male",
+  "hallmark": "the leathery tegmina with their coarse venation, the huge hind femora, and the pair of cerci",
+  "reference": {
+    "title": "Musée entomologique illustré: Les insectes, Orthoptères plate I",
+    "artist": "Jules Rothschild",
+    "year": 1878,
+    "source": "https://commons.wikimedia.org/wiki/File:Les_insectes_(Pl._I)_(6008126611).jpg",
+    "licence": "Public domain (PD-old-70-expired)"
+  },
+  "doc": [
+    "*Gryllus campestris*, dorsal — the field cricket, male.",
+    "",
+    "The archive's first Orthoptera, and the first plate whose order had to be",
+    "added to `PLATE_ORDERS` and `REQUIRED_PARTS`. Traced from the Orthoptères",
+    "plate of the *Musée entomologique illustré* (1878), where the cricket is",
+    "named in the margin and shares the sheet with a mole cricket, two earwigs",
+    "and a cockroach. `references/gryllus-campestris.jpg` is the plate.",
+    "",
+    "## The reference is not a dorsal figure, and that had to be worked round",
+    "",
+    "This is the only reference in the folder that is a *habitat scene* rather",
+    "than a specimen figure: the animals are drawn among bindweed and grass, lit,",
+    "and posed. The cricket is seen from above and a little behind — close to",
+    "dorsal, and not square to it.",
+    "",
+    "So what came off the plate is the arrangement: where the pronotum ends and",
+    "the tegmina begin, how far the hind femur reaches, how the antennae sweep",
+    "back, that the tegminal venation is coarse enough to count. The",
+    "*proportions* were then taken from the published measurements — 19 to 27 mm",
+    "long, about a third as wide as long — because a foreshortened figure cannot",
+    "give them and guessing from one would have made the animal too short. That",
+    "is a weaker provenance than the other fifteen plates have and it is recorded",
+    "here rather than left for somebody to notice.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **tegmina**: leathery forewings lying flat over the abdomen, one",
+    "overlapping the other, with venation coarse enough to draw. They are the",
+    "reason `WING_COVERS` gained a `tegmina` state — a cricket's forewings are",
+    "not the hard cases of a beetle and not the clear membrane of a wasp, and",
+    "making the record answer either would have been making it lie.",
+    "",
+    "The **stridulatory field** on the tegmen — the harp and the oval mirror a",
+    "male rubs to sing — is drawn as one cell, because it is the reason this",
+    "plate commits to a sex and because a field cricket is far more often heard",
+    "than seen.",
+    "",
+    "Then the **hind femur**, which is a third of the animal and three times the",
+    "depth of any other limb here. Drawn at the ground beetle's proportions a",
+    "cricket cannot jump, and a saltatorial leg is the character that puts it in",
+    "this order at a glance.",
+    "",
+    "Then the **cerci**: the two long tails at the tip of the abdomen. They are",
+    "the part `REQUIRED_PARTS.orthoptera` asks for that no other order does, and",
+    "`cercus` had been sitting in `PLATE_PART_IDS` unused since the schema was",
+    "written, with a comment saying it was for a cricket's tails.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front of the head, y = 1000 at the tip of the abdomen. Pronotum",
+    "210 to 420, tegmina 410 to 900. The cerci reach y = 1210 and the antennae",
+    "out to x = 520 and above y = -360."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The legs first, so they pass under the body.",
+        "",
+        "The hind femur is the whole point of the order: 130 units deep against 44",
+        "for the fore femur, which is the ratio the measurements give and roughly",
+        "what the reference shows. Everything a cricket does that a beetle cannot",
+        "is in that shape."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [120, 470],
+          [230, 560],
+          [330, 660]
+        ],
+        "width": [130, 116, 78]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [330, 660],
+          [400, 780],
+          [452, 900]
+        ],
+        "width": [46, 38, 30]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [452, 900],
+          [476, 960]
+        ],
+        "width": [26, 22]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [478, 966],
+          [500, 1024]
+        ],
+        "width": [22, 18]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [502, 1030],
+          [522, 1088]
+        ],
+        "width": [18, 7]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [120, 400],
+          [200, 390],
+          [276, 382]
+        ],
+        "width": [46, 42, 36]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [276, 382],
+          [338, 340],
+          [394, 296]
+        ],
+        "width": [32, 28, 24]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [394, 296],
+          [420, 272]
+        ],
+        "width": [22, 19]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [423, 268],
+          [448, 244]
+        ],
+        "width": [19, 16]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [451, 240],
+          [476, 214]
+        ],
+        "width": [16, 6]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [110, 250],
+          [190, 210],
+          [250, 176]
+        ],
+        "width": [46, 42, 36]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [250, 176],
+          [300, 120],
+          [340, 62]
+        ],
+        "width": [32, 28, 24]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [340, 62],
+          [360, 26]
+        ],
+        "width": [22, 19]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [362, 20],
+          [380, -16]
+        ],
+        "width": [19, 16]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [382, -22],
+          [400, -58]
+        ],
+        "width": [16, 6]
+      }
+    },
+    {
+      "note": [
+        "The abdomen, drawn before the tegmina so they lie over it. Only its last",
+        "two segments and the cerci show on the finished plate, which is what a",
+        "cricket at rest looks like from above."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 396],
+          [110, 404],
+          [144, 470],
+          [150, 570],
+          [146, 680],
+          [136, 790],
+          [112, 890],
+          [68, 952],
+          [0, 976],
+          [-68, 952],
+          [-112, 890],
+          [-136, 790],
+          [-146, 680],
+          [-150, 570],
+          [-144, 470],
+          [-110, 404]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [-136, 500],
+          [0, 500],
+          [136, 500]
+        ],
+        "to": [
+          [-90, 900],
+          [0, 900],
+          [90, 900]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "A cercus, in two joints. The pair of them is what `REQUIRED_PARTS` asks",
+        "this order for and no other, and they are longer than they look — nearly",
+        "a quarter of the animal past the tip of the abdomen."
+      ],
+      "id": "cercus",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [54, 960],
+          [120, 1090]
+        ],
+        "width": [30, 20]
+      }
+    },
+    {
+      "id": "cercus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [122, 1096],
+          [176, 1210]
+        ],
+        "width": [20, 7]
+      }
+    },
+    {
+      "note": [
+        "One tegmen: a leathery forewing lying flat over the abdomen. Authored",
+        "from the midline out, so the renderer's reflection supplies the other —",
+        "which is a small lie, because on the animal one tegmen overlaps the other",
+        "and they are not symmetric. A plate that drew the overlap would have to",
+        "choose a side, and the character a reader is being shown is that the",
+        "covers are leathery and flat rather than which of them is on top."
+      ],
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 406],
+          [96, 410],
+          [152, 448],
+          [170, 530],
+          [172, 620],
+          [164, 716],
+          [144, 806],
+          [110, 872],
+          [60, 900],
+          [0, 906]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The venation, which on a tegmen is coarse enough to draw stroke for",
+        "stroke rather than suggested — five lengthwise, four across."
+      ],
+      "id": "wing-vein",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [24, 450],
+          [26, 650],
+          [36, 870]
+        ],
+        "to": [
+          [136, 470],
+          [152, 650],
+          [92, 846]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [40, 500],
+          [130, 520]
+        ],
+        "to": [
+          [46, 820],
+          [100, 800]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "note": [
+        "The pale patch at the base of the tegmen — yellow on the animal, and the",
+        "one bright mark on a cricket that is otherwise glossy black."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [104, 446],
+        "radii": [40, 22],
+        "rotate": 10
+      }
+    },
+    {
+      "note": [
+        "The mirror: the oval cell in the stridulatory field that a male rubs to",
+        "sing, and the reason this plate commits to a sex. A field cricket is",
+        "heard far more often than it is seen, and this is the organ that does it."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "ellipse",
+        "at": [86, 700],
+        "radii": [58, 44],
+        "rotate": -6
+      }
+    },
+    {
+      "note": [
+        "The pronotum: a transverse saddle with almost straight sides, and shorter",
+        "than it is wide. A cricket has no scutellum, which is why",
+        "`REQUIRED_PARTS.orthoptera` does not ask for one."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 206],
+          [92, 208],
+          [160, 222],
+          [175, 270],
+          [176, 340],
+          [168, 398],
+          [110, 414],
+          [0, 420],
+          [-110, 414],
+          [-168, 398],
+          [-176, 340],
+          [-175, 270],
+          [-160, 222],
+          [-92, 208]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [40, 250],
+          [38, 380]
+        ],
+        "to": [
+          [136, 258],
+          [140, 378]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "note": [
+        "The head: large, rounded and as wide as the pronotum, which is a cricket",
+        "and not a grasshopper — a grasshopper's head is drawn out and slanted."
+      ],
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -6],
+          [70, 4],
+          [122, 44],
+          [156, 110],
+          [160, 170],
+          [130, 214],
+          [70, 232],
+          [0, 238],
+          [-70, 232],
+          [-130, 214],
+          [-160, 170],
+          [-156, 110],
+          [-122, 44],
+          [-70, 4]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [116, 86],
+        "radii": [30, 26]
+      }
+    },
+    {
+      "note": [
+        "The three ocelli, in a line across the face between the compound eyes:",
+        "one on the midline, drawn once, and a pair either side of it."
+      ],
+      "id": "ocellus",
+      "rank": "detail",
+      "fill": "ink",
+      "mirror": false,
+      "shape": {
+        "kind": "ellipse",
+        "at": [0, 34],
+        "radii": [14, 12]
+      }
+    },
+    {
+      "id": "ocellus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [46, 26],
+        "radii": [14, 12]
+      }
+    },
+    {
+      "id": "mandible",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [48, 4],
+          [74, -30],
+          [64, -58]
+        ],
+        "width": [34, 24, 8]
+      }
+    },
+    {
+      "note": [
+        "The antenna. Filiform and very long — as long as the body on the animal,",
+        "and about three quarters of it here, because the frame is measured from",
+        "the drawing and a full-length pair would leave the cricket small in the",
+        "middle of a mostly empty box.",
+        "",
+        "Three open strokes rather than a chain of joints: the segments are far too",
+        "fine to draw, and what has to read is the sweep."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [92, 40],
+          [180, -40],
+          [270, -118]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [270, -118],
+          [360, -200],
+          [440, -274]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [440, -274],
+          [490, -330],
+          [520, -368]
+        ]
+      }
+    }
+  ]
+}

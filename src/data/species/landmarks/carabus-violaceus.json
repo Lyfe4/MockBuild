@@ -1,0 +1,620 @@
+{
+  "species": "carabus-violaceus",
+  "constant": "CARABUS_VIOLACEUS_PLATE",
+  "order": "coleoptera",
+  "sex": "unsexed",
+  "hallmark": "the reflexed violet border round each wing case, and the long runner's legs",
+  "reference": {
+    "title": "Käferbuch. Naturgeschichte der Käfer Europas, table 3 figure 9",
+    "artist": "Emil Hochdanz",
+    "year": 1876,
+    "source": "https://commons.wikimedia.org/wiki/File:Carabus.violaceus.-.calwer.03.09.jpg",
+    "licence": "Public domain (PD-old-100-1923)"
+  },
+  "doc": [
+    "*Carabus violaceus*, dorsal — the violet ground beetle.",
+    "",
+    "The third plate traced from Emil Hochdanz's lithographs for Calwer's",
+    "*Käferbuch* (1876), after the stag beetle and the seven-spot, and by now the",
+    "reason for staying with one engraver is visible on the contact sheet: three",
+    "beetles that look like three beetles rather than three projects.",
+    "`references/carabus-violaceus.jpg` is the file and `references/SOURCES.md`",
+    "has the provenance.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **border**. This beetle is not violet; it is black with a violet rim,",
+    "the outer margin of each wing case turned up and catching the light, and",
+    "that rim is the whole of the common name. It is drawn as a `strip` — the",
+    "outer margin traced, and a depth inwards from it — rather than as a second",
+    "outline, because a band that keeps its width round a curve is a border and",
+    "one that does not is a wedge.",
+    "",
+    "Then the **legs**, which are the other half of the animal. A ground beetle is",
+    "a runner: the femora are long, the tibiae longer, and the hind tarsi reach a",
+    "third of a body length past the wing cases. Drawn at a chafer's proportions",
+    "it becomes a dung beetle.",
+    "",
+    "Then the **antennae**, which are filiform and are drawn segment by segment.",
+    "Eleven on the animal; seven here, because at eighty pixels eleven capsules",
+    "end-to-end is a dotted line. What has to read is that they are a chain of",
+    "equal joints rather than a club or a comb, and seven says that.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front margin of the head, y = 1000 at the elytral apex, which",
+    "puts the pronotum at 200–410 and the wing cases at 400–1000 — the",
+    "proportions measured off the lithograph, where the body is 405 pixels long",
+    "and 157 across. The mandibles and the antennae reach above y = 0 and the",
+    "hind tarsi past y = 1290; the frame is measured from the drawing.",
+    "",
+    "Drawing order is back to front: legs, then the wing cases and their surface",
+    "work, then the thorax, then the head and its appendages."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The legs first, so they pass under the body.",
+        "",
+        "Long and slender, and measured that way: a Carabus runs down its prey on",
+        "the ground rather than digging or clinging, and the reference shows all",
+        "six legs held clear of the body with nothing foreshortened. Femora at",
+        "about nine per cent of the width across the wing cases and tibiae at six,",
+        "which is finer than the chafer's and heavier than the ladybird's."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [140, 620],
+          [220, 700],
+          [286, 772]
+        ],
+        "width": [34, 30, 26]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [286, 772],
+          [300, 900],
+          [300, 1030]
+        ],
+        "width": [24, 21, 18]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [300, 1030],
+          [296, 1110]
+        ],
+        "width": [16, 14]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [295, 1118],
+          [290, 1196]
+        ],
+        "width": [14, 12]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [289, 1204],
+          [281, 1292]
+        ],
+        "width": [12, 5]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [130, 430],
+          [230, 486],
+          [318, 540]
+        ],
+        "width": [34, 30, 26]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [318, 540],
+          [386, 588],
+          [448, 634]
+        ],
+        "width": [24, 21, 18]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [448, 634],
+          [478, 660]
+        ],
+        "width": [16, 14]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [482, 664],
+          [508, 690]
+        ],
+        "width": [14, 12]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [512, 694],
+          [538, 722]
+        ],
+        "width": [12, 5]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [76, 262],
+          [150, 222],
+          [206, 190]
+        ],
+        "width": [34, 30, 26]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [206, 190],
+          [252, 140],
+          [288, 92]
+        ],
+        "width": [24, 21, 18]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [288, 92],
+          [306, 60]
+        ],
+        "width": [16, 14]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [308, 54],
+          [322, 22]
+        ],
+        "width": [14, 12]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [324, 16],
+          [336, -18]
+        ],
+        "width": [12, 5]
+      }
+    },
+    {
+      "note": [
+        "One wing case, from the suture outwards. The pair meet on the midline, so",
+        "the inner edge of this shape is the axis and the renderer's reflection",
+        "supplies the other one.",
+        "",
+        "Widest at about three fifths of the way down, which is where a Carabus",
+        "carries its shoulder — further back than a ladybird and much further back",
+        "than a chafer."
+      ],
+      "id": "elytron",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 398],
+          [92, 400],
+          [160, 428],
+          [186, 494],
+          [193, 586],
+          [190, 690],
+          [176, 790],
+          [148, 880],
+          [104, 952],
+          [52, 990],
+          [0, 1000]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The violet border, and the reason for the name.",
+        "",
+        "A strip: the outer margin traced a little inside the outline, and a depth",
+        "of twenty-four units inwards from it. Set inside rather than on the",
+        "margin because a band drawn exactly on an outline is half on the animal",
+        "and half off it, and the plate test measures the ink rather than the",
+        "intention."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [92, 414],
+          [152, 440],
+          [174, 500],
+          [180, 588],
+          [176, 688],
+          [162, 784],
+          [136, 868],
+          [96, 934]
+        ],
+        "depth": 24
+      }
+    },
+    {
+      "note": [
+        "The striae. Faint on this beetle — Calwer's figure shows three low ridges",
+        "and a granulate surface between them rather than the deep grooves of a",
+        "ground beetle like Carabus nemoralis — so four strokes, laid from a guide",
+        "near the suture to one inside the border."
+      ],
+      "id": "stria",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [26, 452],
+          [24, 700],
+          [34, 924]
+        ],
+        "to": [
+          [148, 476],
+          [160, 700],
+          [98, 892]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "note": [
+        "The granulation, as six short cross-strokes over the same field. Together",
+        "with the striae this is what stops a plain black wing case reading as a",
+        "silhouette at thumbnail size."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [40, 540],
+          [92, 566]
+        ],
+        "to": [
+          [56, 856],
+          [110, 830]
+        ],
+        "count": 6
+      }
+    },
+    {
+      "note": [
+        "The suture, drawn once on the axis. Reflecting it would lay a second copy",
+        "a hair off the first and show as a doubled line down the beetle's back."
+      ],
+      "id": "seam",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 410],
+          [0, 700],
+          [0, 986]
+        ]
+      }
+    },
+    {
+      "id": "scutellum",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 400],
+          [32, 408],
+          [17, 438],
+          [0, 456],
+          [-17, 438],
+          [-32, 408]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The pronotum: a broad shield, widest a third of the way back, with the",
+        "hind angles drawn out into the small backward points that are a Carabus",
+        "character. Drawn once on the axis, because it straddles it."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 204],
+          [88, 198],
+          [146, 222],
+          [168, 282],
+          [164, 340],
+          [150, 388],
+          [128, 402],
+          [64, 406],
+          [0, 408],
+          [-64, 406],
+          [-128, 402],
+          [-150, 388],
+          [-164, 340],
+          [-168, 282],
+          [-146, 222],
+          [-88, 198]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [22, 250],
+          [24, 372]
+        ],
+        "to": [
+          [118, 258],
+          [116, 368]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "note": [
+        "The median impression down the pronotum, drawn once on the axis for the",
+        "same reason the suture is."
+      ],
+      "id": "pronotum",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 224],
+          [0, 310],
+          [0, 396]
+        ]
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -6],
+          [46, 0],
+          [86, 26],
+          [110, 74],
+          [116, 132],
+          [104, 186],
+          [60, 222],
+          [0, 232],
+          [-60, 222],
+          [-104, 186],
+          [-116, 132],
+          [-110, 74],
+          [-86, 26],
+          [-46, 0]
+        ]
+      }
+    },
+    {
+      "note": [
+        "A mandible. Sickle-shaped, crossed in front of the head on the animal and",
+        "drawn open here, because two crossed mandibles at plate size are one",
+        "blot. Mirrored, so this entry draws both."
+      ],
+      "id": "mandible",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [38, 2],
+          [58, -28],
+          [52, -58]
+        ],
+        "width": [24, 16, 5]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [100, 120],
+        "radii": [20, 26],
+        "rotate": 8
+      }
+    },
+    {
+      "note": [
+        "The antenna: a chain of equal joints, which is what `filiform` means and",
+        "the character that separates this beetle from every scarab in the",
+        "collection. The scape is the stout first joint; six more carry it up and",
+        "out to where the reference puts the tip."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [60, 44],
+          [86, 16]
+        ],
+        "width": [26, 22]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [88, 12],
+          [108, -18]
+        ],
+        "width": [22, 20]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [110, -24],
+          [124, -58]
+        ],
+        "width": [20, 18]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [126, -64],
+          [136, -100]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [137, -106],
+          [142, -140]
+        ],
+        "width": [15, 12]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [142, -146],
+          [143, -178]
+        ],
+        "width": [12, 7]
+      }
+    }
+  ]
+}

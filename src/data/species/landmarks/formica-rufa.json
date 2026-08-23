@@ -1,0 +1,612 @@
+{
+  "species": "formica-rufa",
+  "constant": "FORMICA_RUFA_PLATE",
+  "order": "hymenoptera",
+  "sex": "female",
+  "hallmark": "no wings at all, and the waist between the alitrunk and the gaster that is left as a gap",
+  "reference": {
+    "title": "Ants, Bees, and Wasps, plate 2 figure 5",
+    "artist": "John Lubbock",
+    "year": 1897,
+    "source": "https://commons.wikimedia.org/wiki/File:Ants,_bees,_and_wasps_(Plate_2)_(8476376962).jpg",
+    "licence": "Public domain (PD-old-70-expired)"
+  },
+  "doc": [
+    "*Formica rufa*, dorsal — the red wood ant, worker.",
+    "",
+    "Traced from figure 5 of plate 2 of John Lubbock's *Ants, Bees, and Wasps*,",
+    "where the plate's own caption names it and the other four figures are *Atta*",
+    "and *Pheidole*. `references/formica-rufa.jpg` is the plate; the wood ant is",
+    "the large figure at the bottom, drawn square to the page with all six legs",
+    "and both antennae clear of the body.",
+    "",
+    "## The first plate with no wings",
+    "",
+    "Which is why `REQUIRED_PARTS.hymenoptera` no longer asks for any. A worker",
+    "ant has none — not folded, not reduced, none — and neither do the females of",
+    "a good many other families in the order, so the list was asking for a part",
+    "that is optional rather than for one whose absence is a mistake. The",
+    "bumblebee's and the hornet's own tests assert their four wings, which is",
+    "where a fact about one species belongs.",
+    "",
+    "`morphology.wingCover` says `absent`, and this is the only record in the",
+    "collection that does. It is worth a plate on its own account for that: the",
+    "key's first question is what covers the back, and until this animal arrived",
+    "one of its six answers led nowhere.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **waist**. An ant is three parts with two constrictions, and the",
+    "constrictions are the order: head, alitrunk, gaster, with the petiole",
+    "between the last two. Drawn as a *gap* — the alitrunk ends at y = 568 and",
+    "the gaster starts at 582 — on the same reasoning the bumblebee's plate uses,",
+    "which is that a waist is the absence of an animal rather than a part of one.",
+    "",
+    "Then the **antennae**, which are elbowed. A long scape from the head, a bend,",
+    "and the funiculus carrying on at an angle: `geniculate` is the character",
+    "state and `ANTENNA_FORMS` has no such word, so the record says `filiform`,",
+    "which is the closest true thing — the joints past the elbow are a chain of",
+    "equal segments. The drawing says the rest.",
+    "",
+    "Then the **head**, which is nearly square with a slightly notched back",
+    "margin, and as wide as the gaster. A worker's head carries the mandibles and",
+    "the muscle to close them, and the notch at the occiput is where a",
+    "*Formica*'s neck sits.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front of the head, y = 1000 at the tip of the gaster. Head 0 to",
+    "238, alitrunk 248 to 568, gaster 578 to 1004. The antennae reach x = 444 and",
+    "above y = -84; the hind tarsi reach y = 1090."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The legs first, so they pass under the body.",
+        "",
+        "Long and fine — a wood ant walks fifty metres from its nest and back — and",
+        "much finer than any beetle's here: the femur is 26 units against the",
+        "violet ground beetle's 34 on an animal a third of the length. The spines",
+        "Lubbock draws on each tibia are left out; at eighty pixels they are a",
+        "furred outline."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [50, 548],
+          [150, 620],
+          [240, 690]
+        ],
+        "width": [26, 23, 20]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [240, 690],
+          [318, 790],
+          [386, 890]
+        ],
+        "width": [18, 16, 14]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [386, 890],
+          [420, 950]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [422, 956],
+          [452, 1016]
+        ],
+        "width": [11, 9]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [454, 1022],
+          [482, 1090]
+        ],
+        "width": [9, 4]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [46, 430],
+          [150, 470],
+          [244, 510]
+        ],
+        "width": [26, 23, 20]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [244, 510],
+          [330, 560],
+          [406, 610]
+        ],
+        "width": [18, 16, 14]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [406, 610],
+          [444, 640]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [447, 644],
+          [482, 674]
+        ],
+        "width": [11, 9]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [485, 678],
+          [520, 708]
+        ],
+        "width": [9, 4]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [50, 300],
+          [160, 240],
+          [250, 190]
+        ],
+        "width": [26, 23, 20]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [250, 190],
+          [318, 120],
+          [372, 54]
+        ],
+        "width": [18, 16, 14]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [372, 54],
+          [400, 10]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [402, 4],
+          [426, -40]
+        ],
+        "width": [11, 9]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [428, -46],
+          [450, -92]
+        ],
+        "width": [9, 4]
+      }
+    },
+    {
+      "note": [
+        "The gaster — the ant's abdomen behind the waist. Broad, smooth and",
+        "shining, and where a wood ant carries the formic acid it sprays."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 578],
+          [86, 584],
+          [150, 632],
+          [178, 716],
+          [182, 806],
+          [168, 894],
+          [128, 962],
+          [68, 996],
+          [0, 1004],
+          [-68, 996],
+          [-128, 962],
+          [-168, 894],
+          [-182, 806],
+          [-178, 716],
+          [-150, 632],
+          [-86, 584]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The tergite lines across the gaster: three strokes, each crossing the",
+        "axis. Both guides are centred on x = 0, which is the case the fan",
+        "validator allows on the midline."
+      ],
+      "id": "abdomen-segment",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [-160, 700],
+          [0, 690],
+          [160, 700]
+        ],
+        "to": [
+          [-120, 930],
+          [0, 916],
+          [120, 930]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "note": [
+        "The pubescence on the gaster, as five strokes. A wood ant is not furred",
+        "the way a bumblebee is, but it is not bare either, and hatching is what",
+        "an engraving has for the difference."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [60, 640],
+          [40, 740]
+        ],
+        "to": [
+          [148, 762],
+          [118, 872]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "The alitrunk: the middle section, which in a wingless worker is the",
+        "thorax with nothing on it. Its profile from above steps in twice — the",
+        "pronotum, then the mesonotum, then the propodeum — and those steps are",
+        "the only structure this part of the animal has.",
+        "",
+        "It stops at y = 568 and the gaster starts at 578. The ten units between",
+        "them are the petiole, and they are drawn as nothing at all: a waist is",
+        "the absence of an animal rather than a part of one, and the bumblebee's",
+        "plate makes the same call for the same reason."
+      ],
+      "id": "thorax",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 248],
+          [44, 252],
+          [62, 290],
+          [66, 340],
+          [58, 392],
+          [44, 436],
+          [52, 486],
+          [44, 528],
+          [24, 560],
+          [0, 568],
+          [-24, 560],
+          [-44, 528],
+          [-52, 486],
+          [-44, 436],
+          [-58, 392],
+          [-66, 340],
+          [-62, 290],
+          [-44, 252]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [12, 300],
+          [14, 420]
+        ],
+        "to": [
+          [42, 300],
+          [38, 420]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "note": [
+        "The head: nearly square, as wide as the gaster, with the back margin",
+        "slightly notched where the neck sits. A worker's head is mostly the",
+        "muscle that closes its mandibles."
+      ],
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -8],
+          [52, -2],
+          [88, 30],
+          [102, 90],
+          [100, 156],
+          [88, 212],
+          [46, 238],
+          [0, 230],
+          [-46, 238],
+          [-88, 212],
+          [-100, 156],
+          [-102, 90],
+          [-88, 30],
+          [-52, -2]
+        ]
+      }
+    },
+    {
+      "note": [
+        "A mandible: triangular and toothed on the animal, drawn open here.",
+        "Crossed in front of the head as an ant usually carries them, two of them",
+        "at plate size are one blot."
+      ],
+      "id": "mandible",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [34, 4],
+          [54, -30],
+          [42, -60]
+        ],
+        "width": [26, 18, 6]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [80, 98],
+        "radii": [16, 22]
+      }
+    },
+    {
+      "note": [
+        "The three ocelli on the vertex, in a small triangle between the compound",
+        "eyes: one on the midline, drawn once, and a pair either side of it. A",
+        "wood ant worker has them and most smaller ants do not, so they are worth",
+        "the three parts."
+      ],
+      "id": "ocellus",
+      "rank": "detail",
+      "fill": "ink",
+      "mirror": false,
+      "shape": {
+        "kind": "ellipse",
+        "at": [0, 170],
+        "radii": [9, 8]
+      }
+    },
+    {
+      "id": "ocellus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [30, 196],
+        "radii": [9, 8]
+      }
+    },
+    {
+      "note": [
+        "The sculpture on the head, as three strokes. A Formica's head is finely",
+        "striate rather than smooth, which is the difference between it and the",
+        "polished gaster below."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "head",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [22, 60],
+          [24, 200]
+        ],
+        "to": [
+          [62, 66],
+          [66, 196]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "note": [
+        "The antenna, elbowed. One long scape out of the head, a bend, and four",
+        "funicular joints carrying on at an angle — which is what an ant's antenna",
+        "does and what no other antenna in this collection does.",
+        "",
+        "`ANTENNA_FORMS` has no `geniculate`, so the record answers `filiform`:",
+        "true of the joints past the elbow, and the closest of six wrong answers",
+        "to the whole. The bend is drawn rather than recorded."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [46, 60],
+          [150, -14],
+          [250, -88]
+        ],
+        "width": [22, 19, 17]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [256, -86],
+          [304, -66]
+        ],
+        "width": [17, 15]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [308, -62],
+          [354, -42]
+        ],
+        "width": [15, 13]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [358, -38],
+          [402, -18]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [406, -14],
+          [444, 4]
+        ],
+        "width": [11, 8]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [448, 8],
+          [484, 26]
+        ],
+        "width": [8, 5]
+      }
+    }
+  ]
+}

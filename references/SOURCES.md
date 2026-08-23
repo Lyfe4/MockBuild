@@ -205,3 +205,226 @@ plate holds twenty-five scarabs and chafers, so it is also the one place in
 this folder where a reader can see what the drawing was chosen _against_ — the
 several other big green beetles a rose chafer is mistaken for are on the same
 sheet.
+
+---
+
+## Carabus violaceus
+
+|                  |                                                                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Carabus violaceus_ Linnaeus, 1758 — violet ground beetle                                                                               |
+| **View**         | Dorsal, whole animal, legs and antennae spread                                                                                          |
+| **File**         | [`carabus-violaceus.jpg`](carabus-violaceus.jpg) — 444 × 685, 72 KB                                                                     |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:Carabus.violaceus.-.calwer.03.09.jpg>                                                          |
+| **File URL**     | <https://upload.wikimedia.org/wikipedia/commons/5/52/Carabus.violaceus.-.calwer.03.09.jpg>                                              |
+| **Author**       | Emil Hochdanz (1816–1885), lithographer                                                                                                 |
+| **Published in** | Carl Gustav Calwer & Gustav Jäger, _Käferbuch. Naturgeschichte der Käfer Europas_, Stuttgart: Julius Hoffmann, 1876 — Table 3, figure 9 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-100-1923}}`.                                                               |
+| **Downloaded**   | 2026-08-23                                                                                                                              |
+| **Used by**      | `src/data/species/landmarks/carabus-violaceus.json`                                                                                     |
+
+The third plate traced from Calwer's _Käferbuch_, after the stag beetle and the
+seven-spot, and chosen for that reason: three beetles from one engraver's hand
+sit together on the contact sheet without looking like three projects. The figure
+gives what a ground beetle needs — a body 405 pixels long and 157 across, all
+six legs clear of it, the reflexed violet margin readable as a band, and the
+antennae segment by segment.
+
+---
+
+## Chrysolina coerulans
+
+|                  |                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Chrysolina coerulans_ (Scriba, 1791) — blue mint beetle                                                                                 |
+| **View**         | Dorsal, whole animal, legs tucked close                                                                                                  |
+| **File**         | [`chrysolina-coerulans.jpg`](chrysolina-coerulans.jpg) — 229 × 250, 31 KB                                                                |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:Chrysolina.coerulans.-.calwer.44.06.jpg>                                                        |
+| **File URL**     | <https://upload.wikimedia.org/wikipedia/commons/b/b2/Chrysolina.coerulans.-.calwer.44.06.jpg>                                            |
+| **Author**       | Emil Hochdanz (1816–1885), lithographer                                                                                                  |
+| **Published in** | Carl Gustav Calwer & Gustav Jäger, _Käferbuch. Naturgeschichte der Käfer Europas_, Stuttgart: Julius Hoffmann, 1876 — Table 44, figure 6 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-100-1923}}`.                                                                |
+| **Downloaded**   | 2026-08-23                                                                                                                               |
+| **Used by**      | `src/data/species/landmarks/chrysolina-coerulans.json`                                                                                   |
+
+**A substitution, and worth recording as one.** This slot was meant for an
+Australian Christmas beetle — an _Anoplognathus_, for the local relevance an
+archive that calls itself southern ought to have. There is no public-domain
+figure of one. Everything on Wikimedia Commons under that genus is either a
+modern photograph under a Creative Commons licence or a museum type-specimen
+photograph taken well after 1923, and the plate contract requires a reference
+whose copyright has expired. Rather than trace an animal from a photograph nobody
+may redistribute, the slot went to a documented European species with a usable
+lithograph.
+
+The smallest reference in the folder at 229 pixels square — smaller even than
+the seven-spot's — and it did not matter, for the same reason it did not matter
+there: what a leaf beetle needs from a reference is the outline, the puncture
+rows and where the short legs sit, and all three survive at that size. It is
+also the broadest animal in the collection, which is the character the plate is
+drawn to carry.
+
+---
+
+## Aglais io
+
+|                  |                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Aglais io_ (Linnaeus, 1758) — peacock butterfly. Captioned _Vanessa io_ on the plate.                                                |
+| **View**         | Upperside, wings spread — figure 3. The sheet holds six butterflies and four larvae; only figure 3 is traced.                         |
+| **File**         | [`aglais-io.jpg`](aglais-io.jpg) — 2160 × 3228, 737 KB                                                                                |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:British_and_European_butterflies_and_moths_(Macrolepidoptera)_(Plate_VIII)_(6466291101).jpg> |
+| **Author**       | H. Deuchert and Shirley Slocombe, illustrators; W. E. Kirby, author                                                                   |
+| **Published in** | W. E. Kirby, _British and European Butterflies and Moths (Macrolepidoptera)_, London: Cassell, 1895 — Plate VIII, figure 3            |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-70-expired}}`; scanned by the Biodiversity Heritage Library.             |
+| **Downloaded**   | 2026-08-23                                                                                                                            |
+| **Used by**      | `src/data/species/landmarks/aglais-io.json`                                                                                           |
+
+Kirby's plates fit six butterflies to a page, so the figures are laid at angles
+across the sheet rather than square to it. Nothing in the landmark file is a
+coordinate lifted off the scan: what was taken is the wing shape, the eyespot
+positions and the proportions, and the plate is drawn square. A plate that
+inherited the page's layout would be a drawing of a book.
+
+Figure 2 on the same sheet is _Vanessa xanthomelas_ and figure 1 _V.
+polychloros_, which is the small mercy of a crowded plate — the animals a peacock
+is confused with are on it, so the apex shape that separates them could be
+checked without leaving the image.
+
+---
+
+## Acherontia atropos
+
+|                  |                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Acherontia atropos_ (Linnaeus, 1758) — death's-head hawkmoth                                                                         |
+| **View**         | Upperside, wings spread, square to the page — figure 1, with its larva as 1a                                                          |
+| **File**         | [`acherontia-atropos.jpg`](acherontia-atropos.jpg) — 2200 × 3259, 824 KB                                                              |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:British_and_European_butterflies_and_moths_(Macrolepidoptera)_(Plate_XIII)_(6466294171).jpg> |
+| **Author**       | H. Deuchert and Shirley Slocombe, illustrators; W. E. Kirby, author                                                                   |
+| **Published in** | W. E. Kirby, _British and European Butterflies and Moths (Macrolepidoptera)_, London: Cassell, 1895 — Plate XIII, figure 1            |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-70-expired}}`.                                                           |
+| **Downloaded**   | 2026-08-23                                                                                                                            |
+| **Used by**      | `src/data/species/landmarks/acherontia-atropos.json`                                                                                  |
+
+The same book and the same hands as the peacock, and the better figure of the
+two: this one is drawn square to the page and symmetric, so the proportions came
+off it directly — 425 pixels from the front of the head to the tip of the
+abdomen, 122 units across the thorax, a half-span of 1.15 body lengths. The skull
+on the thorax is drawn clearly enough to trace as three shapes, which is the
+whole reason this animal is in the collection.
+
+---
+
+## Ischnura elegans
+
+|                  |                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| **Species**      | _Ischnura elegans_ (Vander Linden, 1820) — blue-tailed damselfly, male                             |
+| **View**         | Dorsal, × 2, two figures — the lower pair on the plate. The right-hand figure is traced.           |
+| **File**         | [`ischnura-elegans.jpg`](ischnura-elegans.jpg) — 2025 × 3330, 297 KB                               |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:British_dragonflies_(Plate_XXIV)_(6001792845).jpg>        |
+| **Author**       | William John Lucas (1858–1932)                                                                     |
+| **Published in** | _British Dragonflies (Odonata)_, London: L. Upcott Gill, 1900 — Plate XXIV                         |
+| **Licence**      | **Public domain.** Published 1900, author died 1932; scanned by the Biodiversity Heritage Library. |
+| **Downloaded**   | 2026-08-23                                                                                         |
+| **Used by**      | `src/data/species/landmarks/ischnura-elegans.json`                                                 |
+
+The second plate from Lucas, after the southern hawker, and chosen for the
+contrast: the two animals are the same order and nothing else. Lucas has the same
+habit here as on plate XVII — each figure's wings spread to one side and its legs
+to the other, so the two do not overlap on the page — so the wings were measured
+off one side, the legs off the other, and each authored on the right half for the
+renderer to reflect.
+
+The upper pair on the sheet is _Ischnura pumilio_, the species this one is most
+often mistaken for. Having both on one plate is what let the blue eighth
+abdominal segment be checked as the character rather than assumed.
+
+---
+
+## Formica rufa
+
+|                  |                                                                                                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Formica rufa_ Linnaeus, 1761 — red wood ant, worker                                                                                                           |
+| **View**         | Dorsal, whole animal, all six legs and both antennae clear of the body — figure 5                                                                              |
+| **File**         | [`formica-rufa.jpg`](formica-rufa.jpg) — 1711 × 2651, 336 KB                                                                                                   |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:Ants,_bees,_and_wasps_(Plate_2)_(8476376962).jpg>                                                                     |
+| **Author**       | John Lubbock (1834–1913)                                                                                                                                       |
+| **Published in** | John Lubbock, _Ants, Bees, and Wasps: a record of observations on the habits of the social Hymenoptera_, London: Kegan Paul, 1897 printing — Plate 2, figure 5 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-70-expired}}`.                                                                                    |
+| **Downloaded**   | 2026-08-23                                                                                                                                                     |
+| **Used by**      | `src/data/species/landmarks/formica-rufa.json`                                                                                                                 |
+
+Chosen because the plate's own caption names the figure — _5. Formica rufa._ —
+and because it is the one figure on the sheet drawn square and unobstructed; the
+other four are _Atta_ and _Pheidole_ majors and minors at various angles. It is
+the first reference in this folder for an animal with no wings, and the reason
+`REQUIRED_PARTS.hymenoptera` stopped asking for any.
+
+Saunders's _Hymenoptera Aculeata of the British Islands_ — already the source for
+the bumblebee and the hornet — gives its first five plates to the Formicidae, and
+plate 1 is very likely the better figure. It is not on Commons. This one is.
+
+---
+
+## Graphosoma italicum
+
+|                  |                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Species**      | _Graphosoma italicum_ (O. F. Müller, 1766) — Italian striped shield bug. Captioned _Graphosoma lineatum_ on the plate.               |
+| **View**         | Dorsal, whole animal — figure 3                                                                                                      |
+| **File**         | [`graphosoma-italicum.jpg`](graphosoma-italicum.jpg) — 1879 × 2536, 461 KB                                                           |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:Betrachtungen_uber_die_Farbenpracht_der_Insekten_(Plate_I)_(9237127969).jpg>                |
+| **Author**       | Karl Brunner von Wattenwyl (1823–1914)                                                                                               |
+| **Published in** | Karl Brunner von Wattenwyl, _Betrachtungen über die Farbenpracht der Insekten_, Leipzig: Wilhelm Engelmann, 1897 — Plate I, figure 3 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-70-expired}}`.                                                          |
+| **Downloaded**   | 2026-08-23                                                                                                                           |
+| **Used by**      | `src/data/species/landmarks/graphosoma-italicum.json`                                                                                |
+
+Captioned under the older name _Graphosoma lineatum_. The two have since been
+separated, and the animal figured — the whole pronotum striped rather than
+spotted at the front — is _italicum_.
+
+Brunner's sheet is about colour in insects generally, so it carries a locust,
+four scarabs, three butterflies and a swallowtail as well, and this bug gets
+about fifty pixels of it. That is not enough for proportions, so the outline was
+drawn to the published measurements — 8 to 12 mm long and 7 to 9 across — and
+the reference supplied the arrangement: where the scutellum ends, how the stripes
+run, that they carry on across the head.
+
+---
+
+## Gryllus campestris
+
+|                  |                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| **Species**      | _Gryllus campestris_ Linnaeus, 1758 — field cricket, male                                       |
+| **View**         | **Dorsal-oblique, in a habitat scene.** Named in the plate's left margin.                       |
+| **File**         | [`gryllus-campestris.jpg`](gryllus-campestris.jpg) — 2163 × 2923, 982 KB                        |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:Les_insectes_(Pl._I)_(6008126611).jpg>                 |
+| **Author**       | Published by Jules Rothschild; the engraver is uncredited on the sheet                          |
+| **Published in** | _Musée entomologique illustré: Les insectes_, Paris: J. Rothschild, 1878 — Orthoptères, plate I |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-70-expired}}`.                     |
+| **Downloaded**   | 2026-08-23                                                                                      |
+| **Used by**      | `src/data/species/landmarks/gryllus-campestris.json`                                            |
+
+**The weakest provenance in the folder, and it is recorded rather than smoothed
+over.** This is the only reference here that is a habitat scene rather than a
+specimen figure: the animals are drawn among bindweed and grass, lit and posed,
+and the cricket is seen from above and a little behind. Close to dorsal, and not
+square to it.
+
+So the reference supplied the arrangement — where the pronotum ends and the
+tegmina begin, how far the hind femur reaches, that the tegminal venation is
+coarse enough to count — and the proportions came from the published measurements
+instead: 19 to 27 mm long, about a third as wide as long. A foreshortened figure
+cannot give proportions, and guessing from one would have made the animal too
+short.
+
+It was chosen anyway, because the alternatives were worse. The Orthoptera are
+badly served by public-domain specimen plates, and this was the only figure of
+the species with a usable licence and a legible outline; the several sharper
+images on Commons are modern photographs under Creative Commons terms, which the
+plate contract does not accept.

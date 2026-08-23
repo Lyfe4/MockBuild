@@ -56,6 +56,9 @@ const WING_COVER_WORDS: Record<WingCover, string> = {
   // Said as what a listener would see rather than as the character state: the
   // hard basal half is the shield and the clear tips cross over behind it.
   hemelytra: 'half-hardened wing cases with clear tips',
+  // Same again: what a listener would see is one leathery cover lying over the
+  // other, and "tegmina" would send them to a glossary.
+  tegmina: 'leathery wing covers folded flat over the back',
   membranous: 'clear wings',
   scaled: 'scaled wings',
   absent: 'no wings',

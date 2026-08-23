@@ -1,0 +1,535 @@
+{
+  "species": "chrysolina-coerulans",
+  "constant": "CHRYSOLINA_COERULANS_PLATE",
+  "order": "coleoptera",
+  "sex": "unsexed",
+  "hallmark": "the domed, almost circular outline and the rows of punctures across it",
+  "reference": {
+    "title": "Käferbuch. Naturgeschichte der Käfer Europas, table 44 figure 6",
+    "artist": "Emil Hochdanz",
+    "year": 1876,
+    "source": "https://commons.wikimedia.org/wiki/File:Chrysolina.coerulans.-.calwer.44.06.jpg",
+    "licence": "Public domain (PD-old-100-1923)"
+  },
+  "doc": [
+    "*Chrysolina coerulans*, dorsal — the blue mint beetle.",
+    "",
+    "The fourth Hochdanz lithograph from Calwer's *Käferbuch* (1876), and the",
+    "smallest reference in the folder at 229 × 250 pixels — smaller even than the",
+    "seven-spot's. That turned out not to matter for the same reason it did not",
+    "matter there: what a leaf beetle needs from a reference is the outline, the",
+    "puncture rows and where the short legs sit, and all three survive at that",
+    "size. `references/chrysolina-coerulans.jpg` is the file.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **outline**, which is the whole animal. A Chrysolina is 0.65 as wide as",
+    "it is long and strongly domed — very nearly a hemisphere — and the tracing",
+    "reflex is to draw the beetle-shaped oval that every other Coleoptera plate",
+    "here wanted. Beside the violet ground beetle at 0.39 the difference is the",
+    "identification, so the margin is measured row by row off the lithograph.",
+    "",
+    "Then the **legs**, which are short, thick and held close in. A leaf beetle",
+    "spends its life on one plant and walks nowhere; drawn at the ground beetle's",
+    "proportions it becomes a different family.",
+    "",
+    "The blue is not drawn, because it cannot be: the animal is metallic and the",
+    "plate is inked in one seasonal earth. `morphology.colourFamily` says",
+    "`metallic` in words instead, which is where that fact belongs.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front of the head, y = 1000 at the elytral apex. The head is",
+    "mostly under the pronotum — 90 to 310 — which is why the visible head is",
+    "only the first 150 units. The antennae reach above y = -160 and the legs out",
+    "to about x = 480."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The legs first, so they pass under the body.",
+        "",
+        "Short and stout: the whole leg from coxa to claw is about a body length",
+        "in the lithograph, against nearly two for the ground beetle. Femora at",
+        "around seven per cent of the width across the wing cases — a smaller",
+        "fraction than the Carabus, because this beetle is so much broader."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [170, 640],
+          [250, 690],
+          [318, 738]
+        ],
+        "width": [44, 40, 34]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [318, 738],
+          [366, 800],
+          [406, 860]
+        ],
+        "width": [32, 28, 24]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [406, 860],
+          [428, 896]
+        ],
+        "width": [22, 18]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [430, 902],
+          [448, 938]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [450, 944],
+          [464, 984]
+        ],
+        "width": [15, 6]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [150, 380],
+          [230, 410],
+          [300, 438]
+        ],
+        "width": [44, 40, 34]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [300, 438],
+          [356, 470],
+          [406, 502]
+        ],
+        "width": [32, 28, 24]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [406, 502],
+          [430, 522]
+        ],
+        "width": [22, 18]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [434, 526],
+          [456, 546]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [459, 550],
+          [478, 570]
+        ],
+        "width": [15, 6]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [104, 250],
+          [180, 190],
+          [240, 142]
+        ],
+        "width": [44, 40, 34]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [240, 142],
+          [290, 86],
+          [330, 30]
+        ],
+        "width": [32, 28, 24]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [330, 30],
+          [350, -2]
+        ],
+        "width": [22, 18]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [352, -8],
+          [368, -38]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [370, -44],
+          [384, -78]
+        ],
+        "width": [15, 6]
+      }
+    },
+    {
+      "note": [
+        "One wing case. Broad, high-shouldered and rounded off almost as a circle",
+        "would be — 0.65 as wide as the animal is long, measured off the",
+        "lithograph, against 0.39 for the ground beetle on the plate before this",
+        "one."
+      ],
+      "id": "elytron",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 298],
+          [130, 300],
+          [240, 326],
+          [300, 400],
+          [321, 500],
+          [323, 600],
+          [312, 714],
+          [286, 818],
+          [236, 910],
+          [160, 974],
+          [80, 998],
+          [0, 1004]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The puncture rows. Six, from a guide beside the suture to one inside the",
+        "margin — a Chrysolina's punctures are arranged in rough longitudinal rows",
+        "rather than scattered, and the rows are what the surface reads as."
+      ],
+      "id": "stria",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [40, 380],
+          [38, 650],
+          [52, 920]
+        ],
+        "to": [
+          [240, 400],
+          [276, 650],
+          [160, 870]
+        ],
+        "count": 6
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [60, 856],
+          [130, 886]
+        ],
+        "to": [
+          [100, 700],
+          [212, 730]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "The suture, drawn once on the axis. Reflecting it would lay a second copy",
+        "a hair off the first and show as a doubled line down the beetle's back."
+      ],
+      "id": "seam",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 310],
+          [0, 650],
+          [0, 992]
+        ]
+      }
+    },
+    {
+      "id": "scutellum",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 300],
+          [46, 308],
+          [24, 342],
+          [0, 362],
+          [-24, 342],
+          [-46, 308]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The pronotum: transverse, widest where it meets the wing cases, and wide",
+        "enough that the head sits almost entirely under its front margin. That",
+        "retracted head is a Chrysomelidae character and it is why the visible",
+        "head here is only the first 150 units of plate space."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 88],
+          [120, 96],
+          [210, 140],
+          [254, 220],
+          [264, 296],
+          [190, 306],
+          [100, 310],
+          [0, 312],
+          [-100, 310],
+          [-190, 306],
+          [-264, 296],
+          [-254, 220],
+          [-210, 140],
+          [-120, 96]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [40, 150],
+          [44, 280]
+        ],
+        "to": [
+          [186, 182],
+          [192, 280]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -4],
+          [54, 4],
+          [96, 40],
+          [120, 88],
+          [104, 132],
+          [56, 150],
+          [0, 156],
+          [-56, 150],
+          [-104, 132],
+          [-120, 88],
+          [-96, 40],
+          [-54, 4]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [96, 66],
+        "radii": [17, 13],
+        "rotate": -12
+      }
+    },
+    {
+      "note": [
+        "The antenna. Filiform, and drawn thickening very slightly towards the tip",
+        "rather than tapering — which is what a Chrysolina has, and is as far",
+        "towards a club as the character goes before the record would have to say",
+        "`clavate` instead."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [70, 44],
+          [104, 20]
+        ],
+        "width": [34, 28]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [106, 16],
+          [134, -10]
+        ],
+        "width": [28, 26]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [136, -16],
+          [158, -46]
+        ],
+        "width": [26, 24]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [160, -52],
+          [178, -84]
+        ],
+        "width": [24, 24]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [180, -90],
+          [194, -124]
+        ],
+        "width": [26, 26]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [195, -130],
+          [204, -164]
+        ],
+        "width": [26, 18]
+      }
+    }
+  ]
+}

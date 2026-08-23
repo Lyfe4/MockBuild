@@ -1,0 +1,711 @@
+{
+  "species": "graphosoma-italicum",
+  "constant": "GRAPHOSOMA_ITALICUM_PLATE",
+  "order": "hemiptera",
+  "sex": "unsexed",
+  "hallmark": "the six black stripes running head to tail, and the scutellum that reaches almost to the abdomen's tip",
+  "reference": {
+    "title": "Betrachtungen über die Farbenpracht der Insekten, plate I figure 3",
+    "artist": "Karl Brunner von Wattenwyl",
+    "year": 1897,
+    "source": "https://commons.wikimedia.org/wiki/File:Betrachtungen_uber_die_Farbenpracht_der_Insekten_(Plate_I)_(9237127969).jpg",
+    "licence": "Public domain (PD-old-70-expired)"
+  },
+  "doc": [
+    "*Graphosoma italicum*, dorsal — the Italian striped shield bug.",
+    "",
+    "Traced from figure 3 of plate I of Brunner von Wattenwyl's *Betrachtungen",
+    "über die Farbenpracht der Insekten* (1897), where it is captioned under the",
+    "name *Graphosoma lineatum* — the two have since been separated, and the",
+    "animal figured, with the whole pronotum striped rather than spotted at the",
+    "front, is *italicum*. `references/graphosoma-italicum.jpg` is the sheet and",
+    "the bug is figure 3, low and left of centre.",
+    "",
+    "It is a *small* figure on a large plate — Brunner's sheet is about colour in",
+    "insects generally, so it carries a locust, four scarabs and three",
+    "butterflies as well, and this bug gets fifty pixels. The same thing was true",
+    "of the seven-spot and the answer is the same: what a shield bug needs from a",
+    "reference is the outline, the scutellum and where the stripes run, and all",
+    "three survive at that size. The proportions were then checked against the",
+    "published measurements — 8 to 12 mm long and about 0.72 as wide as long.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The **stripes**, which are what `markings: 'stripes'` means on this record",
+    "and the reason this animal is in the collection at all: six black lines",
+    "running head to tail, straight across the pronotum and converging down the",
+    "scutellum. Drawn as capsules clipped to the surface they are on, three a",
+    "side, mirrored — because a plate that placed them separately on each side",
+    "would be drawing one specimen's asymmetry rather than the species.",
+    "",
+    "Then the **scutellum**. On a green shield bug it is a triangle between the",
+    "wings; on this one it reaches almost to the tip of the abdomen and the",
+    "hemelytra are reduced to a narrow strip either side of it. That is the",
+    "character that separates the two at a glance and it is why the corium here is",
+    "authored as a long thin shape rather than as half a wing.",
+    "",
+    "Then the **connexivum** — the rim of the abdomen showing outside the wings,",
+    "banded black and red. Six short strokes marching down it, clipped to the",
+    "abdomen.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front of the head, y = 1000 at the tip of the abdomen. The",
+    "pronotum is 130 to 360 and the scutellum 350 to 900. Half-width 358, which",
+    "is the 0.72 the measurements give."
+  ],
+  "parts": [
+    {
+      "note": [
+        "The legs first, so they pass under the body. Short and unremarkable: a",
+        "shield bug walks on plants and does nothing else with its legs, and the",
+        "red-and-black banding the animal has on them is colour rather than shape."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [280, 660],
+          [346, 700],
+          [408, 740]
+        ],
+        "width": [40, 36, 30]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [408, 740],
+          [400, 838],
+          [386, 930]
+        ],
+        "width": [28, 25, 21]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [386, 930],
+          [380, 980]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [378, 988],
+          [374, 1034]
+        ],
+        "width": [15, 13]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [373, 1040],
+          [368, 1076]
+        ],
+        "width": [13, 5]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [290, 430],
+          [364, 412],
+          [436, 394]
+        ],
+        "width": [40, 36, 30]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [436, 394],
+          [462, 490],
+          [480, 588]
+        ],
+        "width": [28, 25, 21]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [480, 588],
+          [488, 638]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [490, 646],
+          [496, 692]
+        ],
+        "width": [15, 13]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [497, 698],
+          [502, 734]
+        ],
+        "width": [13, 5]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [180, 226],
+          [258, 168],
+          [330, 108]
+        ],
+        "width": [40, 36, 30]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [330, 108],
+          [380, 42],
+          [420, -26]
+        ],
+        "width": [28, 25, 21]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [420, -26],
+          [442, -72]
+        ],
+        "width": [18, 15]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [445, -79],
+          [466, -122]
+        ],
+        "width": [15, 13]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [468, -128],
+          [484, -162]
+        ],
+        "width": [13, 5]
+      }
+    },
+    {
+      "note": [
+        "The abdomen. Almost circular from above, and drawn once because it",
+        "straddles the axis. Everything after this sits on top of it."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 336],
+          [300, 352],
+          [344, 450],
+          [358, 560],
+          [356, 660],
+          [340, 754],
+          [310, 838],
+          [262, 910],
+          [196, 962],
+          [110, 996],
+          [0, 1006],
+          [-110, 996],
+          [-196, 962],
+          [-262, 910],
+          [-310, 838],
+          [-340, 754],
+          [-356, 660],
+          [-358, 560],
+          [-344, 450],
+          [-300, 352]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The connexivum: the rim of the abdomen that shows outside the wings,",
+        "banded black and red on the animal. Six short strokes marching down it —",
+        "one measurement at each end and a count, rather than six pairs of points",
+        "that would each be a chance to put one out of step."
+      ],
+      "id": "abdomen-segment",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [296, 420],
+          [324, 426]
+        ],
+        "to": [
+          [198, 868],
+          [232, 886]
+        ],
+        "count": 6
+      }
+    },
+    {
+      "note": [
+        "One hemelytron — a forewing, hard at the base and membranous at the tip,",
+        "which is the character the order is named for.",
+        "",
+        "On this bug it is barely a wing at all in dorsal view: the scutellum takes",
+        "the middle of the animal and the corium is left as a strip down the side.",
+        "Authored as one closed shape whose inner edge follows the scutellum and",
+        "whose outer edge follows the abdomen."
+      ],
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [250, 358],
+          [314, 376],
+          [334, 470],
+          [338, 570],
+          [326, 668],
+          [298, 756],
+          [252, 832],
+          [190, 894],
+          [80, 860],
+          [136, 760],
+          [188, 638],
+          [224, 500],
+          [246, 372]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [300, 400],
+          [318, 560],
+          [286, 720],
+          [214, 850]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The punctation, as three strokes. Brunner's figure is too small to carry",
+        "it and the animal's is dense and even; hatching is what an engraving has",
+        "for that."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [252, 430],
+          [224, 600],
+          [176, 760]
+        ],
+        "to": [
+          [300, 436],
+          [288, 600],
+          [236, 764]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "note": [
+        "The scutellum, and it is most of the animal: from the pronotum's hind",
+        "margin almost to the tip of the abdomen. On the green shield bug this is a",
+        "triangle between the wings; here it *is* the back."
+      ],
+      "id": "scutellum",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 352],
+          [236, 368],
+          [214, 500],
+          [178, 640],
+          [126, 762],
+          [70, 858],
+          [0, 902],
+          [-70, 858],
+          [-126, 762],
+          [-178, 640],
+          [-214, 500],
+          [-236, 368]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The stripes on the scutellum: three a side, converging as the scutellum",
+        "narrows. Capsules clipped to it, so a stripe cannot end up beside the",
+        "animal, and mirrored, so there are six and they are symmetric."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "scutellum",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [52, 386],
+          [46, 616],
+          [40, 842]
+        ],
+        "width": 38
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "scutellum",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [134, 388],
+          [104, 596],
+          [78, 788]
+        ],
+        "width": 38
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "scutellum",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [206, 394],
+          [164, 538],
+          [124, 688]
+        ],
+        "width": 38
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "scutellum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [92, 440],
+          [70, 620]
+        ],
+        "to": [
+          [112, 450],
+          [88, 630]
+        ],
+        "count": 2
+      }
+    },
+    {
+      "note": [
+        "The pronotum: transverse, with the side margins drawn out into small",
+        "points, and the stripes running straight across it before they begin to",
+        "converge on the scutellum."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 126],
+          [120, 134],
+          [240, 180],
+          [320, 240],
+          [350, 300],
+          [336, 346],
+          [200, 358],
+          [0, 364],
+          [-200, 358],
+          [-336, 346],
+          [-350, 300],
+          [-320, 240],
+          [-240, 180],
+          [-120, 134]
+        ]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [58, 160],
+          [58, 250],
+          [60, 334]
+        ],
+        "width": 36
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [152, 178],
+          [160, 256],
+          [170, 330]
+        ],
+        "width": 36
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [238, 222],
+          [258, 274],
+          [276, 320]
+        ],
+        "width": 36
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [96, 250],
+          [92, 330]
+        ],
+        "to": [
+          [116, 250],
+          [114, 330]
+        ],
+        "count": 2
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 0],
+          [46, 14],
+          [72, 58],
+          [86, 110],
+          [76, 146],
+          [0, 158],
+          [-76, 146],
+          [-86, 110],
+          [-72, 58],
+          [-46, 14]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The stripes carry on across the head, which is what makes the animal read",
+        "as striped end to end rather than as a striped back with a plain head."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "head",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [30, 34],
+          [30, 84],
+          [32, 130]
+        ],
+        "width": 26
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "head",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [60, 76],
+          [60, 102],
+          [62, 126]
+        ],
+        "width": 22
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [82, 124],
+        "radii": [22, 18]
+      }
+    },
+    {
+      "note": [
+        "The antenna: five joints, filiform, held forward. Banded black and red on",
+        "the animal, which the plate cannot say and the record does not need to."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [86, 120],
+          [120, 70],
+          [148, 16]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [148, 16],
+          [176, -60],
+          [200, -140]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [202, -146],
+          [222, -206]
+        ],
+        "width": [26, 20]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [224, -212],
+          [238, -262]
+        ],
+        "width": [20, 8]
+      }
+    }
+  ]
+}

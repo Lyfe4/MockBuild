@@ -39,11 +39,11 @@ plausible beetle but not a _particular_ one. Asked for _Lucanus cervus_ it
 produced a beetle with big jaws, which is not the same animal.
 
 **3. Hand-authored plates of real species, traced from public-domain
-references.** Where it is now. Four species: a stag beetle, a seven-spot
-ladybird, a swallowtail and a southern hawker — one order each for Coleoptera
-twice over, Lepidoptera and Odonata, chosen so the schema had to cope with wing
-cases, spread wings and see-through wings rather than four variations on a
-beetle. An author measures a lithograph and writes the
+references.** Where it is now. Sixteen species across six orders — five
+beetles, three Lepidoptera, two Odonata, three Hymenoptera, two true bugs and a
+cricket — chosen so the schema had to cope with hard wing cases, leathery ones,
+spread wings, see-through wings and no wings at all rather than sixteen
+variations on a beetle. An author measures a lithograph and writes the
 path data out; the schema in `src/lib/plate` catches the mistakes a person
 drawing coordinates by hand actually makes, and `validatePlate` runs in a test
 for every plate. Every species carries a real record — taxonomy, distribution,
