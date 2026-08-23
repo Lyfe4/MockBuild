@@ -1,4 +1,4 @@
-import { boundsOf, parsePathData, pathPoints, type PlatePoint } from './pathData';
+import { boundsOf, parsePathData, pathPoints, type PlateBounds, type PlatePoint } from './pathData';
 import type { SpeciesPlate } from './types';
 
 /**
@@ -33,9 +33,24 @@ export interface PlateViewBox {
  * Breathing room around the animal, as a fraction of its longer side.
  *
  * A specimen touching the edge of its frame reads as cropped even when it is
- * whole, and a contact sheet of them reads as a grid of accidents.
+ * whole, and a contact sheet of them reads as a grid of accidents. One fraction
+ * of one number — the longer side — rather than a fraction of each axis, so the
+ * margin is the same distance all the way round and a long thin animal does not
+ * end up with a wide gap at its head and a hairline at its shoulder.
  */
 const MARGIN = 0.04;
+
+/**
+ * How far the ink spreads past the geometry, in plate units.
+ *
+ * A path is a centreline and the stroke straddles it, so the heaviest rank puts
+ * half its width outside every coordinate in the data. `--plate-stroke-outline`
+ * is 8, so 4 — kept as a constant here rather than read from the stylesheet,
+ * because the fit runs where there is no stylesheet, and a plate framed
+ * differently in the test run and the browser would be worse than one framed a
+ * little loosely in both.
+ */
+const STROKE_ALLOWANCE = 4;
 
 /**
  * Every point of a plate, with the reflected halves included.
@@ -61,32 +76,58 @@ export function platePoints(plate: SpeciesPlate): PlatePoint[] {
 }
 
 /**
- * The view box a plate should be drawn in.
+ * The bounding box of everything the renderer will draw.
  *
- * @param scale How much of the frame the animal fills, 0.3–1. Comes from the
- *   species record, where it is derived from real body length — which is the
- *   one number that carries true scale onto a sheet holding more than one
- *   species. At 1 the animal fills the frame; at 0.5 it occupies half of it and
- *   reads as half the size of its neighbour.
+ * Both halves, every part, grown by the stroke allowance. Bézier control points
+ * count: a curve never leaves the hull of its control points, so bounding the
+ * points bounds the curve — loosely, and always outwards, which is the only
+ * direction it is safe to be wrong in.
+ *
+ * Throws on an empty plate rather than returning an inverted box, because an
+ * inverted box propagates into a view box that renders as nothing at all.
  */
-export function plateViewBox(plate: SpeciesPlate, scale = 1): PlateViewBox {
-  const bounds = boundsOf(platePoints(plate));
+export function plateBounds(plate: SpeciesPlate): PlateBounds {
+  const measured = boundsOf(platePoints(plate));
 
-  if (bounds === undefined) {
+  if (measured === undefined) {
     throw new Error(`the ${plate.species} plate has no geometry to frame`);
   }
 
-  // Symmetric by construction, but measured rather than assumed: a plate that
-  // is lopsided should be framed as it is and look wrong, not be quietly
-  // recentred so the fault never surfaces.
+  return {
+    minX: measured.minX - STROKE_ALLOWANCE,
+    minY: measured.minY - STROKE_ALLOWANCE,
+    maxX: measured.maxX + STROKE_ALLOWANCE,
+    maxY: measured.maxY + STROKE_ALLOWANCE,
+  };
+}
+
+/**
+ * The view box a plate is drawn in: its own bounds, plus a margin.
+ *
+ * The width is taken from the wider of the two halves and doubled, so the frame
+ * stays centred on x = 0 whatever the drawing does — see the note at the top of
+ * this file. The height is the measured height and nothing else. Everything the
+ * renderer will draw is therefore inside the box by at least `MARGIN` of the
+ * longer side, and `SpeciesIllustration` can hand the result straight to
+ * `preserveAspectRatio="xMidYMid meet"` without the drawing touching an edge.
+ *
+ * `scale` shrinks the animal relative to its neighbours by growing the frame
+ * around it — a 25 mm ladybird beside a 75 mm stag beetle — and is clamped, so
+ * a record carrying a nonsensical value gets a plain frame instead of a
+ * division by zero.
+ */
+export function plateViewBox(plate: SpeciesPlate, scale = 1): PlateViewBox {
+  const bounds = plateBounds(plate);
+
+  // Centred on the midline: the frame is as wide as the wider half, twice.
   const half = Math.max(Math.abs(bounds.minX), bounds.maxX);
   const contentWidth = half * 2;
   const contentHeight = Math.max(bounds.maxY - bounds.minY, 1);
 
-  const usable = Math.min(Math.max(scale, 0.1), 1) * (1 - MARGIN * 2);
-
-  const width = contentWidth / usable;
-  const height = contentHeight / usable;
+  const margin = MARGIN * Math.max(contentWidth, contentHeight);
+  const zoom = Math.min(Math.max(scale, 0.1), 1);
+  const width = (contentWidth + margin * 2) / zoom;
+  const height = (contentHeight + margin * 2) / zoom;
 
   return {
     minX: -width / 2,
@@ -96,7 +137,7 @@ export function plateViewBox(plate: SpeciesPlate, scale = 1): PlateViewBox {
   };
 }
 
-/** The view box as the `viewBox` attribute's four numbers. */
+/** The four numbers, as the attribute wants them. */
 export function viewBoxAttribute(box: PlateViewBox): string {
   const round = (value: number): string => String(Math.round(value * 100) / 100);
 

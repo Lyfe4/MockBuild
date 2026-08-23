@@ -23,6 +23,16 @@
   inline-size: 100%;
   block-size: auto;
 
+  /*
+   * A plate is portrait — the stag beetle's frame is about 0.6 as wide as it is
+   * tall — so at 100% of a *square* box it would be half again taller than the
+   * box and spill out of it. The cap makes the svg fit whatever frame it is
+   * given; `preserveAspectRatio="xMidYMid meet"` then letterboxes the drawing
+   * inside, centred, at whatever size fits. Where the parent has no definite
+   * height the percentage resolves to `none` and this does nothing.
+   */
+  max-block-size: 100%;
+
   /* The default, for a record that somehow arrives without an index. */
   --pigment: var(--pigment-1);
   --pigment-deep: var(--pigment-deep-1);

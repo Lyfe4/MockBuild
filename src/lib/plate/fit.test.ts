@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { plateViewBox, platePoints, viewBoxAttribute } from './fit';
+import { plateBounds, plateViewBox, platePoints, viewBoxAttribute } from './fit';
 import type { PlatePart, SpeciesPlate } from './types';
 
 const REFERENCE = {
@@ -121,5 +121,47 @@ describe('viewBoxAttribute', () => {
     expect(viewBoxAttribute({ minX: -100.006, minY: -12.5, width: 200.014, height: 1300 })).toBe(
       '-100.01 -12.5 200.01 1300',
     );
+  });
+});
+
+describe('plateBounds', () => {
+  it('measures both halves and leaves room for the stroke', () => {
+    const bounds = plateBounds(
+      plate([{ id: 'elytron', rank: 'outline', fill: 'pigment', d: 'M0 0 L100 1000' }]),
+    );
+
+    // The heaviest rank straddles its centreline by 4 either way.
+    expect(bounds.minX).toBe(-104);
+    expect(bounds.maxX).toBe(104);
+    expect(bounds.minY).toBe(-4);
+    expect(bounds.maxY).toBe(1004);
+  });
+
+  it('throws on a plate with nothing in it, rather than returning an inverted box', () => {
+    expect(() => plateBounds(plate([]))).toThrow(/no geometry/);
+  });
+});
+
+describe('plateViewBox containment', () => {
+  it('leaves every point of every part inside the frame, mirrors included', () => {
+    // A deliberately awkward plate: an appendage far outside the body, one
+    // reaching backwards past the abdomen, and a midline part on the axis.
+    const awkward = plate([
+      { id: 'elytron', rank: 'outline', fill: 'pigment', d: 'M0 0 C40 200 90 700 60 1000' },
+      { id: 'antenna', rank: 'structure', fill: 'none', d: 'M20 100 C300 -80 420 -220 480 -300' },
+      { id: 'hindleg-tarsus', rank: 'detail', fill: 'none', d: 'M60 900 L210 1480' },
+      { id: 'scutellum', rank: 'structure', fill: 'ink', d: 'M-30 560 L30 560', mirror: false },
+    ]);
+
+    for (const scale of [1, 0.5, 0.1]) {
+      const box = plateViewBox(awkward, scale);
+
+      for (const point of platePoints(awkward)) {
+        expect(point.x, `x at scale ${String(scale)}`).toBeGreaterThan(box.minX);
+        expect(point.x, `x at scale ${String(scale)}`).toBeLessThan(box.minX + box.width);
+        expect(point.y, `y at scale ${String(scale)}`).toBeGreaterThan(box.minY);
+        expect(point.y, `y at scale ${String(scale)}`).toBeLessThan(box.minY + box.height);
+      }
+    }
   });
 });

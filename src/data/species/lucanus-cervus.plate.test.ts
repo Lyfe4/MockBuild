@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import { LUCANUS_CERVUS } from '@/data/species';
-import { boundsOf, parsePathData, pathPoints, validatePlate, type PlatePartId } from '@/lib/plate';
+import {
+  boundsOf,
+  parsePathData,
+  pathPoints,
+  plateViewBox,
+  validatePlate,
+  type PlatePartId,
+} from '@/lib/plate';
 
 import { LUCANUS_CERVUS_PLATE as PLATE } from './lucanus-cervus.plate';
 
@@ -88,8 +95,8 @@ describe('the Lucanus cervus plate', () => {
     it('builds each leg from a femur, a tibia and three to five tarsal segments', () => {
       for (const pair of ['foreleg', 'midleg', 'hindleg'] as const) {
         expect(count(`${pair}-femur`), pair).toBe(1);
-        // Tibia plus its spines.
-        expect(count(`${pair}-tibia`), pair).toBeGreaterThanOrEqual(2);
+        // The tibia itself plus four spines, on every leg.
+        expect(count(`${pair}-tibia`), pair).toBe(5);
 
         // Segments plus the paired claw: at least three real segments, and not
         // one long stroke pretending to be a foot.
@@ -97,6 +104,48 @@ describe('the Lucanus cervus plate', () => {
 
         expect(tarsus, pair).toBeGreaterThanOrEqual(4);
         expect(tarsus, pair).toBeLessThanOrEqual(7);
+      }
+    });
+
+    it('draws the femora and tibiae as slender as the reference does', () => {
+      // The first pass drew the limbs as fat as the mandibles, which made the
+      // animal look moulded rather than engraved. Measured off the lithograph,
+      // a femur is about six per cent of the width across the wing cases and a
+      // tibia about four; the elytra pair 300 units, so the ceilings below.
+      const across = (id: PlatePartId): number =>
+        capsuleWidth(PLATE.parts.find((p) => p.id === id && p.rank === 'structure')?.d ?? 'M0 0');
+
+      for (const pair of ['foreleg', 'midleg', 'hindleg'] as const) {
+        expect(across(`${pair}-femur`), `${pair} femur`).toBeLessThanOrEqual(20);
+        expect(across(`${pair}-tibia`), `${pair} tibia`).toBeLessThanOrEqual(13);
+        // And not so slender they stop reading as limbs.
+        expect(across(`${pair}-tibia`), `${pair} tibia`).toBeGreaterThan(8);
+      }
+    });
+
+    it('puts every tibial spine on the outside of the tibia it belongs to', () => {
+      for (const pair of ['foreleg', 'midleg', 'hindleg'] as const) {
+        const paths = PLATE.parts.filter((part) => part.id === `${pair}-tibia`);
+        const shaft = paths.find((part) => part.rank === 'structure');
+        const spines = paths.filter((part) => part.rank === 'detail');
+
+        expect(spines, pair).toHaveLength(4);
+
+        const outline = flattenClosed(shaft?.d ?? '');
+
+        for (const spine of spines) {
+          const points = pathPoints(parsePathData(spine.d));
+          const root = points[0];
+          const tip = points.at(-1);
+
+          // A spine leaves the shaft: its root sits on the outline and its tip
+          // is clear of it, or it is a scratch drawn inside a solid limb.
+          expect(inside(outline, tip ?? { x: 0, y: 0 }), `${pair} spine tip`).toBe(false);
+          expect(
+            Math.hypot((tip?.x ?? 0) - (root?.x ?? 0), (tip?.y ?? 0) - (root?.y ?? 0)),
+            `${pair} spine length`,
+          ).toBeGreaterThan(6);
+        }
       }
     });
 
@@ -127,6 +176,22 @@ describe('the Lucanus cervus plate', () => {
       // The fore legs are thrown forward past the head; a frame sized to the
       // body alone would cut them off.
       expect(halfWidth).toBeGreaterThan(300);
+    });
+
+    it('fits inside the view box the renderer computes for it', () => {
+      // The plate used to be framed by a box measured per axis, and the legs
+      // came out over the edge of the frame. Every point, both halves, at each
+      // scale a record might carry.
+      for (const scale of [1, 0.6, 0.25]) {
+        const box = plateViewBox(PLATE, scale);
+
+        for (const point of allPoints()) {
+          expect(point.x, `x at scale ${String(scale)}`).toBeGreaterThan(box.minX);
+          expect(point.x, `x at scale ${String(scale)}`).toBeLessThan(box.minX + box.width);
+          expect(point.y, `y at scale ${String(scale)}`).toBeGreaterThan(box.minY);
+          expect(point.y, `y at scale ${String(scale)}`).toBeLessThan(box.minY + box.height);
+        }
+      }
     });
 
     it('is symmetric about the midline once the halves are reflected', () => {
@@ -255,6 +320,43 @@ function flattenClosed(d: string): Point[] {
   }
 
   return points;
+}
+
+/**
+ * The width of a leg segment, measured across it.
+ *
+ * A femur or a tibia is authored as a capsule: the outline runs up one side,
+ * round the far end, back down the other and round again. Anchor `i` and anchor
+ * `n - 2 - i` are therefore the two edges of one cross-section, and the
+ * distance between them is the width there.
+ *
+ * Measured this way rather than from a bounding box, which reports the pose of
+ * a limb drawn at an angle, or from a rotating caliper, which reports the bend
+ * of a limb drawn with a curve in it. Control points are ignored: they sit off
+ * the curve by design.
+ */
+function capsuleWidth(d: string): number {
+  const anchors = parsePathData(d).flatMap((segment) =>
+    segment.c === 'Z' ? [] : [{ x: segment.x, y: segment.y }],
+  );
+  const first = anchors[0];
+  const last = anchors.at(-1);
+  // The closing anchor repeats the opening one; counting it twice offsets every
+  // pairing by one.
+  const ring = first?.x === last?.x && first?.y === last?.y ? anchors.slice(0, -1) : anchors;
+
+  let widest = 0;
+
+  for (let i = 0; i <= ring.length / 2 - 2; i += 1) {
+    const near = ring[i];
+    const far = ring[ring.length - 2 - i];
+
+    if (near === undefined || far === undefined) continue;
+
+    widest = Math.max(widest, Math.hypot(far.x - near.x, far.y - near.y));
+  }
+
+  return widest;
 }
 
 /** Ray casting. Points exactly on the boundary may go either way, which is fine. */

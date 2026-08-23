@@ -12,7 +12,7 @@
  */
 
 export { describePlate } from './describe';
-export { platePoints, plateViewBox, viewBoxAttribute } from './fit';
+export { plateBounds, platePoints, plateViewBox, viewBoxAttribute } from './fit';
 export type { PlateViewBox } from './fit';
 export type { DescribeOptions } from './describe';
 export { boundsOf, formatPathData, parsePathData, pathPoints, PathSyntaxError } from './pathData';
