@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router';
 
 import { RootLayout } from './RootLayout';
 import { RouteErrorBoundary } from './RouteErrorBoundary';
+import { CalendarRoute } from './routes/CalendarRoute';
 import { CatalogueRoute } from './routes/CatalogueRoute';
 import { KeyRoute } from './routes/KeyRoute';
 import { NotFoundRoute } from './routes/NotFoundRoute';
@@ -61,6 +62,10 @@ export const router = createBrowserRouter([
       // one route serves the intro, every question and every leaf. See
       // `KeyRoute` for why the parameter's absence is the intro.
       { path: 'key', element: <KeyRoute /> },
+      // The phenology calendar, whose row order lives in the query string for
+      // the same reason the catalogue's filters do: a link to the chart should
+      // be a link to the chart somebody was looking at.
+      { path: 'calendar', element: <CalendarRoute /> },
       { path: 'specimen/:id', element: <SpecimenRoute /> },
       ...devOnlyRoutes,
       // Last: matches anything the routes above did not.

@@ -323,6 +323,54 @@ leaf, because the answers live in the query string rather than the path.
 - **An option shows a count, never a name.** Naming the species behind an
   answer would key the collection out on the first screen.
 
+## The phenology calendar
+
+`/calendar` is a month × species matrix built from `activeMonths` and from
+nothing else — the field the `Species` doc comment always said a calendar would
+plot. `src/lib/calendar` is pure functions; the route renders them.
+
+- **The year is a ring, and the chart cuts it in July.** July is where the
+  Australian year is cut and it keeps spring, summer and autumn as unbroken runs
+  of three columns. The cost is real and the page says so out loud: every
+  record's months were observed in the **northern** hemisphere, where the flight
+  season is centred on June and July, so many bars appear at _both ends_ of
+  their row. A stag beetle flying May to August is one period of four months,
+  two columns at each edge.
+- **So `activeRuns` joins across the cut** and `firstActiveIndex` reports where
+  the joined run _starts_. Taking the first active column instead — the first
+  version — scored thirteen of the sixteen records zero, because thirteen of
+  them are on the wing in July, and the row order fell through to the tie-break
+  on the name. Fixed, the rows step down the page from August through February,
+  March, April and May, which is what the animals do.
+- **The season tint is the tie to the theme engine.** `useSeason` gives the
+  season the site is dressed in and the three header cells belonging to it are
+  tinted; switching season re-tints them. It is the one place in the archive
+  where the palette switcher changes what the _data_ looks like rather than only
+  what colour it is drawn in.
+- **A real table**, with a `<caption>`, `scope="col"` on the months and
+  `scope="row"` on the species. Each cell carries its state as visually hidden
+  text — a filled square is not a fact a screen reader can read. The
+  alternative, one summary sentence per row, was rejected: a row header is
+  announced again for every cell beside it, so a twelve-word summary there is
+  read twelve times. The sentence is on the **link** instead, where it is read
+  once.
+- **The caption is set twice, once each way.** A `<caption>` is as wide as its
+  table, so on a phone its text wraps at 40rem and a reader sees the first 375
+  pixels of each line. The caption stays, visually hidden and still what a
+  screen reader gets; the same sentence is set again above the scroller, where
+  it wraps to the viewport, and that copy is `aria-hidden`.
+- **Row order lives in the URL** (`?by=taxonomy`), like the catalogue's filters
+  and the key's answers, so a link to the chart is a link to the chart somebody
+  was looking at. Taxonomic order is alphabetical within order and family, not
+  phylogenetic — a sequence would be a claim about relationships the archive is
+  not making.
+- **`RootLayout`'s `main` now zeroes its minimum inline size**, and the calendar
+  is why. A grid item's automatic minimum size is its content's minimum, so the
+  table's `min-inline-size: 40rem` reached all the way up and stretched the
+  whole document to 674 pixels on a 375-pixel screen — the header ran off the
+  right edge and the chart never needed to scroll at all. That is a shell fix
+  rather than a route fix, because it is true of any wide content.
+
 ## Known dead weight
 
 None. `src/lib/random` — a seeded `mulberry32` and `seedFromName` — was the

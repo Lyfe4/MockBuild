@@ -116,19 +116,21 @@ describe('SiteNav', () => {
     expect(toggle()).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('offers Identify between the catalogue and the about page', async () => {
+  it('groups the three ways into the collection ahead of the institution', async () => {
     const user = userEvent.setup();
 
     renderNav();
 
     await user.click(toggle());
 
-    // Order is content, not decoration: the key is the other way in to the same
-    // eight specimens, so it sits beside the catalogue rather than after the
+    // Order is content, not decoration. Catalogue, Identify and Calendar are
+    // three doors onto the same sixteen specimens — browse them, key one out,
+    // or see what is out this month — so they sit together and ahead of the
     // pages about the institution.
     expect(screen.getAllByRole('link').map((link) => link.textContent)).toStrictEqual([
       'Catalogue',
       'Identify',
+      'Calendar',
       'About',
       'Journal',
       'Request',

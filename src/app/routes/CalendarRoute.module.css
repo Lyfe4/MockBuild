@@ -1,0 +1,362 @@
+/**
+ * The phenology calendar.
+ *
+ * A wide table in a narrow world, which is the whole layout problem. Twelve
+ * month columns and a species column that has to stay readable means the chart
+ * is wider than a phone at any legible cell size, so on a narrow screen it
+ * scrolls sideways and the species column is pinned. Above the breakpoint it
+ * simply fits and nothing is pinned at all.
+ *
+ * Mobile-first, so the sticky column is the default and the wide rule is what
+ * relaxes it.
+ */
+
+.root {
+  /*
+   * Not `--measure`. The prose above the chart is measured for reading; the
+   * chart is measured for the chart, and capping it at 68ch would make the
+   * cells narrower than the month names.
+   */
+  max-inline-size: 72rem;
+
+  /*
+   * And `min-inline-size: 0`, which is the line that keeps the page from
+   * overflowing sideways on a phone.
+   *
+   * The layout root is a grid, and a grid item's automatic minimum size is its
+   * *content's* minimum — which here is a table with `min-inline-size: 40rem`.
+   * So the column grew to 640 pixels, the page grew with it, and the heading and
+   * the notes were clipped off the right of a 375-pixel screen while the chart
+   * scrolled perfectly well inside its own container. Zeroing the minimum lets
+   * the item be narrower than the table, which is the whole point of putting the
+   * table in a scroller.
+   */
+  min-inline-size: 0;
+}
+
+.header {
+  max-inline-size: var(--measure);
+  padding-block-end: var(--space-lg);
+  margin-block-end: var(--space-lg);
+  border-block-end: 2px solid var(--color-ink);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-display);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.title:focus {
+  outline: none;
+}
+
+/* The heading takes focus on navigation; show that only for keyboard users. */
+.title:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.description {
+  margin-block-start: var(--space-sm);
+  font-size: var(--font-size-lg);
+  color: var(--color-ink-muted);
+}
+
+/*
+ * The two things a reader has to be told before the chart means anything: where
+ * the year is cut, and that the months are northern and the seasons are not.
+ * Set as a marginal note rather than as body copy, because it is a caveat.
+ */
+.note {
+  margin-block-start: var(--space-md);
+  padding-inline-start: var(--space-md);
+  border-inline-start: 2px solid var(--color-line);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-ink-muted);
+}
+
+.orderControl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: baseline;
+  margin-block-start: var(--space-lg);
+  padding: 0;
+  border: 0;
+}
+
+.orderLegend {
+  padding-inline-end: var(--space-sm);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  float: inline-start;
+}
+
+.orderOption {
+  display: flex;
+  gap: var(--space-2xs);
+  align-items: center;
+  font-size: var(--font-size-sm);
+}
+
+/*
+ * The scroll container. Focusable, so a keyboard user can reach the scroll
+ * position; `overscroll-behavior-inline` stops a sideways flick at the end of
+ * the chart turning into a back-navigation gesture.
+ */
+.scroller {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+
+  /* Same reason as `.root`, one level down. */
+  min-inline-size: 0;
+}
+
+.scroller:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  inline-size: 100%;
+  min-inline-size: 40rem;
+}
+
+/*
+ * The visible summary, set above the scroller so it wraps to the viewport rather
+ * than to the table. The real `<caption>` is still in the table and still what a
+ * screen reader reads; see the comment in the component.
+ */
+.summary {
+  margin-block-end: var(--space-sm);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: var(--line-height-relaxed);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.caption {
+  text-align: start;
+}
+
+/*
+ * The corner cell and the row headers are the pinned column. They need an
+ * opaque background of their own — the page's, not transparent — or the cells
+ * scrolling underneath show through them.
+ */
+.corner,
+.species {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background-color: var(--color-bg);
+  text-align: start;
+}
+
+.corner {
+  padding-block-end: var(--space-xs);
+  padding-inline-end: var(--space-sm);
+  border-block-end: 2px solid var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.month {
+  padding-block-end: var(--space-xs);
+  border-block-end: 2px solid var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-ink-muted);
+  inline-size: calc(100% / 14);
+}
+
+.month abbr {
+  text-decoration: none;
+}
+
+/*
+ * The three months of the season the whole site is dressed in.
+ *
+ * One rule per season rather than one rule reading a variable, because the wash
+ * tokens are per-season primitives and a `data-season` attribute is what the
+ * component has to say with. Tinting the header rather than the cells is
+ * deliberate: the cells carry the specimen's pigment and a second tint under
+ * them would make sixteen different colours out of two.
+ */
+.month[data-season='spring'] {
+  background-color: var(--wash-olive);
+}
+
+.month[data-season='summer'] {
+  background-color: var(--wash-ochre);
+}
+
+.month[data-season='autumn'] {
+  background-color: var(--wash-russet);
+}
+
+.month[data-season='winter'] {
+  background-color: var(--wash-slate);
+}
+
+.month[data-season] {
+  color: var(--color-ink);
+  transition: background-color var(--duration-palette) var(--ease-out);
+}
+
+/*
+ * The current month, ruled rather than filled: a fill here would compete with
+ * both the season tint above it and the pigment in the cells below, and what is
+ * wanted is a line down the chart saying "you are here".
+ */
+.month[data-current],
+.cell[data-current] {
+  box-shadow:
+    inset 1px 0 0 var(--color-accent),
+    inset -1px 0 0 var(--color-accent);
+}
+
+/*
+ * The name column, and it is `nowrap` at every width on purpose. Letting the
+ * binomial wrap gave rows three lines tall with a bar one line tall inside them,
+ * and a chart whose rows are different heights is a chart nobody can read
+ * across. `min-inline-size` is what buys the space to keep them on one line;
+ * below that the whole table scrolls, which is the honest trade.
+ */
+.species {
+  padding-block: var(--space-2xs);
+  padding-inline-end: var(--space-md);
+  border-block-end: 1px solid var(--color-line);
+  font-weight: var(--font-weight-regular);
+  min-inline-size: 13rem;
+}
+
+.link {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.link:hover .scientific,
+.link:focus-visible .scientific {
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.15em;
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/*
+ * A very small plate. At this size only the outline rank survives, which is the
+ * point of ranking the lines in the first place — the thumbnail is a
+ * silhouette and the silhouette is what tells a wasp from a beetle.
+ */
+.thumb {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.scientific {
+  font-family: var(--font-family-display);
+  font-style: italic;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+}
+
+.common {
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-tight);
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.cell {
+  border-block-end: 1px solid var(--color-line);
+  block-size: 2.5rem;
+}
+
+/*
+ * An active month, in the specimen's own pigment.
+ *
+ * A bar rather than a full-bleed cell: the inset leaves the ruled grid visible
+ * underneath, so a run of months reads as a bar with a start and an end rather
+ * than as a block of colour that has swallowed the table.
+ */
+.cell[data-active] {
+  background-clip: content-box;
+  background-color: var(--cell-pigment);
+  padding-block: var(--space-xs);
+  padding-inline: 2px;
+}
+
+.cell[data-pigment='1'] {
+  --cell-pigment: var(--pigment-1);
+}
+
+.cell[data-pigment='2'] {
+  --cell-pigment: var(--pigment-2);
+}
+
+.cell[data-pigment='3'] {
+  --cell-pigment: var(--pigment-3);
+}
+
+.cell[data-pigment='4'] {
+  --cell-pigment: var(--pigment-4);
+}
+
+.cell[data-pigment='5'] {
+  --cell-pigment: var(--pigment-5);
+}
+
+.cell[data-pigment='6'] {
+  --cell-pigment: var(--pigment-6);
+}
+
+@media (min-width: 60rem) {
+  /*
+   * Wide enough for the whole chart, so nothing is pinned. Unpinning matters:
+   * a sticky column that never scrolls still paints its own background over the
+   * table's rules, and the seam shows.
+   */
+  .corner,
+  .species {
+    position: static;
+    background-color: transparent;
+  }
+}

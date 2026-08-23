@@ -13,6 +13,23 @@
 
 .main {
   padding-block: var(--space-xl);
+
+  /*
+   * A grid item's automatic minimum size is its content's *minimum*, which is
+   * how one wide thing on one page makes the whole document scroll sideways.
+   *
+   * The calendar is that thing: a twelve-column table with a `min-inline-size`
+   * of 40rem, inside its own `overflow-x: auto` scroller. The scroller clipped
+   * it perfectly well and the page still came out 674 pixels wide on a 375-pixel
+   * screen, because `min-width: auto` here let the table's 640 reach all the way
+   * up and stretch this item — so the header and the season switcher ran off the
+   * right edge and the chart never needed to scroll at all.
+   *
+   * Zeroing it says what is true of any page content: this column is as wide as
+   * the viewport allows, and anything wider than that is its own problem to
+   * scroll. Every route gets it, and no route has to know.
+   */
+  min-inline-size: 0;
 }
 
 /*
