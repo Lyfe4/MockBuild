@@ -261,6 +261,31 @@ export function validateLandmarks(value: unknown, file: string): LandmarkPlate {
         typeof shape.count === 'number' && shape.count >= 2,
         `${at}.shape.count must be 2 or more`,
       );
+
+      // A fan on the midline is nearly always a mistake, and an expensive one:
+      // `mirror: false` says *every part this entry draws* straddles the axis,
+      // and a fan draws one part per stroke. Guides running from one side of the
+      // animal to the other therefore declare a row of strokes, each sitting
+      // off-axis, and `validatePlate` reports every one of them as
+      // `midline-off-axis`. It is legal only where both guides are themselves
+      // centred — a run of strokes that each cross the axis, like the rings
+      // across an abdomen.
+      if (part.mirror === false) {
+        const centred = (guide: unknown): boolean => {
+          if (!Array.isArray(guide)) return false;
+
+          const xs = guide.flatMap((point: unknown) => (isPoint(point) ? [point[0]] : []));
+
+          return xs.length > 0 && Math.abs(Math.max(...xs) + Math.min(...xs)) < 0.01;
+        };
+
+        need(
+          centred(shape.from) && centred(shape.to),
+          `${at} is a fan on the midline, but its guides are not centred on it. ` +
+            'Author it on the right half and let the renderer reflect it, or give both ' +
+            'guides strokes that cross the axis.',
+        );
+      }
     }
   }
 

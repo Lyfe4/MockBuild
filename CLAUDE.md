@@ -11,12 +11,13 @@ easy to get wrong.
 institution. It is a portfolio piece: no real institution, nothing is collected
 from a visitor.
 
-The institution is invented; the **collection is not**. Four real species —
-_Lucanus cervus_, _Coccinella septempunctata_, _Papilio machaon_, _Aeshna
-cyanea_ — each carrying a real, sourced record (taxonomy, distribution,
-phenology, and the morphological characters a later identification key will
-filter on) and a **hand-authored plate** traced in a simplified engraving style
-from a public-domain reference.
+The institution is invented; the **collection is not**. Eight real species,
+across five orders — _Lucanus cervus_, _Coccinella septempunctata_, _Cetonia
+aurata_, _Papilio machaon_, _Aeshna cyanea_, _Bombus terrestris_, _Vespa
+crabro_, _Palomena prasina_ — each carrying a real, sourced record (taxonomy,
+distribution, phenology, and the morphological characters a later
+identification key will filter on) and a **hand-authored plate** traced in a
+simplified engraving style from a public-domain reference.
 
 Two generations of code have been removed. Read the history if you need them —
 `git log -- src/lib/plant src/lib/insect` — and the README's _How this evolved_

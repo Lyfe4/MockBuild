@@ -30,14 +30,19 @@ describe('PlateLabRoute', () => {
   it('shows every plate in the collection at three sizes', () => {
     renderLab();
 
+    // The accessible names are collected once and checked in memory. Asking
+    // `getByRole` for each of them walks the whole tree every time, and with
+    // eight species at three sizes that is twenty-four walks of a page holding
+    // several hundred paths — which used to take the test past its timeout.
+    const named = screen
+      .getAllByRole('img')
+      .map((image) => image.querySelector('title')?.textContent ?? '');
+
     for (const species of SPECIES) {
       const name = `${species.taxonomy.genus} ${species.taxonomy.species}`;
 
       for (const size of [80, 240, 600]) {
-        expect(
-          screen.getByRole('img', { name: new RegExp(`${name} at ${String(size)} pixels`) }),
-          `${name} at ${String(size)}`,
-        ).toBeInTheDocument();
+        expect(named, `${name} at ${String(size)}`).toContain(`${name} at ${String(size)} pixels`);
       }
     }
   });

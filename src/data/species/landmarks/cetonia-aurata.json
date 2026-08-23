@@ -1,0 +1,607 @@
+{
+  "species": "cetonia-aurata",
+  "constant": "CETONIA_AURATA_PLATE",
+  "order": "coleoptera",
+  "sex": "unsexed",
+  "hallmark": "the broken white flecks across the wing cases, and the pygidium left uncovered behind them",
+  "reference": {
+    "title": "Cetonia aurata, from Zhuki Rossii i Zapadnoi Evropy, plate 31, fig. 15",
+    "artist": "Georgiy Georgiyevich Jacobson",
+    "year": 1913,
+    "source": "https://commons.wikimedia.org/wiki/File:Georgiy_Jacobson_-_Beetles_Russia_and_Western_Europe_-_plate_31.jpg",
+    "licence": "Public domain (PD-old-100-expired)"
+  },
+  "doc": [
+    "*Cetonia aurata*, dorsal — the rose chafer.",
+    "",
+    "Traced from figure 15 of plate 31 of Georgiy Jacobson's *Zhuki Rossii i",
+    "Zapadnoi Evropy* — Beetles of Russia and Western Europe — where the species",
+    "is named in the plate's own caption. `references/cetonia-aurata.jpg` is the",
+    "sheet; the chafer is on the right of the third row.",
+    "",
+    "## What identifies it",
+    "",
+    "Two things, and neither is the colour. The **white flecks**: short, broken,",
+    "irregular dashes scattered across the wing cases, which is what separates a",
+    "rose chafer from the several other big green beetles a reader might have in",
+    "mind. And the **pygidium** — the last segment of the abdomen, left uncovered",
+    "behind the wing cases, because a chafer's elytra stop short. Both are drawn.",
+    "",
+    "The metallic green is not drawn, because it cannot be: the plate's ink is a",
+    "season's pigment and the animal's iridescence is structural colour that",
+    "shifts with the angle you hold it at. The record says `metallic` in words",
+    "instead, which is the honest place for it.",
+    "",
+    "## The flecks are markings, not gaps",
+    "",
+    "They are `surface` fills — bare paper — clipped to the wing case, rather than",
+    "holes in it. A hole would knock out the hatching *and* the outline, and the",
+    "reference shows the flecks sitting on top of a surface that carries on",
+    "underneath them.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front margin of the clypeus, y = 1000 at the tip of the",
+    "pygidium. The legs reach past x = 440 and above y = -130; the antennal clubs",
+    "sit just outside the head."
+  ],
+  "parts": [
+    {
+      "note": [
+        "Legs first, so they pass under the body.",
+        "",
+        "A chafer's legs are stouter than a ladybird's — the fore tibiae are",
+        "toothed for digging — so the femora are measured a little heavier than",
+        "the six per cent CLAUDE.md gives as the usual proportion. Heavier still",
+        "and the animal reads as moulded rather than engraved."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [247, 680],
+          [300, 732],
+          [349, 783]
+        ],
+        "width": [40, 36, 30]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [349, 783],
+          [358, 878],
+          [362, 975]
+        ],
+        "width": [28, 25, 20]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [362, 975],
+          [358, 1040]
+        ],
+        "width": [16, 14]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [356, 1048],
+          [351, 1108]
+        ],
+        "width": [14, 11]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [350, 1116],
+          [346, 1160]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [221, 399],
+          [275, 444],
+          [324, 488]
+        ],
+        "width": [40, 36, 30]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [324, 488],
+          [354, 572],
+          [375, 655]
+        ],
+        "width": [28, 25, 20]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [375, 655],
+          [390, 718]
+        ],
+        "width": [16, 14]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [392, 726],
+          [406, 786]
+        ],
+        "width": [14, 11]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [408, 794],
+          [418, 838]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [95, 168],
+          [190, 134],
+          [280, 100]
+        ],
+        "width": [40, 36, 30]
+      }
+    },
+    {
+      "note": [
+        "The fore tibia, with the three teeth a chafer digs with.",
+        "",
+        "Drawn as a taper rather than as three separate spurs: at eighty pixels a",
+        "spur is a burr on the outline, and the widening towards the tip is what",
+        "actually reads."
+      ],
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [280, 100],
+          [338, 42],
+          [392, -18]
+        ],
+        "width": [28, 26, 24]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [392, -18],
+          [416, -74]
+        ],
+        "width": [16, 14]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [418, -82],
+          [436, -134]
+        ],
+        "width": [14, 11]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [438, -142],
+          [450, -180]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "note": [
+        "The pygidium — the reason the wing cases stop short.",
+        "",
+        "A chafer's elytra leave the last abdominal segment uncovered, and it is",
+        "one of the characters that puts this beetle in Cetoniinae rather than",
+        "with the other big green scarabs. Drawn behind the elytra so they overlap",
+        "its front edge, which is what the reference shows."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 872],
+          [104, 890],
+          [92, 962],
+          [52, 1004],
+          [0, 1016],
+          [-52, 1004],
+          [-92, 962],
+          [-104, 890]
+        ]
+      }
+    },
+    {
+      "note": [
+        "One wing case. The suture between the pair runs down the midline, so the",
+        "inner edge of this shape is the axis and the renderer's reflection draws",
+        "the other one against it."
+      ],
+      "id": "elytron",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 388],
+          [120, 384],
+          [242, 390],
+          [253, 463],
+          [260, 604],
+          [257, 757],
+          [229, 885],
+          [169, 949],
+          [105, 981],
+          [40, 990],
+          [0, 985]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The striae — the shallow longitudinal grooves on the wing case. Four,",
+        "from one guide to the other, so they stay in step with each other and",
+        "with the margin."
+      ],
+      "id": "stria",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [56, 440],
+          [54, 700],
+          [52, 892]
+        ],
+        "to": [
+          [212, 436],
+          [222, 700],
+          [196, 880]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [92, 470],
+          [86, 620]
+        ],
+        "to": [
+          [236, 700],
+          [206, 840]
+        ],
+        "count": 6
+      }
+    },
+    {
+      "note": [
+        "The white flecks, which are the identification.",
+        "",
+        "Broken, uneven and asymmetric on the animal; drawn as five dashes on the",
+        "right wing case and reflected, because a plate that scattered them",
+        "differently on each side would be drawing a specimen rather than the",
+        "species. Bare paper clipped to the wing case, not holes in it — the",
+        "surface carries on underneath, and the reference shows it doing so."
+      ],
+      "id": "marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "ellipse",
+        "at": [170, 600],
+        "radii": [38, 13],
+        "rotate": -8
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "ellipse",
+        "at": [104, 616],
+        "radii": [22, 9],
+        "rotate": -6
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "ellipse",
+        "at": [150, 748],
+        "radii": [50, 13],
+        "rotate": 5
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "ellipse",
+        "at": [128, 872],
+        "radii": [34, 11],
+        "rotate": 9
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "ellipse",
+        "at": [214, 690],
+        "radii": [18, 8],
+        "rotate": -14
+      }
+    },
+    {
+      "note": [
+        "The suture, drawn once on the axis. Reflecting it would put a second copy",
+        "a hair off the first and show as a doubled line down the beetle's back."
+      ],
+      "id": "seam",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 400],
+          [0, 700],
+          [0, 972]
+        ]
+      }
+    },
+    {
+      "id": "scutellum",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 378],
+          [46, 390],
+          [26, 442],
+          [0, 478],
+          [-26, 442],
+          [-46, 390]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The pronotum: a broad shield, widest where it meets the wing cases and",
+        "narrowing forward to about half that across the front margin."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 124],
+          [92, 130],
+          [150, 194],
+          [188, 271],
+          [205, 361],
+          [202, 392],
+          [100, 398],
+          [0, 400],
+          [-100, 398],
+          [-202, 392],
+          [-205, 361],
+          [-188, 271],
+          [-150, 194],
+          [-92, 130]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [16, 240],
+          [16, 340]
+        ],
+        "to": [
+          [146, 240],
+          [158, 336]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 4],
+          [42, -4],
+          [62, 54],
+          [72, 108],
+          [0, 128],
+          [-72, 108],
+          [-62, 54],
+          [-42, -4]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [74, 96],
+        "radii": [20, 14],
+        "rotate": -24
+      }
+    },
+    {
+      "note": [
+        "A lamellate club, which is what puts this beetle in the Scarabaeoidea.",
+        "",
+        "Three flat plates that open like a fan; drawn as one filled club with two",
+        "lines across it, because at plate size three separate lamellae is three",
+        "smudges. `morphology.antennae` says `lamellate` and this is the drawing",
+        "of that word."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [42, 76],
+          [76, 56],
+          [106, 42]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [108, 40],
+          [128, 26],
+          [146, 12]
+        ],
+        "width": [30, 32, 26]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [114, 22],
+          [124, 40]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [130, 12],
+          [140, 30]
+        ]
+      }
+    }
+  ]
+}

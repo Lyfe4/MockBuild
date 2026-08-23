@@ -3,12 +3,20 @@ import type { Species } from '@/types';
 
 import { AESHNA_CYANEA } from './aeshna-cyanea';
 import { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
+import { BOMBUS_TERRESTRIS } from './bombus-terrestris';
+import { BOMBUS_TERRESTRIS_PLATE } from './bombus-terrestris.plate';
+import { CETONIA_AURATA } from './cetonia-aurata';
+import { CETONIA_AURATA_PLATE } from './cetonia-aurata.plate';
 import { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
 import { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
 import { LUCANUS_CERVUS } from './lucanus-cervus';
 import { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
+import { PALOMENA_PRASINA } from './palomena-prasina';
+import { PALOMENA_PRASINA_PLATE } from './palomena-prasina.plate';
 import { PAPILIO_MACHAON } from './papilio-machaon';
 import { PAPILIO_MACHAON_PLATE } from './papilio-machaon.plate';
+import { VESPA_CRABRO } from './vespa-crabro';
+import { VESPA_CRABRO_PLATE } from './vespa-crabro.plate';
 
 /**
  * The entomological collection.
@@ -31,6 +39,10 @@ export const SPECIES: readonly Species[] = [
   COCCINELLA_SEPTEMPUNCTATA,
   PAPILIO_MACHAON,
   AESHNA_CYANEA,
+  PALOMENA_PRASINA,
+  BOMBUS_TERRESTRIS,
+  VESPA_CRABRO,
+  CETONIA_AURATA,
 ];
 
 const PLATES: readonly SpeciesPlate[] = [
@@ -38,6 +50,10 @@ const PLATES: readonly SpeciesPlate[] = [
   COCCINELLA_SEPTEMPUNCTATA_PLATE,
   PAPILIO_MACHAON_PLATE,
   AESHNA_CYANEA_PLATE,
+  PALOMENA_PRASINA_PLATE,
+  BOMBUS_TERRESTRIS_PLATE,
+  VESPA_CRABRO_PLATE,
+  CETONIA_AURATA_PLATE,
 ];
 
 /** The prefix on every accession number. Thornfield Entomological Archive. */
@@ -81,9 +97,17 @@ export function findPlate(id: string): SpeciesPlate | undefined {
 
 export { AESHNA_CYANEA } from './aeshna-cyanea';
 export { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
+export { BOMBUS_TERRESTRIS } from './bombus-terrestris';
+export { BOMBUS_TERRESTRIS_PLATE } from './bombus-terrestris.plate';
+export { CETONIA_AURATA } from './cetonia-aurata';
+export { CETONIA_AURATA_PLATE } from './cetonia-aurata.plate';
 export { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
 export { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
 export { LUCANUS_CERVUS } from './lucanus-cervus';
 export { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
+export { PALOMENA_PRASINA } from './palomena-prasina';
+export { PALOMENA_PRASINA_PLATE } from './palomena-prasina.plate';
 export { PAPILIO_MACHAON } from './papilio-machaon';
 export { PAPILIO_MACHAON_PLATE } from './papilio-machaon.plate';
+export { VESPA_CRABRO } from './vespa-crabro';
+export { VESPA_CRABRO_PLATE } from './vespa-crabro.plate';

@@ -1,0 +1,607 @@
+{
+  "species": "bombus-terrestris",
+  "constant": "BOMBUS_TERRESTRIS_PLATE",
+  "order": "hymenoptera",
+  "sex": "female",
+  "hallmark": "two ochre bands and the pale tail the animal is named for",
+  "reference": {
+    "title": "Bombus terrestris, from The Hymenoptera Aculeata of the British Islands, plate 52, fig. 3",
+    "artist": "Robert Morgan",
+    "year": 1896,
+    "source": "https://commons.wikimedia.org/wiki/File:SaundersHymenopteraAculeataPlate52.jpg",
+    "licence": "Public domain (PD-US-expired, PD-old-70)"
+  },
+  "doc": [
+    "*Bombus terrestris*, female, dorsal — the buff-tailed bumblebee.",
+    "",
+    "Traced from figure 3 of Robert Morgan's plate 52 for Edward Saunders's *The",
+    "Hymenoptera Aculeata of the British Islands* (1896), where the caption gives",
+    "both the species and the sex. `references/bombus-terrestris.jpg` is the",
+    "sheet; the queen is the large figure on the right of the middle row.",
+    "",
+    "## Three bands, and the last one is the name",
+    "",
+    "A collar across the front of the thorax, a band across the second segment of",
+    "the abdomen, and a pale tail. British bumblebees are keyed out on that",
+    "sequence before anything else, and *terrestris* is the one whose tail is buff",
+    "rather than white — a distinction this plate cannot make, because the tail is",
+    "drawn as bare paper and bare paper is whatever the season's surface token",
+    "says it is. The record carries the word `buff-tailed`; the drawing carries",
+    "the fact that there is a tail band at all.",
+    "",
+    "## Hair as hatching",
+    "",
+    "The whole animal is furred, and fur is the thing an engraving is least able",
+    "to copy and most able to *suggest*. Two fans of strokes, one over the thorax",
+    "and one over the abdomen, both clipped to the surface they sit on, both at",
+    "`detail` weight so they drop out first at thumbnail size and leave a clean",
+    "silhouette. Drawing every hair would produce a grey rectangle at eighty",
+    "pixels and an unmaintainable file at six hundred.",
+    "",
+    "## No waist to speak of",
+    "",
+    "A bumblebee has one — it is a wasp-waisted insect like every aculeate — but",
+    "the fur closes over it and nothing of it shows from above. The thorax and the",
+    "abdomen are drawn meeting, which is what the reference shows, and the",
+    "hornet is the plate in this collection where the gap is the point.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the top of the head, y = 1000 at the tip of the abdomen. The wings",
+    "reach past x = 830 and the hind tarsi below y = 1200."
+  ],
+  "parts": [
+    {
+      "note": [
+        "Legs first, under the wings and the fur.",
+        "",
+        "The hind tibia is the exception to the four-per-cent rule CLAUDE.md",
+        "records: on a female *Bombus* it is broadened into the corbicula, the",
+        "bare polished plate she carries pollen on, and drawing it at the width of",
+        "a wasp's tibia would delete the one structure that says this animal is a",
+        "worker or a queen rather than a male."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [230, 600],
+          [316, 670],
+          [400, 740]
+        ],
+        "width": [36, 32, 28]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [400, 740],
+          [428, 862],
+          [450, 980]
+        ],
+        "width": [30, 46, 34]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [450, 980],
+          [460, 1064]
+        ],
+        "width": [22, 18]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [462, 1072],
+          [468, 1146]
+        ],
+        "width": [15, 12]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [469, 1154],
+          [472, 1208]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [190, 470],
+          [310, 486],
+          [430, 502]
+        ],
+        "width": [36, 32, 28]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [430, 502],
+          [486, 600],
+          [530, 700]
+        ],
+        "width": [26, 23, 19]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [530, 700],
+          [524, 780]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [522, 788],
+          [516, 862]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [515, 870],
+          [510, 916]
+        ],
+        "width": [10, 5]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [110, 186],
+          [212, 112],
+          [310, 40]
+        ],
+        "width": [36, 32, 28]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [310, 40],
+          [392, -6],
+          [470, -52]
+        ],
+        "width": [26, 23, 19]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [470, -52],
+          [524, -82]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [531, -86],
+          [582, -114]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [589, -118],
+          [624, -138]
+        ],
+        "width": [10, 5]
+      }
+    },
+    {
+      "note": [
+        "Hindwing under forewing, and both membranous: the legs pass beneath them",
+        "and painting a bee's wings opaque deletes a leg apiece."
+      ],
+      "id": "hindwing",
+      "rank": "outline",
+      "fill": "surface",
+      "opacity": "membrane",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [150, 348],
+          [296, 380],
+          [420, 420],
+          [496, 452],
+          [468, 474],
+          [340, 460],
+          [222, 424]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [206, 378],
+          [320, 406],
+          [430, 440]
+        ]
+      }
+    },
+    {
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "surface",
+      "opacity": "membrane",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [165, 288],
+          [330, 208],
+          [520, 128],
+          [700, 58],
+          [800, 26],
+          [832, 56],
+          [762, 118],
+          [620, 200],
+          [470, 288],
+          [330, 366],
+          [222, 408],
+          [172, 358]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [222, 292],
+          [460, 190],
+          [700, 84]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [226, 336],
+          [420, 262],
+          [608, 176]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [352, 234],
+          [396, 268],
+          [420, 300]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The abdomen. Drawn once on the axis, like the thorax and the head: one",
+        "organ straddling the midline, symmetric in itself, and a doubled line",
+        "down the back if it were reflected."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 452],
+          [256, 476],
+          [286, 660],
+          [256, 800],
+          [200, 900],
+          [110, 970],
+          [0, 1004],
+          [-110, 970],
+          [-200, 900],
+          [-256, 800],
+          [-286, 660],
+          [-256, 476]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The band across the second tergite, and the tail.",
+        "",
+        "Two of the three bands a British bumblebee is keyed out on; the third is",
+        "the collar, which is on the thorax. `pigment` for the ochre band and",
+        "`surface` for the tail, so the two read as different values rather than",
+        "as one band drawn twice."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 574],
+          [180, 584],
+          [258, 606],
+          [262, 692],
+          [184, 686],
+          [0, 686],
+          [-184, 686],
+          [-262, 692],
+          [-258, 606],
+          [-180, 584]
+        ]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "surface",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 828],
+          [140, 844],
+          [190, 892],
+          [136, 954],
+          [0, 988],
+          [-136, 954],
+          [-190, 892],
+          [-140, 844]
+        ]
+      }
+    },
+    {
+      "note": [
+        "Fur, as a fan radiating from the base of the abdomen.",
+        "",
+        "Strokes running *across* the animal were the first attempt and they read",
+        "as tergite boundaries — which the abdomen does not have here, because",
+        "the fur hides them. Fur lies back from where it grows, so the strokes",
+        "share an origin and spread."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [24, 516],
+          [140, 528],
+          [248, 552]
+        ],
+        "to": [
+          [24, 516],
+          [104, 726],
+          [148, 928]
+        ],
+        "count": 6
+      }
+    },
+    {
+      "note": [
+        "The thorax, and the collar across the front of it — the first of the",
+        "three bands."
+      ],
+      "id": "thorax",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 104],
+          [164, 120],
+          [230, 300],
+          [216, 400],
+          [156, 458],
+          [0, 476],
+          [-156, 458],
+          [-216, 400],
+          [-230, 300],
+          [-164, 120]
+        ]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment",
+      "mirror": false,
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 112],
+          [160, 128],
+          [200, 216],
+          [130, 240],
+          [0, 236],
+          [-130, 240],
+          [-200, 216],
+          [-160, 128]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [18, 288],
+          [118, 288],
+          [212, 296]
+        ],
+        "to": [
+          [18, 288],
+          [96, 366],
+          [136, 438]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -4],
+          [72, 8],
+          [114, 56],
+          [104, 100],
+          [0, 116],
+          [-104, 100],
+          [-114, 56],
+          [-72, 8]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [86, 60],
+        "radii": [18, 34],
+        "rotate": 12
+      }
+    },
+    {
+      "note": [
+        "A short, elbowed antenna: a long scape, then a flagellum bent forward",
+        "from it. Twelve segments on a female, thirteen on a male, and neither",
+        "count survives to plate size — the elbow does."
+      ],
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [64, 30],
+          [86, -8],
+          [104, -46]
+        ],
+        "width": [22, 19, 16]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [104, -46],
+          [176, -78],
+          [252, -104]
+        ]
+      }
+    }
+  ]
+}

@@ -100,6 +100,56 @@ describe('validateLandmarks', () => {
     expect(() => validateLandmarks(withPart(broken), 'x.json')).toThrow(/same number of points/);
   });
 
+  it('rejects a fan on the midline whose guides are not centred on it', () => {
+    // The mistake this catches cost four plates a rebuild: `mirror: false` on a
+    // fan applies to every stroke the fan draws, so guides running from one
+    // side of the animal to the other declare a row of parts that each sit off
+    // the axis, and `validatePlate` reports every one of them.
+    const broken = {
+      ...MINIMAL.parts[0],
+      mirror: false,
+      shape: {
+        kind: 'fan',
+        from: [
+          [-100, 200],
+          [-90, 400],
+        ],
+        to: [
+          [100, 200],
+          [90, 400],
+        ],
+        count: 5,
+      },
+    };
+
+    expect(() => validateLandmarks(withPart(broken), 'x.json')).toThrow(/guides are not centred/);
+  });
+
+  it('allows a fan on the midline whose strokes each cross it', () => {
+    // The legitimate case: rings across an abdomen, where every stroke is
+    // itself symmetric about the axis.
+    const rings = {
+      ...MINIMAL.parts[0],
+      mirror: false,
+      shape: {
+        kind: 'fan',
+        from: [
+          [-100, 200],
+          [0, 210],
+          [100, 200],
+        ],
+        to: [
+          [-60, 800],
+          [0, 810],
+          [60, 800],
+        ],
+        count: 4,
+      },
+    };
+
+    expect(() => validateLandmarks(withPart(rings), 'x.json')).not.toThrow();
+  });
+
   it('rejects mirror: true, which reads as a instruction and is not one', () => {
     expect(() =>
       validateLandmarks(withPart({ ...MINIMAL.parts[0], mirror: true }), 'x.json'),

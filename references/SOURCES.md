@@ -1,7 +1,8 @@
 # Reference images
 
-Every plate in `src/data/species/*.plate.ts` is traced from a reference held
-here. This file records where each one came from and on what terms, so the
+Every plate is traced from a reference held here. The measurements taken from
+it live in `src/data/species/landmarks/*.json`; `src/data/species/*.plate.ts`
+is built from those. This file records where each one came from and on what terms, so the
 provenance travels with the drawing rather than living in someone's memory.
 
 **These files are committed.** Every entry below is public domain — the author
@@ -112,3 +113,95 @@ figure's left and its legs off its right, and folds each across the midline —
 see the comment at the top of `aeshna-cyanea.plate.ts`. The venation is the
 part deliberately not reproduced: Lucas draws several hundred cells a wing, and
 nine strokes are traced.
+
+---
+
+## Bombus terrestris (female)
+
+|                  |                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Bombus terrestris_ (Linnaeus, 1758) — buff-tailed bumblebee, female                                                                      |
+| **View**         | Dorsal, wings spread — figure 3 of the plate                                                                                              |
+| **File**         | [`bombus-terrestris.jpg`](bombus-terrestris.jpg) — 1882 × 2860, 201 KB                                                                    |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:SaundersHymenopteraAculeataPlate52.jpg>                                                          |
+| **Author**       | Robert Morgan (_del. et lith._), lithographer; printed by Vincent Brooks, Day & Son                                                       |
+| **Published in** | Edward Saunders, _The Hymenoptera Aculeata of the British Islands_, London: L. Reeve & Co., 1896 — Plate 52, figure 3                     |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-US-expired}}` and `{{PD-old-70}}`: published in 1896, and Saunders died in 1910. |
+| **Downloaded**   | 2026-08-23                                                                                                                                |
+| **Used by**      | `src/data/species/landmarks/bombus-terrestris.json`                                                                                       |
+
+The plate's own text sheet names every figure, which is why this one could be
+used: figure 3 is captioned _Bombus terrestris, Linn., female_, and the buff
+tail, the collar and the abdominal band are all legible on it. A specimen
+photograph would have been sharper and would have given a specimen rather than
+a species — a dead bumblebee's fur mats, and matted fur is the one thing that
+cannot be un-drawn.
+
+---
+
+## Vespa crabro (male)
+
+|                  |                                                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Vespa crabro_ Linnaeus, 1758 — European hornet, male                                                                 |
+| **View**         | Dorsal, wings spread — figure 1 of the plate                                                                          |
+| **File**         | [`vespa-crabro.jpg`](vespa-crabro.jpg) — 1882 × 2860, 196 KB                                                          |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:SaundersHymenopteraAculeataPlate20.jpg>                                      |
+| **Author**       | Robert Morgan (_del. et lith._), lithographer; printed by Vincent Brooks, Day & Son                                   |
+| **Published in** | Edward Saunders, _The Hymenoptera Aculeata of the British Islands_, London: L. Reeve & Co., 1896 — Plate 20, figure 1 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-US-expired}}` and `{{PD-old-70}}`.                           |
+| **Downloaded**   | 2026-08-23                                                                                                            |
+| **Used by**      | `src/data/species/landmarks/vespa-crabro.json`                                                                        |
+
+The same artist and the same book as the bumblebee, one plate of yellowjackets
+earlier, which is a small piece of luck: the hornet is drawn beside the five
+British social wasps it is most often confused with, at the scale bars the
+plate gives for each. Captioned _Vespa crabro Linn. male_, and that caption is
+why this drawing commits to a sex — a male's antennae are longer than a
+worker's, and both are in the figure.
+
+---
+
+## Palomena prasina
+
+|                  |                                                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Species**      | _Palomena prasina_ (Linnaeus, 1761) — green shield bug                                                                |
+| **View**         | Dorsal, whole animal — figure 1 of the plate                                                                          |
+| **File**         | [`palomena-prasina.jpg`](palomena-prasina.jpg) — 874 × 1388, 89 KB                                                    |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:SaundersHemipteraHeteropteraBritishIslandsPlate3.jpg>                        |
+| **Author**       | Robert Morgan (_del. et lith._), lithographer; printed by Vincent Brooks, Day & Son                                   |
+| **Published in** | Edward Saunders, _The Hemiptera Heteroptera of the British Islands_, London: L. Reeve & Co., 1892 — Plate 3, figure 1 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-70-1923}}`.                                              |
+| **Downloaded**   | 2026-08-23                                                                                                            |
+| **Used by**      | `src/data/species/landmarks/palomena-prasina.json`                                                                    |
+
+Captioned under the old name _Pentatoma prasina_, which the Commons file page
+resolves to the current combination. The smallest reference in the collection
+at 874 pixels wide, and the figure occupies about a seventh of it — enough for
+the outline, the scutellum and the membrane, which is what the plate needed,
+and not enough for the punctation, which is drawn as hatching instead.
+
+---
+
+## Cetonia aurata
+
+|                  |                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Species**      | _Cetonia aurata_ Linnaeus, 1758 — rose chafer                                                                                                          |
+| **View**         | Dorsal, whole animal — figure 15 of the plate                                                                                                          |
+| **File**         | [`cetonia-aurata.jpg`](cetonia-aurata.jpg) — 1920 × 3017, 1.3 MB                                                                                       |
+| **Source page**  | <https://commons.wikimedia.org/wiki/File:Georgiy_Jacobson_-_Beetles_Russia_and_Western_Europe_-_plate_31.jpg>                                          |
+| **Author**       | Georgiy Georgiyevich Jacobson (1871–1926)                                                                                                              |
+| **Published in** | G. G. Jacobson, _Zhuki Rossii i Zapadnoi Evropy_ (Beetles of Russia and Western Europe), St Petersburg: A. F. Devrien, 1905–1916 — Plate 31, figure 15 |
+| **Licence**      | **Public domain.** Wikimedia Commons tags the file `{{PD-old-100-expired}}`: Jacobson died in 1926, and the work was published before 1923.            |
+| **Downloaded**   | 2026-08-23                                                                                                                                             |
+| **Used by**      | `src/data/species/landmarks/cetonia-aurata.json`                                                                                                       |
+
+The only reference here whose caption is printed on the sheet itself rather
+than on a facing page, which made the identification checkable without leaving
+the image: the numbered list under the figures gives _15. Cetonia aurata_. The
+plate holds twenty-five scarabs and chafers, so it is also the one place in
+this folder where a reader can see what the drawing was chosen _against_ — the
+several other big green beetles a rose chafer is mistaken for are on the same
+sheet.

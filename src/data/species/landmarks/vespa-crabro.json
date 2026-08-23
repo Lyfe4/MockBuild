@@ -1,0 +1,713 @@
+{
+  "species": "vespa-crabro",
+  "constant": "VESPA_CRABRO_PLATE",
+  "order": "hymenoptera",
+  "sex": "male",
+  "hallmark": "the waist between thorax and abdomen, and the notched dark bands across the tergites",
+  "reference": {
+    "title": "Vespa crabro, from The Hymenoptera Aculeata of the British Islands, plate 20, fig. 1",
+    "artist": "Robert Morgan",
+    "year": 1896,
+    "source": "https://commons.wikimedia.org/wiki/File:SaundersHymenopteraAculeataPlate20.jpg",
+    "licence": "Public domain (PD-US-expired, PD-old-70)"
+  },
+  "doc": [
+    "*Vespa crabro*, male, dorsal — the European hornet.",
+    "",
+    "Traced from figure 1 of Robert Morgan's plate 20 for Edward Saunders's *The",
+    "Hymenoptera Aculeata of the British Islands* (1896);",
+    "`references/vespa-crabro.jpg` is the sheet and the hornet is the large figure",
+    "at the top. The plate's own caption names the sex, which is why this plate",
+    "does: a male hornet has longer antennae and one more antennal segment than a",
+    "worker, and both show from above.",
+    "",
+    "## The waist is the order",
+    "",
+    "`REQUIRED_PARTS.hymenoptera` does not list a part for it, and deliberately:",
+    "the waist is the *gap* between the thorax and the abdomen rather than a thing",
+    "to draw. What that means for an author is that the two parts either side of",
+    "it have to be measured honestly — a thorax drawn a little long or an abdomen",
+    "a little forward closes the gap, and a wasp without a waist is a fly.",
+    "",
+    "## Bands, and why they are markings rather than segments",
+    "",
+    "Both are drawn, and they are not the same thing. `abdomen-segment` is the",
+    "join between one tergite and the next — an anatomical line that would be",
+    "there on a plain brown wasp. The dark `marking` bands are the pattern, and on",
+    "*crabro* they are notched: each runs across the tergite and then sends a",
+    "point back down the midline. A key asks about the pattern; a reader counting",
+    "segments needs the lines.",
+    "",
+    "## Wings",
+    "",
+    "Four, and all four declare `opacity: 'membrane'`. A hornet's wings are glass:",
+    "the hindwing lies under the forewing and the legs pass under both, and",
+    "painting them opaque would delete a leg apiece.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the top of the head, y = 1000 at the tip of the abdomen. The wings",
+    "reach past x = 900 — nearly twice the length of the body either side — and",
+    "the antennae above y = -190."
+  ],
+  "parts": [
+    {
+      "note": [
+        "Legs first, so they pass under the wings and the body.",
+        "",
+        "A hornet's legs are long and slender and the reference draws them almost",
+        "straight, so the femora are measured at the light end of the six per cent",
+        "CLAUDE.md records — heavier and the animal reads as a bee."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [138, 438],
+          [242, 528],
+          [345, 615]
+        ],
+        "width": [34, 30, 26]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [345, 615],
+          [368, 792],
+          [385, 970]
+        ],
+        "width": [24, 21, 17]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [385, 970],
+          [378, 1046]
+        ],
+        "width": [14, 12]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [376, 1054],
+          [368, 1120]
+        ],
+        "width": [12, 10]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [366, 1128],
+          [358, 1176]
+        ],
+        "width": [10, 5]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [128, 319],
+          [218, 410],
+          [306, 497]
+        ],
+        "width": [34, 30, 26]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [306, 497],
+          [338, 636],
+          [365, 773]
+        ],
+        "width": [24, 21, 17]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [365, 773],
+          [374, 848]
+        ],
+        "width": [14, 12]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [376, 856],
+          [383, 922]
+        ],
+        "width": [12, 10]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [385, 930],
+          [390, 978]
+        ],
+        "width": [10, 5]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [108, 176],
+          [190, 98],
+          [270, 20]
+        ],
+        "width": [34, 30, 26]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [270, 20],
+          [322, -46],
+          [370, -112]
+        ],
+        "width": [24, 21, 17]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [370, -112],
+          [392, -168]
+        ],
+        "width": [14, 12]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [394, -176],
+          [414, -234]
+        ],
+        "width": [12, 10]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [416, -242],
+          [430, -284]
+        ],
+        "width": [10, 5]
+      }
+    },
+    {
+      "note": [
+        "The hindwing, drawn before the forewing so the forewing lies over it.",
+        "It is about half the length and barely shows past the front one, which is",
+        "how a wasp at rest reads and why it is easy to leave out."
+      ],
+      "id": "hindwing",
+      "rank": "outline",
+      "fill": "surface",
+      "opacity": "membrane",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [130, 252],
+          [300, 262],
+          [452, 302],
+          [560, 352],
+          [584, 388],
+          [536, 402],
+          [398, 390],
+          [268, 358],
+          [168, 320]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [190, 288],
+          [340, 310],
+          [480, 348]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The forewing. Long, narrow, and folded back along the body in life — the",
+        "reference has it spread, which is what a pinned specimen looks like and",
+        "what a plate has to draw if the venation is to be visible at all."
+      ],
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "surface",
+      "opacity": "membrane",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [120, 178],
+          [300, 120],
+          [520, 70],
+          [720, 42],
+          [860, 34],
+          [905, 54],
+          [878, 92],
+          [740, 142],
+          [560, 212],
+          [400, 288],
+          [270, 350],
+          [190, 396]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [200, 172],
+          [450, 110],
+          [720, 62]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [200, 230],
+          [430, 175],
+          [680, 108]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [210, 300],
+          [400, 250],
+          [560, 205]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [352, 154],
+          [368, 218],
+          [372, 282]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The abdomen. Drawn once on the axis: it is one organ straddling the",
+        "midline and symmetric in itself, so reflecting it would show as a doubled",
+        "line down the back."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 470],
+          [59, 481],
+          [154, 521],
+          [174, 615],
+          [177, 714],
+          [162, 813],
+          [118, 911],
+          [65, 970],
+          [0, 1002],
+          [-65, 970],
+          [-118, 911],
+          [-162, 813],
+          [-177, 714],
+          [-174, 615],
+          [-154, 521],
+          [-59, 481]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The joins between tergites — anatomy, not pattern. See the note at the",
+        "top of the file."
+      ],
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-150, 578],
+          [0, 592],
+          [150, 578]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-172, 690],
+          [0, 704],
+          [172, 690]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-150, 800],
+          [0, 814],
+          [150, 800]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-108, 890],
+          [0, 902],
+          [108, 890]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The notched bands, which are the pattern a key asks about.",
+        "",
+        "Each runs across a tergite and sends a point back down the midline, and",
+        "it is that notch rather than the band that separates *crabro* from the",
+        "yellowjackets it is drawn beside on the reference plate."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 600],
+          [96, 594],
+          [148, 610],
+          [152, 650],
+          [96, 636],
+          [0, 666],
+          [-96, 636],
+          [-152, 650],
+          [-148, 610],
+          [-96, 594]
+        ]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 710],
+          [100, 702],
+          [154, 716],
+          [156, 756],
+          [100, 744],
+          [0, 776],
+          [-100, 744],
+          [-156, 756],
+          [-154, 716],
+          [-100, 702]
+        ]
+      }
+    },
+    {
+      "id": "marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "clipTo": "abdomen",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 820],
+          [82, 812],
+          [124, 826],
+          [124, 860],
+          [80, 850],
+          [0, 878],
+          [-80, 850],
+          [-124, 860],
+          [-124, 826],
+          [-82, 812]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The thorax: one box from above, because a wasp's plates are not",
+        "separable in dorsal view. `pronotum` is the id for a beetle, where the",
+        "front plate is always a distinct shield; here it is not."
+      ],
+      "id": "thorax",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 136],
+          [126, 158],
+          [166, 262],
+          [156, 366],
+          [92, 446],
+          [0, 466],
+          [-92, 446],
+          [-156, 366],
+          [-166, 262],
+          [-126, 158]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [14, 212],
+          [12, 302],
+          [8, 400]
+        ],
+        "to": [
+          [108, 212],
+          [98, 302],
+          [58, 400]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, -6],
+          [58, 6],
+          [98, 58],
+          [103, 96],
+          [91, 138],
+          [0, 152],
+          [-91, 138],
+          [-103, 96],
+          [-98, 58],
+          [-58, 6]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The compound eye, notched on its inner margin — which is a Vespidae",
+        "character and the reason the eye is drawn as a crescent rather than an",
+        "oval. `eye` rather than `compound-eye`: that id is reserved for a",
+        "dragonfly's, which wrap the head and meet on top of it."
+      ],
+      "id": "eye",
+      "rank": "structure",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [80, 72],
+        "radii": [26, 54],
+        "rotate": 10
+      }
+    },
+    {
+      "note": [
+        "Three ocelli on the vertex, in the triangle every aculeate wasp has them",
+        "in. Two are a mirrored pair and the third sits on the axis."
+      ],
+      "id": "ocellus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [26, 34],
+        "radii": [10, 8]
+      }
+    },
+    {
+      "id": "ocellus",
+      "rank": "detail",
+      "fill": "ink",
+      "mirror": false,
+      "shape": {
+        "kind": "ellipse",
+        "at": [0, 12],
+        "radii": [10, 8]
+      }
+    },
+    {
+      "note": [
+        "A male's antenna: thirteen segments, elbowed, and long enough to reach",
+        "well past the head. A worker's is shorter by a segment, so this is one of",
+        "the two places the plate commits to a sex."
+      ],
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [30, 40],
+          [62, 6],
+          [92, -30]
+        ],
+        "width": [22, 19, 16]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [92, -30],
+          [140, -76],
+          [196, -118]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [196, -118],
+          [252, -152],
+          [304, -186]
+        ]
+      }
+    }
+  ]
+}
