@@ -1,0 +1,272 @@
+/**
+ * The request form.
+ *
+ * Label in mono above its control, hint under the label, error under the
+ * control — reading order and visual order agree, and the error is the last
+ * thing before the next field rather than something floating beside it.
+ */
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.asideHeading {
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  padding-block-end: var(--space-2xs);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.asideBody {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+.asideNote {
+  font-size: var(--font-size-xs);
+}
+
+.sheet {
+  max-inline-size: var(--measure);
+}
+
+.header {
+  padding-block-end: var(--space-md);
+  border-block-end: 2px solid var(--color-ink);
+}
+
+.eyebrow {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.title {
+  margin-block-start: var(--space-2xs);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-display);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.title:focus {
+  outline: none;
+}
+
+.title:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.standfirst {
+  margin-block-start: var(--space-xs);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-md);
+  font-style: italic;
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+/* Said before anything is typed, not after. */
+.demonstration {
+  padding: var(--space-sm) var(--space-md);
+  margin-block-start: var(--space-lg);
+  background-color: var(--color-accent-wash);
+  border-inline-start: 3px solid var(--color-accent-strong);
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  text-wrap: pretty;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-block-start: var(--space-xl);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.label {
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.hint {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+.control {
+  inline-size: 100%;
+  /* 44px tap target, as everywhere else. */
+  min-block-size: 2.75rem;
+  padding: var(--space-2xs) var(--space-xs);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.control:hover {
+  border-color: var(--color-accent);
+}
+
+.textarea {
+  min-block-size: 8rem;
+  font-family: var(--font-family-text);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  resize: vertical;
+}
+
+/*
+ * An invalid control is marked twice: a heavier rule and a message underneath.
+ * Colour alone would say nothing to a reader who cannot see it and nothing to a
+ * reader who cannot distinguish it.
+ */
+.controlInvalid {
+  border-width: 2px;
+  border-color: var(--color-accent-strong);
+}
+
+.error {
+  color: var(--color-accent-strong);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+/*
+ * The honeypot: out of sight without `display: none`.
+ *
+ * Some bots skip a field that is display:none or hidden; a field pushed off the
+ * canvas is one they fill. It is `aria-hidden` and `tabIndex={-1}` in the
+ * markup, so nothing reaches it by keyboard or by screen reader.
+ */
+.honeypot {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  padding-block-start: var(--space-md);
+  border-block-start: 1px solid var(--color-line);
+}
+
+.submit {
+  min-block-size: 2.75rem;
+  padding: var(--space-2xs) var(--space-lg);
+  color: var(--color-on-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  background-color: var(--color-accent-strong);
+  border: 1px solid var(--color-accent-strong);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+.submit:hover {
+  background-color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.actionsNote {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+}
+
+.confirmation {
+  padding: var(--space-lg);
+  margin-block-start: var(--space-xl);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.confirmationHeading {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+  line-height: var(--line-height-tight);
+}
+
+.receipt {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  margin-block-start: var(--space-md);
+}
+
+.receiptRow {
+  display: grid;
+  gap: var(--space-3xs);
+  padding-block: var(--space-xs);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.receiptRow dt {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.receiptRow dd {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.confirmationNote {
+  margin-block-start: var(--space-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  text-wrap: pretty;
+}
+
+@media (min-width: 40rem) {
+  .receiptRow {
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: var(--space-md);
+    align-items: baseline;
+  }
+}

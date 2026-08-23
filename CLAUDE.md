@@ -452,6 +452,42 @@ and the parse; `features/journal/JournalProse` renders.
   position is not content — nobody refers to the third entry — and an ordered
   list has a screen reader count them out.
 
+## The request form
+
+`/request` is a mock form built as though it filed something. `src/lib/request`
+is the schema and the pure helpers; `RequestRoute` is the page. **Zod** is here
+for it — the one runtime dependency added since react-router, and the README
+says why.
+
+- **Nothing is sent.** No endpoint, no fetch, no third party. Submitting
+  validates, mints a reference and shows a panel. The notice saying so is
+  **above the form**, not only in the confirmation: somebody typing their email
+  address into a fictional institution's form deserves to know beforehand.
+- **`requestReference` is a hash of what was typed**, FNV-1a with `Math.imul`,
+  so it is pure, testable, and the same for the same request. There is no
+  counter to keep — no server, no storage, nothing that remembers the last one.
+- **Validation is on submit, not on keystroke**, and a field's error clears as
+  that field is edited. The page should not argue with somebody mid-word, or
+  with somebody already fixing it.
+- **Focus goes to the first invalid field in `REQUEST_FIELDS` order**, which is
+  page order. The first field the _validator_ reported is a different field and
+  would send a reader backwards.
+- **`aria-describedby` names the hint and the error**, in that order and only
+  the ones that exist; `aria-invalid` marks the control; the invalid rule is
+  heavier as well as accented, because colour alone says nothing to a reader who
+  cannot see it. A dangling id fails silently, so a test resolves the attribute.
+- **The honeypot short-circuits and says nothing.** A baited submission gets the
+  same confirmation a real one does — telling a bot it failed teaches it what to
+  change. It is off-canvas rather than `display: none` (which some bots skip),
+  `aria-hidden` on the wrapper and `tabIndex={-1}` on the input, and it is not
+  in `REQUEST_FIELDS` because it is not a field of a request.
+- **`today` comes from local date parts, not `toISOString`.** At 9am in Sydney
+  that returns yesterday and the date input refuses today. It is read once in a
+  `useState` initialiser so it cannot change under a reader at midnight.
+- **`?species=` preselects, and an unknown id selects nothing.** Falling back to
+  the first specimen would have a visitor ask for an animal they never named.
+  The specimen sheet links here with the parameter set.
+
 ## Known dead weight
 
 None. `src/lib/random` — a seeded `mulberry32` and `seedFromName` — was the

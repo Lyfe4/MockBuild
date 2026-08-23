@@ -9,6 +9,7 @@ import { JournalEntryRoute } from './routes/JournalEntryRoute';
 import { JournalRoute } from './routes/JournalRoute';
 import { KeyRoute } from './routes/KeyRoute';
 import { NotFoundRoute } from './routes/NotFoundRoute';
+import { RequestRoute } from './routes/RequestRoute';
 import { SpecimenRoute } from './routes/SpecimenRoute';
 
 /**
@@ -77,6 +78,9 @@ export const router = createBrowserRouter([
       // entry is a document with an address, and the index is a list of them.
       { path: 'journal', element: <JournalRoute /> },
       { path: 'journal/:slug', element: <JournalEntryRoute /> },
+      // The request form keeps its preselected specimen in the query string, so
+      // a specimen sheet can link straight to it: `/request?species=<id>`.
+      { path: 'request', element: <RequestRoute /> },
       ...devOnlyRoutes,
       // Last: matches anything the routes above did not.
       { path: '*', element: <NotFoundRoute /> },

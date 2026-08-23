@@ -255,3 +255,19 @@
   font-size: var(--font-size-sm);
   text-wrap: pretty;
 }
+
+/*
+ * Through to the request form, with this specimen preselected. A line of its
+ * own above the pager rather than a source in the list: it is the one thing on
+ * the sheet that asks the reader to do something.
+ */
+.request {
+  margin-block-start: var(--space-xl);
+}
+
+.requestLink {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}

@@ -269,6 +269,18 @@ export function SpecimenRoute() {
           </ul>
         </section>
 
+        {/*
+          Through to the request form with this specimen already chosen. The
+          form reads `?species=` and ignores an id the collection does not hold,
+          so a stale link arrives with nothing selected rather than with the
+          wrong animal selected.
+        */}
+        <p className={styles.request}>
+          <Link className={styles.requestLink} to={`/request?species=${species.id}`}>
+            Request this specimen
+          </Link>
+        </p>
+
         <nav className={styles.pager} aria-label="Catalogue">
           {previous === undefined ? (
             <span />
