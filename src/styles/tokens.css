@@ -1,5 +1,5 @@
 /**
- * Design tokens for the Thornfield Botanical Archive.
+ * Design tokens for the Thornfield Entomological Archive.
  *
  * Three layers, in this order:
  *
@@ -12,7 +12,7 @@
  *                  Nothing else changes: spacing, type and motion are constant
  *                  across seasons, so a re-theme can never shift the layout.
  *
- * The palettes are drawn from herbarium materials — mounting paper, iron-gall and
+ * The palettes are drawn from collection materials — mounting paper, iron-gall and
  * walnut inks, pressed and faded leaves. All four are light; the seasons vary hue
  * and warmth rather than luminance, which is what keeps contrast stable.
  *

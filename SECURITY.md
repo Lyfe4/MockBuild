@@ -2,7 +2,7 @@
 
 ## Scope
 
-The Thornfield Botanical Archive is a static, client-side portfolio site for a
+The Thornfield Entomological Archive is a static, client-side portfolio site for a
 fictional institution. It has no backend, no database, no authentication and no
 user accounts. It collects nothing, stores nothing, and sends nothing anywhere:
 there are no analytics, no trackers and no third-party scripts.

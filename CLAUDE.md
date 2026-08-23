@@ -7,14 +7,16 @@ easy to get wrong.
 
 ## What this is
 
-**Thornfield archive** — a mock website for a fictional institution. It is a
-portfolio piece: no real institution, nothing is collected from a visitor.
+**Thornfield Entomological Archive** — a mock website for a fictional
+institution. It is a portfolio piece: no real institution, nothing is collected
+from a visitor.
 
-The institution is invented; the **collection is not**. It is an entomological
-collection of real species — starting with _Lucanus cervus_ — each carrying a
-real, sourced record (taxonomy, distribution, phenology, and the morphological
-characters a later identification key will filter on) and a **hand-authored
-plate** traced in a simplified engraving style from a public-domain reference.
+The institution is invented; the **collection is not**. Four real species —
+_Lucanus cervus_, _Coccinella septempunctata_, _Papilio machaon_, _Aeshna
+cyanea_ — each carrying a real, sourced record (taxonomy, distribution,
+phenology, and the morphological characters a later identification key will
+filter on) and a **hand-authored plate** traced in a simplified engraving style
+from a public-domain reference.
 
 Two generations of code have been removed. Read the history if you need them —
 `git log -- src/lib/plant src/lib/insect` — and the README's _How this evolved_
@@ -85,10 +87,16 @@ SpeciesPlate    ──┘        │
   entire bilateral-symmetry mechanism. Parts that straddle the axis and are
   symmetric in themselves declare `mirror: false` and are drawn once; reflecting
   them would produce a doubled line.
-- **Mirroring is two `<g>` groups, not a `<use>`.** A `clip-path` inside
-  `<g transform="scale(-1,1)">` resolves in that group's own user space, so one
-  clip definition confines the hatching on both wing cases. Do not "simplify"
-  this into a `<use>` without re-reading `SpeciesIllustration`'s comment.
+- **Mirroring is a `transform` on the path, not a `<use>`.** A `clip-path` on a
+  transformed element resolves in that element's own user space, so one clip
+  definition confines the hatching on both wing cases. Do not "simplify" this
+  into a `<use>` without re-reading `SpeciesIllustration`'s comment.
+- **The array is the stacking, for both halves.** Each mirrored part is emitted
+  followed immediately by its reflection, and nothing is grouped or sorted. An
+  earlier renderer drew every mirrored part and then every midline part, which
+  made it impossible for anything mirrored to sit on top of anything on the
+  axis — the stag beetle's pronotal hatching went under its own pronotum and
+  vanished, and the plate looked merely plain rather than broken.
 - **`validatePlate` runs in a test for every plate.** Eight error classes, all
   of them mistakes that otherwise fail _quietly_: a stray minus sign puts a leg
   on the wrong side and the mirror puts a second one on top of it, so the plate
@@ -119,8 +127,16 @@ SpeciesPlate    ──┘        │
   whose licence forbids redistribution is gitignored and recorded by URL
   instead. Nothing in `references/` is ever bundled.
 
-Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it and
-a test. It touches no component.
+- **The four plates share one test contract.** `src/test/plateContract.ts` asks
+  the six things that go wrong on every plate — validator, reference, clipped
+  strokes, view box, line ranks, agreement with the record — and each species
+  file adds only what is true of that animal. `src/test/plateGeometry.ts` holds
+  the geometry helpers they all need.
+
+Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it, a
+test that calls `describePlateContract`, a reference in `references/` with its
+entry in `SOURCES.md`, and two lines in `src/data/species/index.ts`. It touches
+no component.
 
 ## The lab route
 
@@ -141,6 +157,25 @@ validator's verdict is printed on the page.
 
 The route and its stylesheet are temporary; they go when the plates have nothing
 left to prove.
+
+## The catalogue
+
+`SPECIES` in `src/data/species/index.ts` is in **accession order**, not
+alphabetical, because that is the order the `TEA-0001` numbers are assigned in
+and an accession number must never change under a specimen that already has
+one. Add a species by appending.
+
+Filters and sort live in the URL, parsed by `src/lib/catalogue/query.ts`, which
+treats a URL as untrusted input: unknown values are dropped, facet order is
+normalised so two equivalent links parse identically, and the search term is
+trimmed and capped. `filter.ts` is pure functions over an array — every facet is
+an AND against the others and an OR within itself.
+
+**The season filter needs saying out loud wherever it appears.** `seasonOfMonth`
+maps a month to Thornfield's _southern_ season, and every record's months were
+observed in the northern hemisphere. A European stag beetle flying in May to
+August comes out as autumn and winter. That is not a bug and it is not a claim
+about the animal; the panel and the specimen sheet both say so in words.
 
 ## Known dead weight
 

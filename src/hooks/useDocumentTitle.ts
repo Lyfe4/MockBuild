@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const SITE_NAME = 'Thornfield Botanical Archive';
+const SITE_NAME = 'Thornfield Entomological Archive';
 
 /**
  * Sets the document title for the current route.

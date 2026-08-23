@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SPECIES } from '@/data';
+import { catalogueNumberOf, SPECIES } from '@/data';
 import { ThemeProvider } from '@/features/theme';
 
 import { CatalogueRoute } from './CatalogueRoute';
@@ -83,7 +83,7 @@ describe('CatalogueRoute', () => {
       screen.getByText(`${species.taxonomy.genus} ${species.taxonomy.species}`),
     ).toBeInTheDocument();
     expect(screen.getByText(species.commonName)).toBeInTheDocument();
-    expect(screen.getByText(species.id)).toBeInTheDocument();
+    expect(screen.getByText(catalogueNumberOf(species))).toBeInTheDocument();
   });
 
   describe('reads its state from the URL', () => {
@@ -126,7 +126,90 @@ describe('CatalogueRoute', () => {
     });
   });
 
+  describe('the facets', () => {
+    it('offers every taxonomic order the collection holds, as checkboxes', () => {
+      renderCatalogue();
+
+      for (const order of new Set(SPECIES.map((s) => s.taxonomy.order))) {
+        expect(screen.getByRole('checkbox', { name: order }), order).toBeInTheDocument();
+      }
+    });
+
+    it('narrows the family select to the chosen orders', async () => {
+      const user = userEvent.setup();
+      const order = SPECIES[0]!.taxonomy.order;
+
+      renderCatalogue();
+
+      await user.click(screen.getByRole('checkbox', { name: order }));
+
+      const select = screen.getByLabelText('Family');
+      const offered = within(select)
+        .getAllByRole('option')
+        .map((option) => option.textContent)
+        .slice(1);
+      const expected = [
+        ...new Set(SPECIES.filter((s) => s.taxonomy.order === order).map((s) => s.taxonomy.family)),
+      ].sort();
+
+      expect(offered).toStrictEqual(expected);
+    });
+
+    it('drops a chosen family when the order that offered it is unticked', async () => {
+      const user = userEvent.setup();
+      const { taxonomy } = SPECIES[0]!;
+      const router = renderCatalogue(
+        `/catalogue?order=${taxonomy.order}&family=${taxonomy.family}`,
+      );
+
+      await user.click(screen.getByRole('checkbox', { name: taxonomy.order }));
+
+      const params = new URLSearchParams(router.state.location.search);
+
+      // Otherwise the panel shows a family the select no longer lists and the
+      // list is empty for a reason nothing on screen explains.
+      expect(params.get('family')).toBeNull();
+      expect(params.get('order')).toBeNull();
+    });
+
+    it('filters by markings, size and season from the URL', () => {
+      renderCatalogue('/catalogue?markings=spots');
+
+      const spotted = SPECIES.filter((s) => s.morphology.markings === 'spots');
+
+      expect(spotted.length).toBeGreaterThan(0);
+      expect(rows()).toHaveLength(spotted.length);
+    });
+
+    it('says out loud that the seasons are Thornfield’s, not the animal’s', () => {
+      renderCatalogue();
+
+      expect(screen.getByText(/southern seasons/)).toBeInTheDocument();
+    });
+
+    it('sorts by size, largest first', () => {
+      renderCatalogue('/catalogue?sort=size');
+
+      const largest = [...SPECIES].sort((a, b) => b.sizeMm.max - a.sizeMm.max)[0]!;
+      const first = rows()[0];
+
+      expect(within(first!).getByRole('link').textContent).toContain(
+        `${largest.taxonomy.genus} ${largest.taxonomy.species}`,
+      );
+    });
+  });
+
   describe('writes its state to the URL', () => {
+    it('puts a chosen order in the query string', async () => {
+      const user = userEvent.setup();
+      const router = renderCatalogue();
+      const order = SPECIES[0]!.taxonomy.order;
+
+      await user.click(screen.getByRole('checkbox', { name: order }));
+
+      expect(router.state.location.search).toContain(`order=${order}`);
+    });
+
     it('puts a chosen family in the query string', async () => {
       const user = userEvent.setup();
       const router = renderCatalogue();

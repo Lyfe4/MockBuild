@@ -82,13 +82,55 @@ describe('SpeciesIllustration', () => {
   describe('mirroring', () => {
     it('draws the authored half twice, the second reflected', () => {
       const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
-      const reflected = container.querySelectorAll('g[transform="scale(-1,1)"]');
-
-      expect(reflected).toHaveLength(1);
-
+      const reflected = container.querySelectorAll('path[transform="scale(-1,1)"]');
       const mirroredParts = PLATE.parts.filter((part) => part.mirror !== false);
 
-      expect(reflected[0]?.querySelectorAll('path')).toHaveLength(mirroredParts.length);
+      expect(reflected).toHaveLength(mirroredParts.length);
+    });
+
+    it('emits each reflection immediately after its part, so the array is the stacking', () => {
+      // The renderer used to draw every mirrored part and then every midline
+      // one, which made it impossible for anything mirrored to sit on top of
+      // anything on the axis: a beetle's pronotal hatching went under its own
+      // pronotum and vanished. Order in the array is order on the page.
+      const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
+      const drawn = [...container.querySelectorAll('path')].filter(
+        (path) => path.closest('clipPath') === null,
+      );
+
+      let cursor = 0;
+
+      for (const part of PLATE.parts) {
+        expect(drawn[cursor]?.getAttribute('d'), part.id).toBe(part.d);
+        cursor += 1;
+
+        if (part.mirror !== false) {
+          expect(drawn[cursor]?.getAttribute('transform'), part.id).toBe('scale(-1,1)');
+          cursor += 1;
+        }
+      }
+
+      expect(drawn).toHaveLength(cursor);
+    });
+
+    it('paints surface work over the part it belongs to, whichever side each is on', () => {
+      // The regression this exists for: a mirrored stroke clipped to a midline
+      // surface has to come out after it.
+      const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
+      const drawn = [...container.querySelectorAll('path')].filter(
+        (path) => path.closest('clipPath') === null,
+      );
+      const indexOf = (d: string): number =>
+        drawn.findIndex((path) => path.getAttribute('d') === d);
+
+      const pronotum = PLATE.parts.find((part) => part.id === 'pronotum');
+      const shading = PLATE.parts.filter((part) => part.clipTo === 'pronotum');
+
+      expect(shading.length).toBeGreaterThan(0);
+
+      for (const stroke of shading) {
+        expect(indexOf(stroke.d), stroke.id).toBeGreaterThan(indexOf(pronotum?.d ?? ''));
+      }
     });
 
     it('draws a midline part once, and not inside the reflection', () => {
@@ -152,8 +194,8 @@ describe('SpeciesIllustration', () => {
     });
 
     it('reuses one clip path for both halves, which is why the reflection is a transform', () => {
-      // A clip on a path inside the reflected group resolves in that group's
-      // own user space, so it is already mirrored. One definition, both sides.
+      // A clip on a transformed path resolves in that path's own user space,
+      // so it is already mirrored. One definition, both sides.
       const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={PLATE} />);
       const hatching = PLATE.parts.find((part) => part.id === 'hatching');
       const both = container.querySelectorAll(`path[d="${hatching?.d ?? ''}"]`);
@@ -275,10 +317,12 @@ describe('SpeciesIllustration', () => {
     it('gives a membrane part a class of its own', () => {
       const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={WINGED} />);
 
-      // Authored order: abdomen is a midline part and is drawn last, so the
-      // first two paths are the forewing and the hindwing of the right half.
-      expect(classesOf(container, 0)).toMatch(/membrane/);
-      expect(classesOf(container, 1)).not.toMatch(/membrane/);
+      // Authored order: the abdomen is first and sits on the axis, then the
+      // forewing and its reflection, then the hindwing and its reflection.
+      expect(classesOf(container, 0)).not.toMatch(/membrane/);
+      expect(classesOf(container, 1)).toMatch(/membrane/);
+      expect(classesOf(container, 2)).toMatch(/membrane/);
+      expect(classesOf(container, 3)).not.toMatch(/membrane/);
     });
 
     it('carries it onto the reflected half too, so both wings match', () => {

@@ -3,3 +3,8 @@ coverage/
 node_modules/
 *.tsbuildinfo
 package-lock.json
+
+# Generated captures: whole rendered pages with the stylesheet inlined. Prettier
+# would reformat two megabytes of machine-written markup on every commit and
+# make the diff meaningless.
+docs/captures/*.html

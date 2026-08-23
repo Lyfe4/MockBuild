@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
-import { findPlate } from '@/data';
+import { catalogueNumberOf, findPlate } from '@/data';
 import { useInViewOnce, usePrefersReducedMotion } from '@/hooks';
 import { binomialOf } from '@/lib/catalogue';
 import type { Species } from '@/types';
@@ -44,11 +44,13 @@ export function SpecimenRow({ species }: SpecimenRowProps) {
           <span className={styles.scientific}>{binomialOf(species)}</span>
           <span className={styles.common}>{species.commonName}</span>
           <span className={styles.meta}>
-            <span className={styles.accession}>{species.id}</span>
+            <span className={styles.accession}>{catalogueNumberOf(species)}</span>
             <span aria-hidden="true"> · </span>
             {species.taxonomy.order}
             <span aria-hidden="true"> · </span>
             {species.taxonomy.family}
+            <span aria-hidden="true"> · </span>
+            {species.sizeMm.min}&ndash;{species.sizeMm.max} mm {species.sizeBasis}
           </span>
         </span>
       </Link>

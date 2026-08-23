@@ -1,23 +1,73 @@
 import type { SpeciesPlate } from '@/lib/plate';
 import type { Species } from '@/types';
 
+import { AESHNA_CYANEA } from './aeshna-cyanea';
+import { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
+import { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
+import { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
 import { LUCANUS_CERVUS } from './lucanus-cervus';
 import { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
+import { PAPILIO_MACHAON } from './papilio-machaon';
+import { PAPILIO_MACHAON_PLATE } from './papilio-machaon.plate';
 
 /**
  * The entomological collection.
  *
- * Ordered by scientific name, which is the order a systematic collection is
- * arranged in and the order the catalogue reads out by default.
+ * **In accession order** — the order the specimens entered the archive, which
+ * is the order their catalogue numbers are assigned in below. Not alphabetical:
+ * an accession number is a fact about when a thing arrived, and re-sorting this
+ * array must never renumber a specimen that is already catalogued. Adding a
+ * species means appending to the end.
  *
- * Records and plates are separate arrays joined by `species` id rather than one
- * object with a `plate` field, because the two have different lifetimes: a
- * record is written once from published sources, and a plate is redrawn.
+ * The catalogue reads out in whatever order the visitor asks for; the default
+ * is this one.
+ *
+ * Records and plates are two arrays joined by the `species` id rather than one
+ * object with a `plate` field, because they have different lifetimes: a record
+ * is written once from published sources and a plate gets redrawn.
  */
-export const SPECIES: readonly Species[] = [LUCANUS_CERVUS];
+export const SPECIES: readonly Species[] = [
+  LUCANUS_CERVUS,
+  COCCINELLA_SEPTEMPUNCTATA,
+  PAPILIO_MACHAON,
+  AESHNA_CYANEA,
+];
 
-/** Every plate, keyed by the record it draws. */
-const PLATES: readonly SpeciesPlate[] = [LUCANUS_CERVUS_PLATE];
+const PLATES: readonly SpeciesPlate[] = [
+  LUCANUS_CERVUS_PLATE,
+  COCCINELLA_SEPTEMPUNCTATA_PLATE,
+  PAPILIO_MACHAON_PLATE,
+  AESHNA_CYANEA_PLATE,
+];
+
+/** The prefix on every accession number. Thornfield Entomological Archive. */
+export const CATALOGUE_PREFIX = 'TEA';
+
+/**
+ * Accession numbers, assigned here rather than stored on the record.
+ *
+ * A number is the archive's, not the animal's — two collections holding the
+ * same species give it different ones — so it belongs to the index that holds
+ * the specimen and not to the file that describes it. Assigned from position,
+ * which is why `SPECIES` is in accession order and stays that way.
+ */
+const NUMBERS: ReadonlyMap<string, string> = new Map(
+  SPECIES.map((species, index) => [
+    species.id,
+    `${CATALOGUE_PREFIX}-${String(index + 1).padStart(4, '0')}`,
+  ]),
+);
+
+/**
+ * The accession number for one species, as `TEA-0001`.
+ *
+ * Falls back to the slug for a species the index does not hold, which only
+ * happens in a test fixture — better a visible oddity in one cell than a blank
+ * where a catalogue number should be.
+ */
+export function catalogueNumberOf(species: Species): string {
+  return NUMBERS.get(species.id) ?? species.id;
+}
 
 /** One species by slug, or `undefined` if the collection has no such record. */
 export function findSpecies(id: string): Species | undefined {
@@ -29,5 +79,11 @@ export function findPlate(id: string): SpeciesPlate | undefined {
   return PLATES.find((plate) => plate.species === id);
 }
 
+export { AESHNA_CYANEA } from './aeshna-cyanea';
+export { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
+export { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
+export { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
 export { LUCANUS_CERVUS } from './lucanus-cervus';
 export { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
+export { PAPILIO_MACHAON } from './papilio-machaon';
+export { PAPILIO_MACHAON_PLATE } from './papilio-machaon.plate';

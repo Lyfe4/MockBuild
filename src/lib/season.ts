@@ -1,4 +1,4 @@
-import type { Season } from '@/types';
+import type { Month, Season } from '@/types';
 
 /**
  * Maps a date to its Southern Hemisphere season.
@@ -21,6 +21,35 @@ import type { Season } from '@/types';
  * @throws {RangeError} if `date` is an Invalid Date. Returning a plausible-
  *   looking season for `new Date('nonsense')` would hide the bug that produced it.
  */
+/**
+ * Which of Thornfield's seasons a calendar month falls in.
+ *
+ * Southern hemisphere, like everything else here: September to November is
+ * spring, December to February summer, March to May autumn, June to August
+ * winter.
+ *
+ * The archive uses this on records whose months were observed in the *northern*
+ * hemisphere, which is deliberate and needs saying out loud wherever it is
+ * shown. A European stag beetle flies in May to August, and this reports that
+ * as autumn and winter — because those are Thornfield's names for those months,
+ * not because anyone has claimed the beetle flies in the southern winter. The
+ * catalogue's filter is labelled to say so.
+ */
+export function seasonOfMonth(month: Month): Season {
+  if (month >= 9 && month <= 11) return 'spring';
+  if (month === 12 || month <= 2) return 'summer';
+  if (month >= 3 && month <= 5) return 'autumn';
+
+  return 'winter';
+}
+
+/** Every season a set of months touches, in calendar order. */
+export function seasonsOfMonths(months: readonly Month[]): Season[] {
+  const found = new Set(months.map(seasonOfMonth));
+
+  return (['spring', 'summer', 'autumn', 'winter'] as const).filter((season) => found.has(season));
+}
+
 export function seasonFromDate(date: Date): Season {
   const month = date.getMonth();
 

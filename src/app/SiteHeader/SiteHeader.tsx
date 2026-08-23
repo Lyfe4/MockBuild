@@ -22,7 +22,7 @@ export function SiteHeader() {
       <div className={styles.inner}>
         <div className={styles.identity}>
           <Link to="/" className={styles.wordmarkLink}>
-            <span className={styles.wordmark}>Thornfield Botanical Archive</span>
+            <span className={styles.wordmark}>Thornfield Entomological Archive</span>
           </Link>
           <p className={styles.establishment}>Est. 1887 &middot; Armidale</p>
         </div>

@@ -74,20 +74,26 @@ function binomial(species: Species): string {
  * it, and what fills it, and this maps those three roles onto classes. Adding a
  * species touches `data/species` and no component.
  *
- * ## Mirroring
+ * ## Mirroring, and stacking
  *
- * The plate holds the right half. This draws it twice — once as authored, once
- * inside a `<g transform="scale(-1,1)">` — rather than through a `<use>` of a
- * defined half. Both work, and duplication was chosen for the clipping: a
- * `clip-path` on an element inside the mirrored group resolves in that group's
- * own user space, so the same clip path serves both halves and the hatching on
- * the left elytron is confined by the left elytron without a second definition.
- * Through `<use>` the same thing happens in a shadow tree, where it is true but
- * unreadable and untestable.
+ * The plate holds the right half. Each mirrored part is drawn twice — once as
+ * authored, once with `transform="scale(-1,1)"` — rather than through a `<use>`
+ * of a defined half. Both work, and duplication was chosen for the clipping: a
+ * `clip-path` on a transformed element resolves in that element's own user
+ * space, so one clip definition serves both halves and the hatching on the left
+ * elytron is confined by the left elytron. Through `<use>` the same thing
+ * happens in a shadow tree, where it is true but unreadable and untestable.
  *
- * Parts declaring `mirror: false` straddle the axis and are drawn once, after
- * both halves, so the scutellum and the pronotal grooves sit over the seam
- * rather than being reflected into a doubled line.
+ * Parts declaring `mirror: false` straddle the axis and are drawn once, so the
+ * scutellum and the pronotal grooves sit over the seam rather than being
+ * reflected into a doubled line.
+ *
+ * **The array is the stacking.** A part and its reflection are emitted where
+ * the part sits in `plate.parts`, and nothing is grouped or sorted. An earlier
+ * version drew all the mirrored parts and then all the midline ones, which
+ * quietly made it impossible for anything mirrored to sit on top of anything on
+ * the axis — a beetle's pronotal hatching went under its own pronotum and
+ * disappeared, and the plate looked merely plain rather than broken.
  *
  * ## Membranous wings
  *
@@ -157,9 +163,9 @@ export function SpeciesIllustration({
 
   const clipId = (surface: PlatePartId): string => `${clipPrefix}-${surface}`;
 
-  const renderPart = (part: PlatePart, index: number) => (
+  const renderPart = (part: PlatePart, index: number, reflected = false) => (
     <path
-      key={`${part.id}-${String(index)}`}
+      key={`${part.id}-${String(index)}${reflected ? '-r' : ''}`}
       className={cx(
         styles.part,
         RANK_CLASS[part.rank],
@@ -167,12 +173,10 @@ export function SpeciesIllustration({
         OPACITY_CLASS[part.opacity ?? 'solid'],
       )}
       d={part.d}
+      {...(reflected ? { transform: 'scale(-1,1)' } : {})}
       {...(part.clipTo === undefined ? {} : { clipPath: `url(#${clipId(part.clipTo)})` })}
     />
   );
-
-  const half = plate.parts.filter((part) => part.mirror !== false);
-  const midline = plate.parts.filter((part) => part.mirror === false);
 
   return (
     <svg
@@ -200,12 +204,17 @@ export function SpeciesIllustration({
         ))}
       </defs>
 
-      {/* The authored half, then its reflection. */}
-      <g>{half.map(renderPart)}</g>
-      <g transform="scale(-1,1)">{half.map(renderPart)}</g>
-
-      {/* On the axis, and drawn once, over the seam the two halves make. */}
-      <g>{midline.map(renderPart)}</g>
+      {/*
+        In authored order: each part, then its reflection immediately after, so
+        the array is the stacking for both halves at once.
+      */}
+      <g>
+        {plate.parts.flatMap((part, index) =>
+          part.mirror === false
+            ? [renderPart(part, index)]
+            : [renderPart(part, index), renderPart(part, index, true)],
+        )}
+      </g>
     </svg>
   );
 }

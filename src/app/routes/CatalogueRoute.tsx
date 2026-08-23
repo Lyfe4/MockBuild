@@ -2,12 +2,14 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
-import { SPECIES } from '@/data';
+import { catalogueNumberOf, SPECIES } from '@/data';
 import { FilterPanel, SpecimenRow } from '@/features/catalogue';
 import { useDocumentTitle } from '@/hooks';
 import {
+  clearFilters,
   familiesOf,
   isFiltered,
+  ordersOf,
   parseCatalogueQuery,
   queryCatalogue,
   SORT_KEYS,
@@ -19,33 +21,35 @@ import {
 
 import styles from './CatalogueRoute.module.css';
 
-/** Derived once: the dataset is a module constant and never changes. */
-const FAMILIES = familiesOf(SPECIES);
-
 /**
- * The catalogue.
+ * The catalogue: every species in the collection, filtered from the URL.
  *
- * All filter state lives in the URL. That is the whole architecture of this
- * page: `useSearchParams` is the single source of truth, the query is parsed
- * out of it on every render, and every control writes back to it. Nothing is
- * mirrored into component state, so there is no possibility of the two
- * disagreeing — and a filtered view is linkable, bookmarkable and survives a
- * reload for free.
+ * The facets a reader is offered come from the data rather than a hard-coded
+ * list, so adding an order or a family to `src/data/species` adds it here.
  */
+const ORDERS = ordersOf(SPECIES);
+const ALL_FAMILIES = familiesOf(SPECIES);
+
+/** Sorting by catalogue number needs to know what the numbers are. */
+const OPTIONS = { accessionOf: catalogueNumberOf } as const;
+
 export function CatalogueRoute() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useDocumentTitle('Catalogue');
 
-  const query = useMemo(() => parseCatalogueQuery(searchParams, FAMILIES), [searchParams]);
-
-  const results = useMemo(() => queryCatalogue(SPECIES, query), [query]);
+  const query = useMemo(
+    () => parseCatalogueQuery(searchParams, { orders: ORDERS, families: ALL_FAMILIES }),
+    [searchParams],
+  );
+  const results = useMemo(() => queryCatalogue(SPECIES, query, OPTIONS), [query]);
+  // The family select only offers what the chosen orders contain.
+  const families = useMemo(() => familiesOf(SPECIES, query.orders), [query.orders]);
 
   const applyQuery = (next: CatalogueQuery): void => {
     const params = toSearchParams(next);
-
-    // The season is not part of the catalogue query, but it is in the same URL.
-    // Carrying it across keeps a shared link's palette intact while filtering.
+    // The season is not part of the catalogue query, but it shares the URL —
+    // dropping it would reset a shared link's palette on the first click.
     const season = searchParams.get('season');
 
     if (season !== null) params.set('season', season);
@@ -54,7 +58,11 @@ export function CatalogueRoute() {
   };
 
   return (
-    <Ledger margin={<FilterPanel query={query} families={FAMILIES} onChange={applyQuery} />}>
+    <Ledger
+      margin={
+        <FilterPanel query={query} orders={ORDERS} families={families} onChange={applyQuery} />
+      }
+    >
       <div className={styles.header}>
         <h1 className={styles.title} tabIndex={-1}>
           Catalogue
@@ -108,7 +116,7 @@ export function CatalogueRoute() {
             type="button"
             className={styles.emptyAction}
             onClick={() => {
-              applyQuery({ search: '', families: [], sort: query.sort });
+              applyQuery(clearFilters(query));
             }}
           >
             Show all {SPECIES.length} species

@@ -28,6 +28,7 @@ export const LUCANUS_CERVUS: Species = {
   // Females from about 25 mm; the largest males reach 75 mm, which makes this
   // the largest beetle in Europe.
   sizeMm: { min: 25, max: 75 },
+  sizeBasis: 'body length',
   distribution:
     'Widespread across continental Europe and locally in south-east England, absent from Ireland, and extending east through Asia Minor and the Caucasus to western Kazakhstan.',
   // Adults emerge from late May and are gone by early August.

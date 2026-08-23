@@ -1,1 +1,1 @@
-export { findPlate, findSpecies, LUCANUS_CERVUS, SPECIES } from './species';
+export { catalogueNumberOf, findPlate, findSpecies, SPECIES } from './species';

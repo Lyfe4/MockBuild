@@ -170,3 +170,88 @@
     align-items: baseline;
   }
 }
+
+/*
+ * The phenology strip: twelve cells, one a month.
+ *
+ * Filled where the adult is on the wing, outlined where the month belongs to
+ * the season the site is currently dressed in. Two different things on one row,
+ * so they are two different signals — a fill and a border — rather than two
+ * shades of the same one, which nobody can hold in their head.
+ */
+.phenology {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 2px;
+  max-inline-size: 22rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.month {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-block-size: 1.5rem;
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  background-color: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+/* On the wing. */
+.monthActive {
+  color: var(--color-surface);
+  background-color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+/* In the season the site is wearing. */
+.monthInSeason {
+  border-color: var(--color-accent-strong);
+  border-width: 2px;
+}
+
+.phenologyNote {
+  max-inline-size: var(--measure);
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-xs);
+  text-wrap: pretty;
+}
+
+/* The unit a size is measured in, which is not the same for a beetle and a moth. */
+.qualifier {
+  color: var(--color-ink-muted);
+}
+
+/*
+ * The morphology characters, in the same two-column shape as the label above
+ * but tighter: these are field values rather than prose.
+ */
+.characters {
+  margin-block-start: var(--space-xs);
+}
+
+.sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  margin-block-start: var(--space-xs);
+  padding: 0;
+  list-style: none;
+}
+
+.sourceLink {
+  font-size: var(--font-size-sm);
+  text-wrap: pretty;
+}

@@ -51,6 +51,19 @@ export interface SizeRange {
   readonly max: number;
 }
 
+/**
+ * Which measurement `sizeMm` is.
+ *
+ * Groups are conventionally sized by different dimensions and the numbers are
+ * not comparable across them: a beetle is given by body length, a butterfly and
+ * a dragonfly by wingspan. Recording only the millimetres would put "75" beside
+ * "86" as though they described the same thing, and a 75 mm stag beetle is a
+ * much larger animal than an 86 mm swallowtail.
+ */
+export const SIZE_BASES = ['body length', 'wingspan'] as const;
+
+export type SizeBasis = (typeof SIZE_BASES)[number];
+
 /** A month of the year, 1 = January. */
 export type Month = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -111,7 +124,9 @@ export const COLOUR_FAMILIES = [
   'black',
   'dark brown',
   'reddish brown',
+  'red',
   'tan',
+  'yellow',
   'cream',
   'green',
   'grey',
@@ -158,6 +173,8 @@ export interface Species {
   readonly commonName: string;
   /** Adult body length in millimetres, across both sexes and the whole range. */
   readonly sizeMm: SizeRange;
+  /** Which dimension `sizeMm` measures. See `SIZE_BASES`. */
+  readonly sizeBasis: SizeBasis;
   /** One sentence. Native range, not the pet trade. */
   readonly distribution: string;
   /** Months adults are on the wing, for the phenology calendar. */
@@ -168,6 +185,15 @@ export interface Species {
   readonly sources: readonly SpeciesSource[];
   /** Which of the six plate pigments the drawing is inked in. */
   readonly pigment: SpeciesPigment;
+  /**
+   * How large this species is drawn relative to the others, 0.1 to 1.
+   *
+   * Not a linear ratio of millimetres. A seven-spot ladybird is a tenth of the
+   * length of a stag beetle, and drawn at 0.1 it would be nine pixels wide on a
+   * contact sheet — legible as a dot and nothing else. The values are the
+   * square root of the ratio against the largest animal in the collection,
+   * which keeps the ordering true and every plate readable.
+   */
   /**
    * How large to draw this animal relative to the plate frame, 0.3–1.
    *

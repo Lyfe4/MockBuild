@@ -1,4 +1,4 @@
-# Thornfield Botanical Archive
+# Thornfield Entomological Archive
 
 A mock website for a fictional institution in the temperate south. The site is
 meant to feel like the public face of a real collection: quiet, archival, built
@@ -17,8 +17,7 @@ is collected from anyone who visits.
 
 > **Status: in progress.** The app shell, catalogue and specimen pages are
 > built and run on the species records. The About, Journal and Request routes
-> are linked but not yet written. The institution is mid-rename: it is an
-> entomological collection now, and the wordmark has not caught up.
+> are linked but not yet written.
 
 ## How this evolved
 
@@ -40,7 +39,11 @@ plausible beetle but not a _particular_ one. Asked for _Lucanus cervus_ it
 produced a beetle with big jaws, which is not the same animal.
 
 **3. Hand-authored plates of real species, traced from public-domain
-references.** Where it is now. An author measures a lithograph and writes the
+references.** Where it is now. Four species: a stag beetle, a seven-spot
+ladybird, a swallowtail and a southern hawker — one order each for Coleoptera
+twice over, Lepidoptera and Odonata, chosen so the schema had to cope with wing
+cases, spread wings and see-through wings rather than four variations on a
+beetle. An author measures a lithograph and writes the
 path data out; the schema in `src/lib/plate` catches the mistakes a person
 drawing coordinates by hand actually makes, and `validatePlate` runs in a test
 for every plate. Every species carries a real record — taxonomy, distribution,
@@ -81,7 +84,10 @@ roles; the renderer turns it into SVG and the CSS turns roles into ink.
 
 Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it and
 a test. It touches no component. `/lab/plates` (dev only) shows every plate at
-three sizes with its reference below.
+three sizes with its reference below, and
+[`docs/captures/`](docs/captures/README.md) holds a static, self-contained copy
+of that page and of the catalogue for anyone who does not want to run the dev
+server.
 
 ## Getting started
 
@@ -190,6 +196,7 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
 │   └── dependabot.yml        weekly npm + actions updates
 ├── .husky/                   pre-commit, pre-push
 ├── public/fonts/             self-hosted variable fonts go here
+├── docs/captures/            static, self-contained copies of two routes
 ├── references/               traced references + SOURCES.md. Never shipped.
 ├── index.html                CSP, meta, Open Graph
 ├── eslint.config.js          flat config
@@ -212,9 +219,9 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
     │   └── random/           seeded PRNG
     ├── styles/               index · tokens · reset · global · fonts
     ├── data/
-    │   └── species/          one record and one plate per species
+    │   └── species/          one record, one plate and one test per species
     ├── types/                shared types
-    ├── test/                 Vitest setup and shared helpers
+    ├── test/                 Vitest setup, the plate test contract, geometry
     └── main.tsx              entry point
 ```
 
@@ -238,12 +245,12 @@ layer components are allowed to use.**
 Nothing else moves — spacing, type and motion are identical across all four, so
 re-theming can never shift the layout.
 
-| Season | Months (SH) | The idea                                                          |
-| ------ | ----------- | ----------------------------------------------------------------- |
-| Spring | Sep–Nov     | New growth on pale wash paper; herbarium green-black, young olive |
-| Summer | Dec–Feb     | Sun-bleached sheets, dried grass; sepia ink, ochre                |
-| Autumn | Mar–May     | Pressed leaves on tanned card; walnut ink, russet                 |
-| Winter | Jun–Aug     | Iron-gall ink on frost-grey stock; slate                          |
+| Season | Months (SH) | The idea                                                         |
+| ------ | ----------- | ---------------------------------------------------------------- |
+| Spring | Sep–Nov     | New growth on pale wash paper; deep green-black ink, young olive |
+| Summer | Dec–Feb     | Sun-bleached sheets, dried grass; sepia ink, ochre               |
+| Autumn | Mar–May     | Pressed leaves on tanned card; walnut ink, russet                |
+| Winter | Jun–Aug     | Iron-gall ink on frost-grey stock; slate                         |
 
 All four are light and paper-based. They vary in hue and warmth rather than
 luminance, which is what keeps contrast stable — every semantic ink colour

@@ -60,9 +60,9 @@ export function SiteFooter() {
         </div>
 
         <p className={styles.disclaimer}>
-          Thornfield Botanical Archive is fictional and holds nothing. The species are real: each
-          record is drawn from published sources and cited, and each plate is traced by hand from a
-          public-domain reference &mdash; nothing here has been drawn from life.
+          Thornfield Entomological Archive is fictional and holds nothing. The species are real:
+          each record is drawn from published sources and cited, and each plate is traced by hand
+          from a public-domain reference &mdash; nothing here has been drawn from life.
         </p>
       </div>
     </footer>
