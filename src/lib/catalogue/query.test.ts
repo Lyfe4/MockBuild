@@ -10,7 +10,7 @@ import {
 } from './query';
 import type { CatalogueQuery } from './query';
 
-const FAMILIES = ['Asteraceae', 'Myrtaceae', 'Proteaceae'];
+const FAMILIES = ['Coccinellidae', 'Lucanidae', 'Papilionidae'];
 
 const parse = (search: string): CatalogueQuery =>
   parseCatalogueQuery(new URLSearchParams(search), FAMILIES);
@@ -21,53 +21,40 @@ describe('parseCatalogueQuery', () => {
   });
 
   it('reads every facet', () => {
-    const query = parse(
-      '?q=fern&family=Myrtaceae&habitat=alpine&season=spring&status=EN&sort=name',
-    );
+    const query = parse('?q=beetle&family=Lucanidae&sort=name');
 
     expect(query).toStrictEqual({
-      search: 'fern',
-      families: ['Myrtaceae'],
-      habitats: ['alpine'],
-      seasons: ['spring'],
-      statuses: ['EN'],
+      search: 'beetle',
+      families: ['Lucanidae'],
       sort: 'name',
     });
   });
 
-  it('reads repeated parameters as a multi-select, in the enum order', () => {
-    // Canonical order, not URL order — see the normalisation test below. HABITATS
-    // lists wetland before alpine, so that is the order that comes back.
-    expect(parse('?habitat=alpine&habitat=wetland').habitats).toStrictEqual(['wetland', 'alpine']);
+  it('reads repeated parameters as a multi-select, in canonical order', () => {
+    expect(parse('?family=Papilionidae&family=Lucanidae').families).toStrictEqual([
+      'Lucanidae',
+      'Papilionidae',
+    ]);
   });
 
   describe('treats the URL as untrusted', () => {
-    it('drops values that are not in the enum', () => {
-      const query = parse('?habitat=moon&season=harvest&status=SUPER&sort=random');
-
-      expect(query.habitats).toStrictEqual([]);
-      expect(query.seasons).toStrictEqual([]);
-      expect(query.statuses).toStrictEqual([]);
-      expect(query.sort).toBe(EMPTY_QUERY.sort);
+    it('drops a sort key that is not one of ours', () => {
+      expect(parse('?sort=random').sort).toBe(EMPTY_QUERY.sort);
     });
 
-    it('drops families that are not in the dataset', () => {
-      expect(parse('?family=Myrtaceae&family=Triffidaceae').families).toStrictEqual(['Myrtaceae']);
-    });
-
-    it('keeps the good values from a mixed list', () => {
-      expect(parse('?habitat=moon&habitat=alpine').habitats).toStrictEqual(['alpine']);
+    it('drops families that are not in the collection', () => {
+      expect(parse('?family=Lucanidae&family=Triffidaceae').families).toStrictEqual(['Lucanidae']);
     });
 
     it('de-duplicates repeated values', () => {
-      expect(parse('?season=spring&season=spring&season=spring').seasons).toStrictEqual(['spring']);
+      expect(parse('?family=Lucanidae&family=Lucanidae').families).toStrictEqual(['Lucanidae']);
     });
 
     it('normalises facet order, so two equivalent URLs parse identically', () => {
       // Order in the URL is not meaningful; parsing to a canonical order stops
       // ?a=1&b=2 and ?b=2&a=1 producing different React state.
-      expect(parse('?season=winter&season=spring')).toStrictEqual(
-        parse('?season=spring&season=winter'),
+      expect(parse('?family=Papilionidae&family=Lucanidae')).toStrictEqual(
+        parse('?family=Lucanidae&family=Papilionidae'),
       );
     });
 
@@ -82,8 +69,8 @@ describe('parseCatalogueQuery', () => {
       expect(parse('?q=%3Cscript%3E').search).toBe('<script>');
     });
 
-    it('is case-sensitive about enum values rather than guessing', () => {
-      expect(parse('?status=en').statuses).toStrictEqual([]);
+    it('is case-sensitive about known values rather than guessing', () => {
+      expect(parse('?family=lucanidae').families).toStrictEqual([]);
     });
   });
 
@@ -104,11 +91,8 @@ describe('toSearchParams', () => {
 
   it('round-trips a full query', () => {
     const query: CatalogueQuery = {
-      search: 'snow',
-      families: ['Asteraceae', 'Myrtaceae'],
-      habitats: ['alpine'],
-      seasons: ['spring', 'summer'],
-      statuses: ['VU', 'EN'],
+      search: 'stag',
+      families: ['Coccinellidae', 'Lucanidae'],
       sort: 'name',
     };
 
@@ -127,10 +111,7 @@ describe('isFiltered', () => {
 
   it.each([
     ['search', { search: 'x' }],
-    ['families', { families: ['Myrtaceae'] }],
-    ['habitats', { habitats: ['alpine'] as const }],
-    ['seasons', { seasons: ['spring'] as const }],
-    ['statuses', { statuses: ['EN'] as const }],
+    ['families', { families: ['Lucanidae'] }],
   ])('is true when %s is set', (_name, patch) => {
     expect(isFiltered({ ...EMPTY_QUERY, ...patch })).toBe(true);
   });

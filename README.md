@@ -1,18 +1,59 @@
 # Thornfield Botanical Archive
 
-A mock website for a fictional institution — a working seed bank and herbarium
-in the temperate south. Thornfield keeps pressed specimens, accession records
-and viable seed, and the site is meant to feel like the public face of a real
-collection: quiet, archival, built around typography and paper rather than
-imagery. Its one flourish is that the whole palette shifts with the season,
-Southern Hemisphere, so the archive is dressed differently in July than in
-January.
+A mock website for a fictional institution in the temperate south. The site is
+meant to feel like the public face of a real collection: quiet, archival, built
+around typography and paper rather than imagery. Its one flourish is that the
+whole palette shifts with the season, Southern Hemisphere, so the archive is
+dressed differently in July than in January.
 
-This repository is a portfolio piece. There is no real institution, no real
-seed, and no data is collected from anyone who visits.
+The institution is invented. **The collection is not.** Thornfield holds real
+species, each with a real record — taxonomy, distribution, phenology and the
+morphological characters an identification key filters on — illustrated by a
+hand-authored plate traced from a public-domain reference. Provenance for every
+reference is in [references/SOURCES.md](references/SOURCES.md).
+
+This repository is a portfolio piece. There is no real institution, and no data
+is collected from anyone who visits.
 
 > **Status: in progress.** The app shell, catalogue and specimen pages are
-> built. The About, Journal and Request routes are linked but not yet written.
+> built and run on the species records. The About, Journal and Request routes
+> are linked but not yet written. The institution is mid-rename: it is an
+> entomological collection now, and the wordmark has not caught up.
+
+## How this evolved
+
+The archive has been three things, and the reasoning is worth keeping because
+each step was a decision to throw work away.
+
+**1. A herbarium with a procedural plant generator.** Invented species, drawn
+from a seeded parameter set — a stem, a branching rule, leaves, a flower. It
+worked, and it was the wrong thing to have built. Every specimen was plausible
+and none was _anything_: the records were fiction, so the illustrations had
+nothing to be faithful to, and there was no way to tell a good drawing from a
+bad one because there was nothing to compare it against.
+
+**2. Real insects, still procedurally generated.** Beetles and moths from
+presets, with a pigment system, a three-rank line hierarchy, hatching, and
+bilateral symmetry from one authored half. Much better, and it hit a ceiling
+that no amount of parameter tuning would move: the generator could draw a
+plausible beetle but not a _particular_ one. Asked for _Lucanus cervus_ it
+produced a beetle with big jaws, which is not the same animal.
+
+**3. Hand-authored plates of real species, traced from public-domain
+references.** Where it is now. An author measures a lithograph and writes the
+path data out; the schema in `src/lib/plate` catches the mistakes a person
+drawing coordinates by hand actually makes, and `validatePlate` runs in a test
+for every plate. Every species carries a real record — taxonomy, distribution,
+phenology, morphology — sourced and cited, so an identification key has
+something true to key out.
+
+What survived all three: the plate is **pure data**, the renderer turns it into
+SVG, and the stylesheet turns roles into ink. Neither side knows the other's
+vocabulary. The bilateral-symmetry trick survived too — the author draws the
+right half and the renderer reflects it, so a plate cannot come out lopsided.
+
+The generators are gone from the tree. Read the history if you want them:
+`git log -- src/lib/plant src/lib/insect`.
 
 ## Screenshot
 
@@ -20,6 +61,27 @@ seed, and no data is collected from anyone who visits.
 
 _Screenshot placeholder — `docs/screenshot.png`, 1600×1000, showing the
 catalogue in autumn._
+
+## The plates
+
+`src/lib/plate` is pure data out — no React, no DOM. A plate is path data plus
+roles; the renderer turns it into SVG and the CSS turns roles into ink.
+
+- **Plate space.** The midline is `x = 0` and `y` runs 0 at the head end to 1000
+  at the abdomen tip, so two species are directly comparable. Appendages may
+  leave that band and the frame is measured from the drawing.
+- **Authors draw the right half only.** The renderer reflects it. That is the
+  whole bilateral-symmetry mechanism.
+- **Three line ranks** — outline, structure, detail — which is what makes one
+  drawing work at 80 pixels and at 600.
+- **`validatePlate` runs in a test for every plate**, because the mistakes a
+  hand-drawn coordinate makes fail quietly: a stray minus sign puts a leg on the
+  wrong side, the mirror puts a second one on top of it, and the plate renders
+  with five legs and looks nearly right.
+
+Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it and
+a test. It touches no component. `/lab/plates` (dev only) shows every plate at
+three sizes with its reference below.
 
 ## Getting started
 
@@ -128,6 +190,7 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
 │   └── dependabot.yml        weekly npm + actions updates
 ├── .husky/                   pre-commit, pre-push
 ├── public/fonts/             self-hosted variable fonts go here
+├── references/               traced references + SOURCES.md. Never shipped.
 ├── index.html                CSP, meta, Open Graph
 ├── eslint.config.js          flat config
 ├── vite.config.ts            build, aliases, Vitest, dev-only CSP relaxation
@@ -136,6 +199,7 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
     ├── app/                  router, providers, root layout, error boundary
     │   └── routes/           route components
     ├── components/           reusable UI, one folder each
+    │   ├── SpeciesIllustration/  renders a plate as SVG
     │   └── VisuallyHidden/   the reference implementation of the pattern
     ├── features/             feature slices
     │   ├── catalogue/        FilterPanel, SpecimenRow
@@ -144,9 +208,11 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
     ├── hooks/                shared React hooks
     ├── lib/                  pure utilities — no React, no DOM
     │   ├── catalogue/        URL parsing, filtering, sorting
-    │   └── plant/            the procedural generator
+    │   ├── plate/            the plate schema, parser, validator, fit
+    │   └── random/           seeded PRNG
     ├── styles/               index · tokens · reset · global · fonts
-    ├── data/                 static specimen records (empty)
+    ├── data/
+    │   └── species/          one record and one plate per species
     ├── types/                shared types
     ├── test/                 Vitest setup and shared helpers
     └── main.tsx              entry point
@@ -247,7 +313,7 @@ guess would very likely have got backwards. Re-measure if a font file changes.
 - **Strict CSP.** `script-src 'self'` with no `unsafe-inline` and no
   `unsafe-eval`, `style-src 'self'`, `connect-src 'self'`, `object-src 'none'`.
   Nothing in the app needs an inline script or an inline style: CSS Modules
-  compile to an external stylesheet, and the plant illustrations carry their
+  compile to an external stylesheet, and the species plates carry their
   per-element values in SVG presentation attributes rather than a `style`
   attribute.
 
@@ -315,9 +381,13 @@ testing, commit format — are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Code is [MIT](LICENSE).
 
-Fonts are **not** covered by that licence. EB Garamond and Inter are each
+Fonts are **not** covered by that licence. Fraunces and JetBrains Mono are each
 distributed under the SIL Open Font Licence 1.1; keep every font file's
 `OFL.txt` alongside it in `public/fonts/`.
 
-Thornfield Botanical Archive is fictional. Any resemblance to a real
-institution is coincidental.
+The traced references in `references/` are **not** covered by it either. Each is
+public domain or otherwise freely licensed, and each one's author, publication
+and licence is recorded in [references/SOURCES.md](references/SOURCES.md).
+
+Thornfield is fictional. Any resemblance to a real institution is coincidental.
+The species are real.

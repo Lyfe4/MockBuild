@@ -2,8 +2,8 @@
  * A hand-authored species plate.
  *
  * Ink lines over a pigment wash, ranked in three weights. Every colour is a
- * semantic token, so a plate recolours with the season exactly as a generated
- * insect or a pressed plant does.
+ * semantic token, so a plate recolours with the season along with the rest of
+ * the site.
  *
  * ## How a plate gets its colour
  *
@@ -13,9 +13,9 @@
  * custom property written onto the element, because setting one inline needs a
  * `style` attribute and `style-src 'self'` forbids it.
  *
- * Deliberately a copy of `InsectIllustration`'s pigment block rather than a
- * shared one: the generator is being removed, and a shared stylesheet would
- * have to be untangled on the way out. When it goes, this stays.
+ * Six indices and no more, matching `SPECIES_PIGMENTS`. A record carrying
+ * something else falls back to the first, which is a muted ochre — wrong, but
+ * legible, which is the right failure for a colour.
  */
 
 .root {
@@ -143,8 +143,8 @@
 }
 
 /*
- * A plain fade, matching the generated insects. A beetle has no growth order,
- * and drawing it limb by limb would look like an assembly diagram.
+ * A plain fade. A beetle has no growth order, and drawing it limb by limb
+ * would look like an assembly diagram rather than a plate.
  */
 @keyframes plate-fade-in {
   from {

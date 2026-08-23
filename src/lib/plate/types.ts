@@ -3,10 +3,10 @@
  *
  * ## Why this exists at all
  *
- * The procedural generator in `src/lib/insect` could draw a plausible beetle
- * but not a particular one, and no amount of parameter tuning was going to get
- * it to *Lucanus cervus*. A plate is the other approach: an author traces one
- * real animal from a reference and the result is stored as path data. The
+ * The procedural generator this replaced could draw a plausible beetle but not
+ * a particular one, and no amount of parameter tuning was going to get it to
+ * *Lucanus cervus*. A plate is the other approach: an author traces one real
+ * animal from a reference and the result is stored as path data. The
  * schema's job is to make that authoring safe — to catch the mistakes a human
  * drawing coordinates by hand actually makes — and to keep the drawing free of
  * anything the renderer or the season owns.
@@ -23,10 +23,9 @@
  * comparable.
  *
  * Authors draw the **right half only**, `x >= 0`, and the renderer reflects it.
- * That is the entire bilateral-symmetry mechanism, inherited from the
- * generator's `composeAndFit` because it was the part of the generator that was
- * unambiguously right: a plate cannot come out lopsided if there is only one
- * half to get wrong.
+ * That is the entire bilateral-symmetry mechanism, and the one thing carried
+ * over from the generator because it was unambiguously right: a plate cannot
+ * come out lopsided if there is only one half to get wrong.
  *
  * Appendages are free to leave the 0–1000 band — a stag beetle's hind tarsi
  * reach well past its abdomen, and its mandibles start above its head, which is

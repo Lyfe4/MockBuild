@@ -15,16 +15,6 @@
   gap: var(--space-2xs);
 }
 
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xs);
-  min-inline-size: 0;
-  padding: 0;
-  margin: 0;
-  border: 0;
-}
-
 .legend {
   display: block;
   padding: 0;
@@ -57,46 +47,6 @@
 .search:hover,
 .select:hover {
   border-color: var(--color-accent);
-}
-
-.options {
-  display: flex;
-  flex-direction: column;
-}
-
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  /* 44px row, so each option is tappable without hitting its neighbour. */
-  min-block-size: 2.75rem;
-}
-
-.checkbox input {
-  inline-size: 1rem;
-  block-size: 1rem;
-  accent-color: var(--color-accent-strong);
-  flex: none;
-}
-
-/*
- * The label fills the whole row, not just its text box. The row was already
- * 44px tall, but a label sized to its own text gave a 20px target inside it —
- * the padding around the words did nothing when tapped.
- */
-.checkbox label {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  min-block-size: 2.75rem;
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-2xs);
-  letter-spacing: var(--letter-spacing-wide);
-  cursor: pointer;
-}
-
-.checkbox:hover label {
-  color: var(--color-accent-strong);
 }
 
 .clear {

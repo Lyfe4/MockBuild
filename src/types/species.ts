@@ -1,8 +1,8 @@
 /**
  * A real animal, described well enough to draw it and to key it out.
  *
- * The archive's insects used to be procedurally generated, and a generated
- * specimen needed no record beyond the parameters that drew it. A
+ * The archive's illustrations used to be procedurally generated, and a
+ * generated specimen needed no record beyond the parameters that drew it. A
  * hand-authored plate is the other way round: the drawing is traced from a real
  * animal, so the record is the primary thing and the plate is one view of it.
  *
@@ -12,19 +12,17 @@
  * identification key filters on them and a phenology calendar plots them — so
  * every one of them is a closed union or a number, never prose.
  *
- * Enumerations are `as const` tuples rather than `enum`s, on the same reasoning
- * as `specimen.ts`: the union type plus an iterable list at runtime, and
- * nothing emitted under `verbatimModuleSyntax`.
+ * Enumerations are `as const` tuples rather than `enum`s: the union type plus
+ * an iterable list at runtime, and nothing emitted under
+ * `verbatimModuleSyntax`.
  */
 
 /**
  * Which of the six plate pigments this species is drawn in.
  *
- * An index, not a colour, exactly as the generator's was: the renderer maps it
- * onto the `--pigment-N` tokens through a `data-pigment` attribute and the
- * season decides what that resolves to. Declared here rather than imported
- * from `lib/insect` so nothing in the plate pipeline depends on the generator
- * that is being replaced.
+ * An index, not a colour: the renderer maps it onto the `--pigment-N` tokens
+ * through a `data-pigment` attribute and the season decides what that resolves
+ * to.
  */
 export const SPECIES_PIGMENTS = [1, 2, 3, 4, 5, 6] as const;
 

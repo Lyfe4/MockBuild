@@ -1,4 +1,4 @@
-export { familiesOf, filterSpecimens, queryCatalogue, sortSpecimens } from './filter';
+export { binomialOf, familiesOf, filterSpecies, queryCatalogue, sortSpecies } from './filter';
 export {
   EMPTY_QUERY,
   isFiltered,

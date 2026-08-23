@@ -1,17 +1,17 @@
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { LUCANUS_CERVUS, LUCANUS_CERVUS_PLATE } from '@/data/species';
+import { LUCANUS_CERVUS, LUCANUS_CERVUS_PLATE, SPECIES } from '@/data/species';
 import { renderWithProviders } from '@/test/renderWithProviders';
 
 import { PlateLabRoute } from './PlateLabRoute';
 
 /**
- * The comparison sheet is a dev-only instrument, but it is the instrument the
- * decision to drop the generator will be made with — so what it *shows* has to
- * be right. A page that quietly rendered the plate at one size, or dropped the
- * generator column, or stopped reporting the validator's verdict, would read as
- * a working comparison while making the wrong case.
+ * The contact sheet is a dev-only instrument, but it is the instrument the
+ * plates are judged with — so what it *shows* has to be right. A page that
+ * quietly rendered one plate at one size, or dropped a species, or stopped
+ * reporting the validator's verdict, would read as a working sheet while
+ * hiding the thing it exists to expose.
  */
 
 afterEach(() => {
@@ -27,25 +27,18 @@ function renderLab() {
 describe('PlateLabRoute', () => {
   // The accessible name is the title *and* the description, because the svg is
   // labelled by both — so these match on a fragment rather than the whole name.
-  it('shows the plate at three sizes', () => {
+  it('shows every plate in the collection at three sizes', () => {
     renderLab();
 
-    for (const size of [80, 240, 600]) {
-      expect(
-        screen.getByRole('img', { name: new RegExp(`Lucanus cervus at ${String(size)} pixels`) }),
-      ).toBeInTheDocument();
-    }
-  });
+    for (const species of SPECIES) {
+      const name = `${species.taxonomy.genus} ${species.taxonomy.species}`;
 
-  it('shows the generator at the same three sizes, for the comparison', () => {
-    renderLab();
-
-    for (const size of [80, 240, 600]) {
-      expect(
-        screen.getByRole('img', {
-          name: new RegExp(`Generated stag beetle at ${String(size)} pixels`),
-        }),
-      ).toBeInTheDocument();
+      for (const size of [80, 240, 600]) {
+        expect(
+          screen.getByRole('img', { name: new RegExp(`${name} at ${String(size)} pixels`) }),
+          `${name} at ${String(size)}`,
+        ).toBeInTheDocument();
+      }
     }
   });
 
@@ -61,42 +54,35 @@ describe('PlateLabRoute', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows the alt text the plate will actually be given', () => {
+  it('shows the alt text each plate will actually be given', () => {
     renderLab();
 
-    // The quotation, not the <desc> elements it is quoting — the point of the
-    // section is that a reader can see the sentence without a screen reader.
-    expect(screen.getByRole('blockquote').textContent).toMatch(
-      /^Dorsal view of a male European stag beetle/,
-    );
+    // The quotation, not the <desc> elements it is quoting — the point is that
+    // a reader can see the sentence without a screen reader.
+    const quotes = screen.getAllByRole('blockquote');
+
+    expect(quotes).toHaveLength(SPECIES.length);
+    expect(quotes[0]?.textContent).toMatch(/^Dorsal view of a male European stag beetle/);
   });
 
-  it('credits the reference it was traced from, with a link and a licence', () => {
+  it('credits every reference it was traced from, with a link and a licence', () => {
     renderLab();
 
-    const link = screen.getByRole('link', { name: 'Source' });
+    const links = screen.getAllByRole('link', { name: 'Source' });
 
-    expect(link).toHaveAttribute('href', LUCANUS_CERVUS_PLATE.reference.source);
-    expect(screen.getByText(/Public domain/)).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /1876 lithograph/ })).toBeInTheDocument();
+    expect(links).toHaveLength(SPECIES.length);
+    expect(links[0]).toHaveAttribute('href', LUCANUS_CERVUS_PLATE.reference.source);
+    expect(screen.getAllByText(/Public domain/).length).toBeGreaterThan(0);
   });
 
-  it('names the species with its authority, so the comparison is on the record', () => {
+  it('names each species with its order and family, so a plate can be placed', () => {
     renderLab();
 
+    expect(screen.getByRole('heading', { level: 2, name: 'Lucanus cervus' })).toBeInTheDocument();
     expect(
-      screen.getByText(`Lucanus cervus ${LUCANUS_CERVUS.taxonomy.authority}, male, dorsal.`),
-    ).toBeInTheDocument();
-  });
-
-  it('gives each column a heading a screen reader can navigate between', () => {
-    renderLab();
-
-    expect(
-      screen.getByRole('heading', { level: 2, name: 'Hand-authored plate' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { level: 2, name: 'Generator, stag preset' }),
+      screen.getByText(
+        new RegExp(`${LUCANUS_CERVUS.taxonomy.order}, ${LUCANUS_CERVUS.taxonomy.family}`),
+      ),
     ).toBeInTheDocument();
   });
 });

@@ -1,118 +1,77 @@
 import { useId } from 'react';
 
-import { InsectIllustration } from '@/components/InsectIllustration';
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
-import { LUCANUS_CERVUS, LUCANUS_CERVUS_PLATE } from '@/data/species';
+import { findPlate, SPECIES } from '@/data';
 import { useSeason } from '@/features/theme';
 import { useDocumentTitle } from '@/hooks';
-import { BEETLE_PRESETS, resolveBeetlePreset, seedFromName, type InsectForm } from '@/lib/insect';
-import { describePlate, validatePlate } from '@/lib/plate';
+import { binomialOf } from '@/lib/catalogue';
+import { describePlate, validatePlate, type SpeciesPlate } from '@/lib/plate';
+import type { Species } from '@/types';
 
 import styles from './PlateLabRoute.module.css';
 
 /**
- * TEMPORARY — the plate spike's contact sheet.
+ * TEMPORARY — the plate contact sheet.
  *
- * One question, asked three times over: does a hand-authored plate of a real
- * species beat the generator at thumbnail, at card size and at full size? The
- * two are shown at the same three sizes, in the same season, with the reference
- * the plate was traced from at the bottom.
+ * One question, asked of every plate in the collection: does it hold together
+ * at thumbnail, at card size and at full size? Three sizes because the failure
+ * modes are different at each. At 80 pixels only the silhouette survives, and
+ * two beetles that look alike there are two beetles nobody can tell apart in a
+ * list. At 240 the line hierarchy starts to matter. At 600 every stroke of
+ * hatching is visible and the drawing is either confident or it is fussy.
  *
- * Three sizes because the failure modes are different at each. At 80 pixels
- * only the silhouette survives, and the generator's beetles were hard to tell
- * apart there. At 240 the line hierarchy starts to matter. At 600 every stroke
- * of hatching is visible and the drawing is either confident or it is fussy.
+ * The validator's verdict is printed on the page as well as asserted in the
+ * tests, so a broken plate is visibly broken here rather than quietly wrong.
  *
- * Dev-only, like `/lab` and `/lab/insects`. See `app/router.tsx`. Delete this,
- * its stylesheet and both generator lab routes when the plates replace them.
+ * Dev-only. See `app/router.tsx` — the route is behind `import.meta.env.DEV`
+ * inside a dynamic `import()`, which matters because this page displays the
+ * traced references, and those must never ship.
  */
 
-/** The three sizes, in pixels, that the comparison is made at. */
+/** The three sizes, in pixels, that each plate is judged at. */
 const SIZES = [
   { label: 'Thumbnail', px: 80 },
   { label: 'Card', px: 240 },
   { label: 'Plate', px: 600 },
 ] as const;
 
-/** The generator's nearest thing to a stag beetle, for the comparison. */
-const STAG_PRESET = BEETLE_PRESETS.find((preset) => /stag/i.test(preset.name));
+/** Every species that has a plate drawn for it, in catalogue order. */
+function drawn(): { species: Species; plate: SpeciesPlate }[] {
+  return SPECIES.flatMap((species) => {
+    const plate = findPlate(species.id);
 
-function generatorStag(): { insect: InsectForm; seed: number; note: string } | undefined {
-  if (STAG_PRESET === undefined) return undefined;
+    return plate === undefined ? [] : [{ species, plate }];
+  });
+}
 
-  const seed = seedFromName(`${STAG_PRESET.name}-alpha`);
-
-  return {
-    insect: { order: 'coleoptera', form: resolveBeetlePreset(STAG_PRESET, seed) },
-    seed,
-    note: STAG_PRESET.note,
-  };
+/** The file the plate was traced from, served from `references/` at dev time. */
+function referenceSrc(id: string): string {
+  return `/references/${id}.jpg`;
 }
 
 interface ColumnProps {
-  heading: string;
-  note: string;
-  children: (size: (typeof SIZES)[number]) => React.ReactNode;
+  species: Species;
+  plate: SpeciesPlate;
 }
 
-function Column({ heading, note, children }: ColumnProps) {
+function Column({ species, plate }: ColumnProps) {
   const headingId = useId();
+  const problems = validatePlate(plate);
+  const name = binomialOf(species);
 
   return (
     <section className={styles.column} aria-labelledby={headingId}>
       <h2 className={styles.columnTitle} id={headingId}>
-        {heading}
+        {name}
       </h2>
-      <p className={styles.note}>{note}</p>
-
-      <div className={styles.stack}>
-        {SIZES.map((size) => (
-          <figure key={size.label} className={styles.cell}>
-            {/*
-              The frame is sized in pixels rather than as a fraction of the
-              column, because the whole comparison is about absolute size: a
-              drawing that only works at 600 pixels has to be seen failing at
-              80, and a responsive frame would hide that behind the viewport.
-            */}
-            <div className={styles[`frame${String(size.px)}`]}>{children(size)}</div>
-            <figcaption className={styles.caption}>
-              {size.label} · {size.px}px
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function PlateLabRoute() {
-  const { season } = useSeason();
-
-  useDocumentTitle('Plate lab');
-
-  const problems = validatePlate(LUCANUS_CERVUS_PLATE);
-  const generator = generatorStag();
-  const plateParts = LUCANUS_CERVUS_PLATE.parts.length;
-
-  return (
-    <section>
-      <h1 tabIndex={-1}>Plate lab</h1>
-
-      <p className={styles.intro}>
-        One hand-authored plate against the generator&rsquo;s nearest preset, at three sizes, in the
-        current season ({season}). The plate is <strong>{plateParts} paths</strong>, traced from the
-        reference at the bottom of the page. The question is whether the plate is worth the
-        authoring cost the generator did not have — and whether it is still recognisable at 80
-        pixels, where the generated beetles were not.
+      <p className={styles.note}>
+        {species.commonName}. {species.taxonomy.order}, {species.taxonomy.family}. {plate.sex},
+        dorsal.
       </p>
 
-      {/*
-        The validator's verdict, on the page rather than only in the test run.
-        A plate that fails should be visibly broken here, not quietly wrong.
-      */}
       <p className={problems.length === 0 ? styles.valid : styles.invalid}>
         {problems.length === 0
-          ? `validatePlate: clean — ${String(plateParts)} paths, no errors`
+          ? `validatePlate: clean — ${String(plate.parts.length)} paths, no errors`
           : `validatePlate: ${String(problems.length)} problem(s)`}
       </p>
 
@@ -126,79 +85,93 @@ export function PlateLabRoute() {
         </ul>
       )}
 
-      <div className={styles.columns}>
-        <Column
-          heading="Hand-authored plate"
-          note={`${LUCANUS_CERVUS.taxonomy.genus} ${LUCANUS_CERVUS.taxonomy.species} ${LUCANUS_CERVUS.taxonomy.authority}, male, dorsal.`}
-        >
-          {(size) => (
-            <SpeciesIllustration
-              species={LUCANUS_CERVUS}
-              plate={LUCANUS_CERVUS_PLATE}
-              title={`Lucanus cervus at ${String(size.px)} pixels`}
-            />
-          )}
-        </Column>
-
-        {generator === undefined ? (
-          <section className={styles.column}>
-            <h2 className={styles.columnTitle}>Generator</h2>
-            <p className={styles.note}>No stag preset found to compare against.</p>
-          </section>
-        ) : (
-          <Column heading="Generator, stag preset" note={generator.note}>
-            {(size) => (
-              <InsectIllustration
-                insect={generator.insect}
-                seed={generator.seed}
-                title={`Generated stag beetle at ${String(size.px)} pixels`}
+      <div className={styles.stack}>
+        {SIZES.map((size) => (
+          <figure key={size.label} className={styles.cell}>
+            {/*
+              The frame is sized in pixels rather than as a fraction of the
+              column, because the whole comparison is about absolute size: a
+              drawing that only works at 600 pixels has to be seen failing at
+              80, and a responsive frame would hide that behind the viewport.
+            */}
+            <div className={styles[`frame${String(size.px)}`]}>
+              <SpeciesIllustration
+                species={species}
+                plate={plate}
+                title={`${name} at ${String(size.px)} pixels`}
               />
-            )}
-          </Column>
-        )}
+            </div>
+            <figcaption className={styles.caption}>
+              {size.label} · {size.px}px
+            </figcaption>
+          </figure>
+        ))}
       </div>
 
-      <section className={styles.altText} aria-labelledby="alt-text-heading">
-        <h2 className={styles.columnTitle} id="alt-text-heading">
-          Alt text
-        </h2>
-        <p className={styles.note}>
-          What a screen reader is given for the plate, built from the species record so the two
-          cannot drift:
-        </p>
-        <blockquote className={styles.quote}>
-          {describePlate(LUCANUS_CERVUS, {
-            sex: LUCANUS_CERVUS_PLATE.sex,
-            ...(LUCANUS_CERVUS_PLATE.hallmark === undefined
-              ? {}
-              : { hallmark: LUCANUS_CERVUS_PLATE.hallmark }),
-          })}
-        </blockquote>
-      </section>
+      <blockquote className={styles.quote}>
+        {describePlate(species, {
+          sex: plate.sex,
+          ...(plate.hallmark === undefined ? {} : { hallmark: plate.hallmark }),
+        })}
+      </blockquote>
+    </section>
+  );
+}
+
+export function PlateLabRoute() {
+  const { season } = useSeason();
+  const plates = drawn();
+
+  useDocumentTitle('Plate lab');
+
+  return (
+    <section>
+      <h1 tabIndex={-1}>Plate lab</h1>
+
+      <p className={styles.intro}>
+        Every hand-authored plate in the collection, at three sizes, in the current season ({season}
+        ), with the alt text each is given and the reference each was traced from. {
+          plates.length
+        }{' '}
+        plates, {plates.reduce((total, entry) => total + entry.plate.parts.length, 0)} paths between
+        them.
+      </p>
+
+      <div className={styles.columns}>
+        {plates.map((entry) => (
+          <Column key={entry.species.id} species={entry.species} plate={entry.plate} />
+        ))}
+      </div>
 
       <section className={styles.reference} aria-labelledby="reference-heading">
         <h2 className={styles.columnTitle} id="reference-heading">
-          The reference
+          The references
         </h2>
-        {/*
-          Served from `references/` rather than `public/`, so it is never
-          bundled: this page is dev-only and the image must not ship. Vite
-          serves it from the project root at dev time and the build never sees
-          it, because the build never sees this route.
-        */}
-        <img
-          className={styles.referenceImage}
-          src="/references/lucanus-cervus.jpg"
-          alt="The 1876 lithograph the plate was traced from: a male European stag beetle in dorsal view, black head and thorax with deep red-brown wing cases."
-          width={396}
-          height={628}
-        />
-        <p className={styles.credit}>
-          {LUCANUS_CERVUS_PLATE.reference.artist},{' '}
-          <cite>{LUCANUS_CERVUS_PLATE.reference.title}</cite>,{' '}
-          {String(LUCANUS_CERVUS_PLATE.reference.year)}. {LUCANUS_CERVUS_PLATE.reference.licence}.{' '}
-          <a href={LUCANUS_CERVUS_PLATE.reference.source}>Source</a>
+        <p className={styles.note}>
+          Served from <code>references/</code> rather than <code>public/</code>, so they are never
+          bundled. Vite serves them from the project root at dev time and the build never sees them,
+          because the build never sees this route.
         </p>
+
+        <ul className={styles.referenceList} role="list">
+          {plates.map(({ species, plate }) => (
+            <li key={species.id} className={styles.referenceItem}>
+              <img
+                className={styles.referenceImage}
+                src={referenceSrc(species.id)}
+                alt={`The reference the ${binomialOf(species)} plate was traced from.`}
+                loading="lazy"
+              />
+              <p className={styles.credit}>
+                {plate.reference.artist}, <cite>{plate.reference.title}</cite>,{' '}
+                {String(plate.reference.year)}. {plate.reference.licence}.{' '}
+                <a href={plate.reference.source} rel="noopener noreferrer">
+                  Source
+                </a>
+              </p>
+            </li>
+          ))}
+        </ul>
       </section>
     </section>
   );

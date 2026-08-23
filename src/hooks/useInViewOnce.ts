@@ -11,7 +11,7 @@ export interface InViewOnce<T extends Element> {
  * Reports when an element first enters the viewport, and then stops watching.
  *
  * Used to start the illustrations' grow-in as they are scrolled to, rather than
- * animating two dozen plants at once on load where all but the first are
+ * animating two dozen plates at once on load where all but the first are
  * invisible.
  *
  * Once, deliberately: an animation that re-runs every time a row scrolls back

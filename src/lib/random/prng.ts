@@ -1,10 +1,16 @@
 /**
  * Deterministic pseudo-randomness.
  *
- * `Math.random()` would make every re-render draw a different plant and every
- * test unassertable. Everything random in the generator comes from here, seeded
- * from the specimen's catalogue number, so a given specimen is always drawn
- * identically — across reloads, across machines, and in CI.
+ * Written for the procedural generators, which are gone: `Math.random()` would
+ * have made every re-render draw a different animal and every test
+ * unassertable, so everything random came from here, seeded from the
+ * specimen's catalogue number.
+ *
+ * **Nothing calls this any more.** Hand-authored plates have no random element
+ * — that is rather the point of them. It is kept because a correct, tested
+ * seeded PRNG is worth more than the twenty lines it costs, and because
+ * anything that later wants reproducible variation should use this rather than
+ * write a third one. If nothing has picked it up by the next sweep, delete it.
  */
 
 /**
@@ -16,7 +22,7 @@ export type Rng = () => number;
 
 /**
  * mulberry32 — a 32-bit generator that is small, fast and good enough for
- * scattering leaves.
+ * scattering marks.
  *
  * Not cryptographically secure and not trying to be; it has a 2^32 period and
  * passes gjrand's basic tests, which is the right trade for something that runs
@@ -44,7 +50,7 @@ export function mulberry32(seed: number): Rng {
  *
  * Chosen over summing char codes because that collides constantly on strings
  * that share characters — and every id here starts with the same four.
- * "TBA-0042" and "TBA-0024" must not draw the same plant.
+ * "TEA-0042" and "TEA-0024" must not draw the same animal.
  *
  * @returns An unsigned 32-bit integer.
  */

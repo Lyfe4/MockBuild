@@ -1,7 +1,7 @@
 # Contributing
 
-Conventions for the Thornfield Botanical Archive. They exist so the codebase
-reads as though one person wrote it.
+Conventions for the Thornfield archive. They exist so the codebase reads as
+though one person wrote it.
 
 ## Getting set up
 
@@ -97,7 +97,7 @@ No `any`. If a type is genuinely unknown, use `unknown` and narrow it.
 | `src/lib/`        | Pure utilities. **No React, no DOM, no imports from `features`** |
 | `src/hooks/`      | Shared React hooks. React, but no feature knowledge              |
 | `src/styles/`     | Tokens, reset, global styles, fonts                              |
-| `src/data/`       | Static specimen records, typed                                   |
+| `src/data/`       | Species records and their plates, typed                          |
 | `src/types/`      | Types shared across more than one slice                          |
 | `src/test/`       | Vitest setup and shared test helpers                             |
 
@@ -152,12 +152,56 @@ them in.
 Use `renderWithProviders` from `@/test/renderWithProviders` when a component
 reads context, and Testing Library's plain `render` when it does not.
 
+### Adding a species
+
+A species is a record and a drawing, and they are separate files on purpose: the
+record is written once from published sources, and the plate gets redrawn.
+
+```
+src/data/species/
+  papilio-machaon.ts             the record — taxonomy, sizes, months, sources
+  papilio-machaon.plate.ts       the drawing — path data and roles
+  papilio-machaon.plate.test.ts  validatePlate, plus what is true of this animal
+references/
+  papilio-machaon.jpg            the file it was traced from
+  SOURCES.md                     its author, publication and licence
+```
+
+Then add both to the arrays in `src/data/species/index.ts`. Nothing else
+changes — no component knows what a mandible is.
+
+Rules the review will hold you to:
+
+- **Every field in the record is real and sourced.** `sources` carries the links
+  it came from. A number nobody published is a number that does not go in.
+- **The plate is traced, not invented.** Proportions come off the reference,
+  measured rather than eyeballed.
+- **A licence that forbids redistribution means the file is gitignored** and
+  recorded in `SOURCES.md` by URL instead.
+- **Right half only**, `x >= 0`, for anything that comes in a pair. Parts that
+  straddle the axis and are symmetric in themselves declare `mirror: false` and
+  are drawn once — reflecting those produces a doubled line.
+- **Three ranks.** Outline for the silhouette, structure for the parts inside
+  it, detail for surface texture. A plate with one rank does not read at
+  thumbnail size.
+- **40–100 paths.** Under forty and the animal is a pictogram; over a hundred
+  and it is a photograph nobody can maintain.
+- **Containment is proved in the data**, not by the clip. Hatching is placed
+  against the measured outline of the surface it sits on, and the test samples
+  every clipped stroke against it. The renderer's `clipPath` is a second line of
+  defence for curved margins, not the thing keeping the ink on the wing case.
+- **`validatePlate(PLATE)` must return `[]`** in the plate's own test. Its
+  error classes all catch mistakes that otherwise fail silently.
+
+Judge the result on `/lab/plates`, which is dev-only and shows every plate at 80,
+240 and 600 pixels with the reference below it.
+
 ## Commits
 
 [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
-feat: add specimen detail route
+feat: add the Papilio machaon plate
 fix: correct autumn accent contrast against sunken surface
 chore: bump vite to 8.2.3
 docs: explain the seasonal token layer

@@ -3,17 +3,18 @@ import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SPECIMENS } from '@/data';
+import { SPECIES } from '@/data';
 import { ThemeProvider } from '@/features/theme';
 
 import { CatalogueRoute } from './CatalogueRoute';
 
 /**
- * Rendered against the real dataset, not a fixture.
+ * Rendered against the real collection, not a fixture.
  *
- * The page's whole job is to filter the archive that actually exists; a
- * three-record fixture would pass while the real 24 broke on a family name with
- * a space in it, or on the one specimen with three seasons.
+ * The page's whole job is to filter the archive that actually exists; a fixture
+ * would pass while the real records broke on an accented common name or on a
+ * family shared by two orders. Nothing here asserts a hard-coded count, so the
+ * file survives the collection growing.
  */
 function renderCatalogue(route = '/catalogue') {
   const router = createMemoryRouter([{ path: '*', element: <CatalogueRoute /> }], {
@@ -38,10 +39,10 @@ afterEach(() => {
 });
 
 describe('CatalogueRoute', () => {
-  it('lists every specimen when nothing is filtered', () => {
+  it('lists every species when nothing is filtered', () => {
     renderCatalogue();
 
-    expect(rows()).toHaveLength(SPECIMENS.length);
+    expect(rows()).toHaveLength(SPECIES.length);
   });
 
   it('has one focusable heading for the router to move focus to', () => {
@@ -55,7 +56,7 @@ describe('CatalogueRoute', () => {
   it('announces the result count politely', () => {
     renderCatalogue();
 
-    const count = screen.getByText(`${String(SPECIMENS.length)} specimens`);
+    const count = screen.getByText(`${String(SPECIES.length)} species`);
 
     // Filtering does not change the page, so a screen reader would otherwise
     // never learn that the list beneath it had changed size.
@@ -73,38 +74,45 @@ describe('CatalogueRoute', () => {
     expect(within(first!).getAllByRole('link')).toHaveLength(1);
   });
 
-  it('shows the scientific name, common name and accession number', () => {
+  it('shows the binomial, the common name and the accession number', () => {
     renderCatalogue();
 
-    const specimen = SPECIMENS[0]!;
+    const species = SPECIES[0]!;
 
-    expect(screen.getByText(specimen.scientificName)).toBeInTheDocument();
-    expect(screen.getByText(specimen.commonName)).toBeInTheDocument();
-    expect(screen.getByText(specimen.id)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${species.taxonomy.genus} ${species.taxonomy.species}`),
+    ).toBeInTheDocument();
+    expect(screen.getByText(species.commonName)).toBeInTheDocument();
+    expect(screen.getByText(species.id)).toBeInTheDocument();
   });
 
   describe('reads its state from the URL', () => {
-    it('applies a habitat filter from the query string', () => {
-      renderCatalogue('/catalogue?habitat=alpine');
+    it('applies a family filter from the query string', () => {
+      const family = SPECIES[0]!.taxonomy.family;
 
-      const alpine = SPECIMENS.filter((s) => s.habitat === 'alpine');
+      renderCatalogue(`/catalogue?family=${family}`);
 
-      expect(alpine.length).toBeGreaterThan(0);
-      expect(rows()).toHaveLength(alpine.length);
+      const kin = SPECIES.filter((s) => s.taxonomy.family === family);
+
+      expect(rows()).toHaveLength(kin.length);
     });
 
     it('applies a search term from the query string', () => {
-      renderCatalogue('/catalogue?q=Cinerastrum');
+      const species = SPECIES[0]!;
 
-      expect(rows()).toHaveLength(1);
-      expect(screen.getByText('Cinerastrum halophilum')).toBeInTheDocument();
+      renderCatalogue(`/catalogue?q=${species.taxonomy.species}`);
+
+      expect(rows().length).toBeGreaterThan(0);
+      expect(
+        screen.getByText(`${species.taxonomy.genus} ${species.taxonomy.species}`),
+      ).toBeInTheDocument();
     });
 
     it('applies a sort order from the query string', () => {
       renderCatalogue('/catalogue?sort=name');
 
       const names = rows().map((row) => within(row).getByRole('link').textContent);
-      const first = SPECIMENS.map((s) => s.scientificName).sort((a, b) =>
+      const first = SPECIES.map((s) => `${s.taxonomy.genus} ${s.taxonomy.species}`).sort((a, b) =>
         a.localeCompare(b, 'en-AU'),
       )[0];
 
@@ -112,20 +120,21 @@ describe('CatalogueRoute', () => {
     });
 
     it('ignores junk in the query string rather than breaking', () => {
-      renderCatalogue('/catalogue?habitat=moon&sort=sideways&status=%3Cscript%3E');
+      renderCatalogue('/catalogue?family=Triffidaceae&sort=sideways&q=');
 
-      expect(rows()).toHaveLength(SPECIMENS.length);
+      expect(rows()).toHaveLength(SPECIES.length);
     });
   });
 
   describe('writes its state to the URL', () => {
-    it('puts a chosen habitat in the query string', async () => {
+    it('puts a chosen family in the query string', async () => {
       const user = userEvent.setup();
       const router = renderCatalogue();
+      const family = SPECIES[0]!.taxonomy.family;
 
-      await user.click(screen.getByRole('checkbox', { name: 'Alpine' }));
+      await user.selectOptions(screen.getByLabelText('Family'), family);
 
-      expect(router.state.location.search).toContain('habitat=alpine');
+      expect(router.state.location.search).toContain(`family=${family}`);
     });
 
     it('puts the chosen order in the query string', async () => {
@@ -140,15 +149,16 @@ describe('CatalogueRoute', () => {
     it('keeps the season parameter while filtering', async () => {
       const user = userEvent.setup();
       const router = renderCatalogue('/catalogue?season=winter');
+      const family = SPECIES[0]!.taxonomy.family;
 
-      await user.click(screen.getByRole('checkbox', { name: 'Alpine' }));
+      await user.selectOptions(screen.getByLabelText('Family'), family);
 
       const params = new URLSearchParams(router.state.location.search);
 
       // The season is not part of the catalogue query, but it shares the URL —
       // dropping it would reset a shared link's palette on the first click.
       expect(params.get('season')).toBe('winter');
-      expect(params.get('habitat')).toBe('alpine');
+      expect(params.get('family')).toBe(family);
     });
   });
 
@@ -156,7 +166,7 @@ describe('CatalogueRoute', () => {
     it('explains itself when nothing matches', () => {
       renderCatalogue('/catalogue?q=zzzzzz');
 
-      expect(screen.getByText(/No specimens match those filters/)).toBeInTheDocument();
+      expect(screen.getByText(/No species match those filters/)).toBeInTheDocument();
       expect(screen.queryAllByRole('listitem')).toHaveLength(0);
     });
 
@@ -166,10 +176,10 @@ describe('CatalogueRoute', () => {
 
       // Distinctly named from the panel's own Clear button: two buttons with
       // the same accessible name are ambiguous in a screen reader's list.
-      await user.click(screen.getByRole('button', { name: /Show all \d+ specimens/ }));
+      await user.click(screen.getByRole('button', { name: /Show all \d+ species/ }));
 
       expect(router.state.location.search).toBe('');
-      expect(rows()).toHaveLength(SPECIMENS.length);
+      expect(rows()).toHaveLength(SPECIES.length);
     });
   });
 
@@ -181,31 +191,31 @@ describe('CatalogueRoute', () => {
     });
 
     it('enables it once a filter is applied', () => {
-      renderCatalogue('/catalogue?habitat=alpine');
+      renderCatalogue('/catalogue?q=stag');
 
       expect(screen.getByRole('button', { name: 'Clear filters' })).toBeEnabled();
     });
 
     it('keeps the sort order, which is not a filter', async () => {
       const user = userEvent.setup();
-      const router = renderCatalogue('/catalogue?habitat=alpine&sort=name');
+      const router = renderCatalogue('/catalogue?q=stag&sort=name');
 
       await user.click(screen.getByRole('button', { name: 'Clear filters' }));
 
       const params = new URLSearchParams(router.state.location.search);
 
-      expect(params.get('habitat')).toBeNull();
+      expect(params.get('q')).toBeNull();
       expect(params.get('sort')).toBe('name');
     });
 
     it('empties the search box, not just the results', async () => {
       const user = userEvent.setup();
 
-      renderCatalogue('/catalogue?q=snow');
+      renderCatalogue('/catalogue?q=stag');
 
       const search = screen.getByLabelText('Search');
 
-      expect(search).toHaveValue('snow');
+      expect(search).toHaveValue('stag');
 
       await user.click(screen.getByRole('button', { name: 'Clear filters' }));
 
@@ -225,10 +235,10 @@ describe('CatalogueRoute', () => {
       navigations += 1;
     });
 
-    await user.type(screen.getByLabelText('Search'), 'snow');
+    await user.type(screen.getByLabelText('Search'), 'stag');
 
     await waitFor(() => {
-      expect(new URLSearchParams(router.state.location.search).get('q')).toBe('snow');
+      expect(new URLSearchParams(router.state.location.search).get('q')).toBe('stag');
     });
 
     unsubscribe();

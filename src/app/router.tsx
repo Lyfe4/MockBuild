@@ -19,40 +19,22 @@ import { SpecimenRoute } from './routes/SpecimenRoute';
  */
 
 /**
- * TEMPORARY — the generator contact sheet at `/lab`.
+ * TEMPORARY — the plate contact sheet at `/lab/plates`.
  *
  * Two things keep it out of production. `import.meta.env.DEV` is replaced by a
  * literal `false` at build time, so the spread collapses to `[]` and the branch
  * is dead code. And the route is loaded through a dynamic `import()` inside
  * that branch, so once the branch is eliminated nothing references the module
  * at all and it is never emitted — rather than being bundled and merely
- * unreachable.
+ * unreachable. That matters more here than it looks: the page displays the
+ * traced references from `references/`, which must not ship.
  *
- * Delete this, `routes/LabRoute.tsx` and its stylesheet when it has served its
- * purpose.
+ * Delete this, `routes/PlateLabRoute.tsx` and its stylesheet once the plates
+ * are judged good enough that the sheet has nothing left to say.
  */
 const devOnlyRoutes = import.meta.env.DEV
   ? [
       {
-        path: 'lab',
-        lazy: async () => {
-          const { LabRoute } = await import('./routes/LabRoute');
-
-          return { Component: LabRoute };
-        },
-      },
-      {
-        // SPIKE — the beetle contact sheet. Same dead-code technique.
-        path: 'lab/insects',
-        lazy: async () => {
-          const { InsectLabRoute } = await import('./routes/InsectLabRoute');
-
-          return { Component: InsectLabRoute };
-        },
-      },
-      {
-        // SPIKE — hand-authored plate against the generator. Same technique,
-        // and the one that decides whether the generator survives at all.
         path: 'lab/plates',
         lazy: async () => {
           const { PlateLabRoute } = await import('./routes/PlateLabRoute');

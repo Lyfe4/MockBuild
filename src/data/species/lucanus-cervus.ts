@@ -3,11 +3,11 @@ import type { Species } from '@/types';
 /**
  * *Lucanus cervus* — the European stag beetle.
  *
- * The spike species: the first hand-authored plate, and the record it is drawn
- * against. Every field is real and every claim is in `sources`. That is the
- * whole point of the change of direction — the archive's plants are invented
- * and their binomials are constructed, but an entomological collection with
- * fictional species would be a collection of nothing, and a real one gives the
+ * The first hand-authored plate, and the record it is drawn against. Every
+ * field is real and every claim is in `sources`. That is the whole point of the
+ * change of direction: the archive's earlier specimens were invented and their
+ * binomials constructed, so the drawings had nothing to be faithful to. A real
+ * species gives the plate something to be measured against and the
  * identification key something true to key out.
  *
  * The male is the animal drawn. Both sexes are covered by `sizeMm`, which is

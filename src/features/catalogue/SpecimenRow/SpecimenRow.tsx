@@ -1,51 +1,54 @@
 import { Link } from 'react-router';
 
-import { PlantIllustration } from '@/components/PlantIllustration';
+import { SpeciesIllustration } from '@/components/SpeciesIllustration';
+import { findPlate } from '@/data';
 import { useInViewOnce, usePrefersReducedMotion } from '@/hooks';
-import { CONSERVATION_STATUS_LABELS, type Specimen } from '@/types';
+import { binomialOf } from '@/lib/catalogue';
+import type { Species } from '@/types';
 
 import styles from './SpecimenRow.module.css';
 
 export interface SpecimenRowProps {
-  specimen: Specimen;
+  species: Species;
 }
 
 /**
- * One entry in the catalogue: a ruled row, not a card.
+ * One species in the catalogue list: its plate, its name, its place.
  *
- * The whole row is a single link. Splitting it into a linked name plus a linked
- * thumbnail would put two identical destinations next to each other in the tab
- * order and read them out twice, and it makes the row a smaller target than it
- * looks.
+ * The plate is decorative here. The link already carries the binomial and the
+ * common name as text, and a screen reader that read the plate's description as
+ * well would hear the animal announced twice for one row.
  *
- * The illustration is decorative here because the link's own text already names
- * the plant. Announcing the generated description as well would mean hearing a
- * paragraph about branching habit before reaching the next row.
- *
- * The drawing animates in as the row is scrolled to, once. Under
- * `prefers-reduced-motion` no observer is set up at all — there is nothing to
- * wait for, so the illustration is simply present.
+ * A species with no plate drawn yet renders the row without one rather than
+ * with a placeholder. The collection is meant to grow record-first.
  */
-export function SpecimenRow({ specimen }: SpecimenRowProps) {
+export function SpecimenRow({ species }: SpecimenRowProps) {
   const reducedMotion = usePrefersReducedMotion();
   const { ref, seen } = useInViewOnce<HTMLLIElement>(reducedMotion);
+  const plate = findPlate(species.id);
 
   return (
     <li ref={ref} className={styles.root}>
-      <Link to={`/specimen/${specimen.id}`} className={styles.link}>
+      <Link to={`/specimen/${species.id}`} className={styles.link}>
         <span className={styles.plate}>
-          <PlantIllustration specimen={specimen} decorative animate={seen && !reducedMotion} />
+          {plate !== undefined && (
+            <SpeciesIllustration
+              species={species}
+              plate={plate}
+              decorative
+              animate={seen && !reducedMotion}
+            />
+          )}
         </span>
-
         <span className={styles.entry}>
-          <span className={styles.scientific}>{specimen.scientificName}</span>
-          <span className={styles.common}>{specimen.commonName}</span>
+          <span className={styles.scientific}>{binomialOf(species)}</span>
+          <span className={styles.common}>{species.commonName}</span>
           <span className={styles.meta}>
-            <span className={styles.accession}>{specimen.id}</span>
+            <span className={styles.accession}>{species.id}</span>
             <span aria-hidden="true"> · </span>
-            {specimen.family}
+            {species.taxonomy.order}
             <span aria-hidden="true"> · </span>
-            {CONSERVATION_STATUS_LABELS[specimen.conservationStatus]}
+            {species.taxonomy.family}
           </span>
         </span>
       </Link>

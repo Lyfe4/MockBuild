@@ -2,32 +2,46 @@ import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
-import { PlantIllustration } from '@/components/PlantIllustration';
-import { SPECIMENS } from '@/data';
+import { SpeciesIllustration } from '@/components/SpeciesIllustration';
+import { findPlate, SPECIES } from '@/data';
 import { useDocumentTitle } from '@/hooks';
-import { sortSpecimens } from '@/lib/catalogue';
+import { binomialOf, sortSpecies } from '@/lib/catalogue';
 import { cx } from '@/lib/classNames';
-import { CONSERVATION_STATUS_LABELS, HABITAT_LABELS, type Specimen } from '@/types';
+import type { Species } from '@/types';
 
 import { NotFoundRoute } from './NotFoundRoute';
 import styles from './SpecimenRoute.module.css';
 
-/** Catalogue order, so prev/next follow the accession sequence. */
-const ORDERED = sortSpecimens(SPECIMENS, 'catalogue');
+/**
+ * One species: its plate in the margin and its record on the sheet.
+ *
+ * Ordered by catalogue number for the pager, not by whatever the visitor had
+ * the list sorted by when they clicked through. The pager is a property of the
+ * collection, not of the view — a drawer of specimens is in one order however
+ * you got to it.
+ */
+const ORDERED = sortSpecies(SPECIES, 'catalogue');
 
-const SEASON_LABELS: Record<string, string> = {
-  spring: 'Spring',
-  summer: 'Summer',
-  autumn: 'Autumn',
-  winter: 'Winter',
-};
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const;
 
 interface LabelRowProps {
   term: string;
   children: ReactNode;
 }
 
-/** One line of the herbarium label: term in the margin, value in the column. */
 function LabelRow({ term, children }: LabelRowProps) {
   return (
     <div className={styles.labelRow}>
@@ -37,79 +51,82 @@ function LabelRow({ term, children }: LabelRowProps) {
   );
 }
 
-function formatCollectedOn(iso: string): string {
-  // Parsed as UTC and formatted in UTC, so the date on the label is the date
-  // that was written on it regardless of where it is being read.
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-AU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+/** `May–August`, or `May, July` where the months do not run together. */
+function formatMonths(months: readonly number[]): string {
+  const sorted = [...months].sort((a, b) => a - b);
+  const name = (month: number): string => MONTH_NAMES[month - 1] ?? String(month);
+  const runs: number[][] = [];
+
+  for (const month of sorted) {
+    const last = runs.at(-1);
+
+    if (last !== undefined && month === (last.at(-1) ?? 0) + 1) last.push(month);
+    else runs.push([month]);
+  }
+
+  return runs
+    .map((run) => {
+      const first = run[0] ?? 0;
+      const final = run.at(-1) ?? 0;
+
+      return run.length > 1 ? `${name(first)}–${name(final)}` : name(first);
+    })
+    .join(', ');
 }
 
-/**
- * One specimen sheet.
- *
- * The metadata is a description list laid out as a ruled ledger — term in the
- * margin, value in the column — because that is what it is: a label transcribed
- * from a sheet, not a set of statistics.
- *
- * An unknown catalogue number renders the 404 page rather than redirecting.
- * The URL stays put so a mistyped or stale link can be seen and corrected.
- */
 export function SpecimenRoute() {
   const { id } = useParams<'id'>();
   const index = ORDERED.findIndex((candidate) => candidate.id === id);
-  const specimen: Specimen | undefined = ORDERED[index];
+  const species: Species | undefined = ORDERED[index];
 
-  useDocumentTitle(specimen?.scientificName ?? 'Not found');
+  useDocumentTitle(species === undefined ? 'Not found' : binomialOf(species));
 
-  if (specimen === undefined) return <NotFoundRoute />;
+  if (species === undefined) return <NotFoundRoute />;
 
+  const plate = findPlate(species.id);
   const previous = ORDERED[index - 1];
   const next = ORDERED[index + 1];
+  const { taxonomy, morphology } = species;
 
   return (
     <Ledger
       margin={
         <figure className={styles.plate}>
-          <PlantIllustration specimen={specimen} />
+          {plate !== undefined && <SpeciesIllustration species={species} plate={plate} />}
           <figcaption className={styles.plateCaption}>
-            Illustration generated from this record&rsquo;s form parameters.
+            {plate === undefined
+              ? 'No plate drawn for this species yet.'
+              : `${plate.reference.artist}, ${String(plate.reference.year)}. Traced from a public-domain reference.`}
           </figcaption>
         </figure>
       }
     >
       <article className={styles.sheet}>
         <header className={styles.header}>
-          <p className={styles.accession}>{specimen.id}</p>
+          <p className={styles.accession}>{species.id}</p>
           <h1 className={styles.name} tabIndex={-1}>
-            {specimen.scientificName}
+            {binomialOf(species)}
           </h1>
-          <p className={styles.common}>{specimen.commonName}</p>
+          <p className={styles.common}>{species.commonName}</p>
         </header>
 
         <dl className={styles.label}>
-          <LabelRow term="Family">{specimen.family}</LabelRow>
-          <LabelRow term="Habitat">{HABITAT_LABELS[specimen.habitat]}</LabelRow>
-          <LabelRow term="Season">
-            {specimen.seasons.map((season) => SEASON_LABELS[season] ?? season).join(', ')}
+          <LabelRow term="Order">{taxonomy.order}</LabelRow>
+          <LabelRow term="Family">{taxonomy.family}</LabelRow>
+          <LabelRow term="Authority">{taxonomy.authority}</LabelRow>
+          <LabelRow term="Size">
+            {species.sizeMm.min}&ndash;{species.sizeMm.max} mm
           </LabelRow>
-          <LabelRow term="Status">
-            {CONSERVATION_STATUS_LABELS[specimen.conservationStatus]}
-            <span className={styles.code}> ({specimen.conservationStatus})</span>
-          </LabelRow>
-          <LabelRow term="Collected">
-            <time dateTime={specimen.collectedOn}>{formatCollectedOn(specimen.collectedOn)}</time>
-          </LabelRow>
-          <LabelRow term="Collector">{specimen.collectedBy}</LabelRow>
-          <LabelRow term="Locality">{specimen.region}</LabelRow>
+          <LabelRow term="Distribution">{species.distribution}</LabelRow>
+          <LabelRow term="Active">{formatMonths(species.activeMonths)}</LabelRow>
+          <LabelRow term="Wings">{morphology.wingCover}</LabelRow>
+          <LabelRow term="Antennae">{morphology.antennae}</LabelRow>
+          <LabelRow term="Markings">{morphology.markings}</LabelRow>
         </dl>
 
         <section className={styles.note}>
           <h2 className={styles.noteHeading}>Curator&rsquo;s note</h2>
-          <p className={styles.noteBody}>{specimen.notes}</p>
+          <p className={styles.noteBody}>{species.notes}</p>
         </section>
 
         <nav className={styles.pager} aria-label="Catalogue">
@@ -118,10 +135,9 @@ export function SpecimenRoute() {
           ) : (
             <Link className={styles.pagerLink} to={`/specimen/${previous.id}`} rel="prev">
               <span className={styles.pagerDirection}>Previous</span>
-              <span className={styles.pagerName}>{previous.scientificName}</span>
+              <span className={styles.pagerName}>{binomialOf(previous)}</span>
             </Link>
           )}
-
           {next === undefined ? (
             <span />
           ) : (
@@ -131,7 +147,7 @@ export function SpecimenRoute() {
               rel="next"
             >
               <span className={styles.pagerDirection}>Next</span>
-              <span className={styles.pagerName}>{next.scientificName}</span>
+              <span className={styles.pagerName}>{binomialOf(next)}</span>
             </Link>
           )}
         </nav>

@@ -7,8 +7,8 @@
  * `components/SpeciesIllustration` turns a plate into SVG and the stylesheet
  * turns its ranks and fills into ink.
  *
- * This replaces `src/lib/insect`, which stays only so the two can be compared
- * on `/lab/plates`.
+ * This replaced a parametric generator that could draw a plausible beetle but
+ * not a particular one. See the "How this evolved" section of the README.
  */
 
 export { describePlate } from './describe';

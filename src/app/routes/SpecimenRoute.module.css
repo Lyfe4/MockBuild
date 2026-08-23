@@ -97,12 +97,6 @@
   font-variation-settings: 'opsz' var(--font-optical-text);
 }
 
-.code {
-  color: var(--color-ink-muted);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-2xs);
-}
-
 .note {
   margin-block-start: var(--space-xl);
 }

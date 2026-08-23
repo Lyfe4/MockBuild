@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
-import { SPECIMENS } from '@/data';
+import { SPECIES } from '@/data';
 import { FilterPanel, SpecimenRow } from '@/features/catalogue';
 import { useDocumentTitle } from '@/hooks';
 import {
@@ -20,7 +20,7 @@ import {
 import styles from './CatalogueRoute.module.css';
 
 /** Derived once: the dataset is a module constant and never changes. */
-const FAMILIES = familiesOf(SPECIMENS);
+const FAMILIES = familiesOf(SPECIES);
 
 /**
  * The catalogue.
@@ -39,7 +39,7 @@ export function CatalogueRoute() {
 
   const query = useMemo(() => parseCatalogueQuery(searchParams, FAMILIES), [searchParams]);
 
-  const results = useMemo(() => queryCatalogue(SPECIMENS, query), [query]);
+  const results = useMemo(() => queryCatalogue(SPECIES, query), [query]);
 
   const applyQuery = (next: CatalogueQuery): void => {
     const params = toSearchParams(next);
@@ -60,7 +60,7 @@ export function CatalogueRoute() {
           Catalogue
         </h1>
         <p className={styles.description}>
-          Every sheet held at Thornfield, with the illustration generated from the record beside it.
+          Every species held at Thornfield, with its hand-authored plate beside the record.
         </p>
 
         <div className={styles.summary}>
@@ -70,9 +70,9 @@ export function CatalogueRoute() {
             list beneath them had grown or shrunk.
           */}
           <p className={styles.count} aria-live="polite">
-            {results.length === SPECIMENS.length
-              ? `${String(results.length)} specimens`
-              : `${String(results.length)} of ${String(SPECIMENS.length)} specimens`}
+            {results.length === SPECIES.length
+              ? `${String(results.length)} species`
+              : `${String(results.length)} of ${String(SPECIES.length)} species`}
           </p>
 
           <div className={styles.sort}>
@@ -99,39 +99,32 @@ export function CatalogueRoute() {
 
       {results.length === 0 ? (
         <div className={styles.empty}>
-          <p className={styles.emptyTitle}>No specimens match those filters.</p>
+          <p className={styles.emptyTitle}>No species match those filters.</p>
           <p className={styles.emptyBody}>
-            The archive holds {SPECIMENS.length} sheets in total. Try widening the search, or clear
+            The archive holds {SPECIES.length} species in total. Try widening the search, or clear
             the filters and start again.
           </p>
           <button
             type="button"
             className={styles.emptyAction}
             onClick={() => {
-              applyQuery({
-                search: '',
-                families: [],
-                habitats: [],
-                seasons: [],
-                statuses: [],
-                sort: query.sort,
-              });
+              applyQuery({ search: '', families: [], sort: query.sort });
             }}
           >
-            Show all {SPECIMENS.length} specimens
+            Show all {SPECIES.length} species
           </button>
         </div>
       ) : (
         <ul className={styles.results} role="list">
-          {results.map((specimen) => (
-            <SpecimenRow key={specimen.id} specimen={specimen} />
+          {results.map((species) => (
+            <SpecimenRow key={species.id} species={species} />
           ))}
         </ul>
       )}
 
       {isFiltered(query) && results.length > 0 && (
         <p className={styles.footnote}>
-          Showing {results.length} of {SPECIMENS.length} sheets.
+          Showing {results.length} of {SPECIES.length} species.
         </p>
       )}
     </Ledger>

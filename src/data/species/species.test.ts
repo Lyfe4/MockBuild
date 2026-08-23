@@ -16,7 +16,7 @@ import {
  * Record integrity for the entomological collection.
  *
  * These animals are real, which changes what a dataset test is for. With
- * invented plants the only risks were structural; here a record can be
+ * invented specimens the only risks were structural; here a record can be
  * well-formed and still wrong, so the checks that matter are the ones a reader
  * could catch us on — a citation missing, a size range inverted, a month
  * outside the year — plus the internal consistency the type system cannot see,
