@@ -149,6 +149,14 @@ export interface Species {
   /** Slug, and the key a plate references. `genus-species`, lower case. */
   readonly id: string;
   readonly taxonomy: Taxonomy;
+  /**
+   * The vernacular name, written as it reads **mid-sentence**.
+   *
+   * So `European stag beetle` and `oil beetle`: capitalised only where a word
+   * is a proper noun. Alt text drops it into a sentence verbatim, and a heading
+   * that wants a capital can add one — which is the easy direction. Working out
+   * that the E in European is not sentence case is the hard one.
+   */
   readonly commonName: string;
   /** Adult body length in millimetres, across both sexes and the whole range. */
   readonly sizeMm: SizeRange;
