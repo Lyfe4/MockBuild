@@ -11,15 +11,24 @@ easy to get wrong.
 It is a portfolio piece: no real collection, no real data, nothing is collected
 from a visitor.
 
-The centre of the work is now a **fictional entomological archive**:
-procedurally generated **pinned-specimen illustrations** — beetles
-(Coleoptera) and moths (Lepidoptera) — drawn as engraved plates. Every
-specimen is derived from a seed, so a given catalogue number always draws the
-same animal.
+The centre of the work is a **real entomological collection**: **hand-authored
+plates** of actual species — starting with _Lucanus cervus_ — traced in a
+simplified engraving style from public-domain references and rendered through a
+shared schema. Every species carries a real record: taxonomy, distribution,
+phenology and the morphological characters a later identification key will
+filter on.
 
-The **plant generator (`src/lib/plant`, `components/PlantIllustration`) is
-legacy** and will be removed. Do not extend it; new work goes into
-`src/lib/insect`.
+Two generations of code are on the way out, in this order:
+
+- **The plant generator** (`src/lib/plant`, `components/PlantIllustration`) is
+  legacy. Do not extend it.
+- **The insect generator** (`src/lib/insect`, `components/InsectIllustration`)
+  is legacy as of the plate spike. It hit a quality ceiling: it could draw a
+  plausible beetle but not a particular one. It stays only so the two
+  approaches can be compared on `/lab/plates`, and goes when plates replace it.
+
+New work goes into `src/lib/plate`, `src/data/species` and
+`components/SpeciesIllustration`.
 
 ## Stack
 
@@ -55,7 +64,48 @@ These are not preferences. Breaking one breaks the build, the CSP, or a season.
 - **Conventional commits**: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`,
   `chore:`.
 
-## Generator architecture
+## Plate architecture
+
+`src/lib/plate` is **pure data out** — no React, no DOM. A plate is path data
+plus roles; the renderer turns it into SVG and the CSS turns roles into ink.
+
+```
+Species record  ──┐
+                  ├─ SpeciesIllustration ─→ SVG
+SpeciesPlate    ──┘        │
+                           └─ describePlate(species, {sex, hallmark}) → alt text
+```
+
+- **Plate space.** Midline at `x = 0`, `y` from 0 at the head end to 1000 at the
+  abdomen tip, so two species are directly comparable. Appendages may leave that
+  band — a stag beetle's tarsi reach past 1200 — and `plateViewBox` measures the
+  drawing rather than assuming a frame.
+- **Authors draw the right half only.** The renderer reflects it, which is the
+  entire bilateral-symmetry mechanism. Parts that straddle the axis and are
+  symmetric in themselves declare `mirror: false` and are drawn once; reflecting
+  them would produce a doubled line.
+- **Mirroring is two `<g>` groups, not a `<use>`.** A `clip-path` inside
+  `<g transform="scale(-1,1)">` resolves in that group's own user space, so one
+  clip definition confines the hatching on both wing cases. Do not "simplify"
+  this into a `<use>` without re-reading `SpeciesIllustration`'s comment.
+- **`validatePlate` runs in a test for every plate.** Seven error classes, all
+  of them mistakes that otherwise fail _quietly_: a stray minus sign puts a leg
+  on the wrong side and the mirror puts a second one on top of it, so the plate
+  renders, looks nearly right, and has five legs.
+- **Containment is proved in the data, not by the clip** — same rule the
+  generator had. The plate test samples every clipped stroke against its
+  surface's outline.
+- **Three ranks, and `--plate-stroke-*` is a second set of widths.** Plate space
+  is about nine times the generator's, so one shared number would give hairlines
+  or slabs. The ratios match the generator's on purpose.
+- **`references/`** holds every traced reference, committed, with
+  `references/SOURCES.md` recording author, publication and licence. A reference
+  whose licence forbids redistribution is gitignored and recorded by URL instead.
+
+Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it and
+a test. It touches no component.
+
+## Generator architecture (legacy)
 
 `src/lib/insect` is **pure data out** — no React, no DOM, no `Math.random`, no
 `Date.now`. It emits plain geometry; the renderer turns geometry into SVG and
@@ -107,6 +157,11 @@ npm run dev
 ```
 
 - `/lab` — the legacy plant sheet.
+- `/lab/plates` — the hand-authored plate against the generator's nearest
+  preset, at 80, 240 and 600 pixels, in the current season, with the reference
+  at the bottom. Frames are absolute pixels rather than fluid, because the
+  comparison is about size itself. The validator's verdict is printed on the
+  page.
 - `/lab/insects` — beetles and moths, four presets × four seeds per order.
   `?size=large` for two-up; `?beetles=<n>` and `?moths=<n>` are the reroll
   rounds, one per order, and the **Reroll** link in each section heading bumps
@@ -114,4 +169,6 @@ npm run dev
   pigment, pattern layers, hatching — and it is the only way to see a preset
   whose ranges are too narrow.
 
-Both routes and their stylesheets are temporary and get deleted with the spike.
+All three routes and their stylesheets are temporary. `/lab` and `/lab/insects`
+go with the generators; `/lab/plates` goes once the plates are wired into the
+catalogue.
