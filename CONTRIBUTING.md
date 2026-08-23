@@ -277,6 +277,38 @@ Rules the review will hold you to:
 Judge the result on `/lab/plates`, which is dev-only and shows every plate at 80,
 240 and 600 pixels with the reference below it.
 
+### Adding a journal entry
+
+One markdown file in `src/content/journal`, named for its slug:
+
+```
+src/content/journal/
+  five-legs.md                   frontmatter + prose. The slug is the URL.
+```
+
+```markdown
+---
+title: Five legs
+date: 2026-03-07
+season: autumn
+speciesId: lucanus-cervus
+---
+
+Prose. Blocks are separated by a blank line, and the vocabulary is
+paragraphs, `## `/`### ` headings, `> ` quotes, `- ` lists, `**strong**`,
+`_emphasis_`, `` `code` `` and `[label](href)`.
+```
+
+`title`, `date` and `season` are required and `speciesId` is not; an unknown
+key is an error rather than a shrug, because `speciesid` would otherwise parse
+cleanly and lose the entry's thumbnail. `season` must be the one `date` falls in
+— southern, so a June entry is a winter one. `speciesId` must name a record in
+`SPECIES`, and it is what puts the plate in the margin.
+
+Nothing else changes: the files are globbed at build time. A file with a mistake
+in it does **not** break the build — it fails `src/data/journal/journal.test.ts`
+by name, with the problems listed.
+
 ## Commits
 
 [Conventional Commits](https://www.conventionalcommits.org/):

@@ -1,0 +1,68 @@
+/**
+ * An entry's prose. Reading measure, generous leading, and nothing else — the
+ * page's own furniture is the route's business.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  max-inline-size: var(--measure);
+}
+
+.paragraph {
+  margin-block-start: var(--space-md);
+  font-size: var(--font-size-md);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  line-height: var(--line-height-relaxed);
+  text-wrap: pretty;
+}
+
+.paragraph:first-child {
+  margin-block-start: 0;
+}
+
+.heading {
+  margin-block-start: var(--space-xl);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+  line-height: var(--line-height-tight);
+}
+
+.subheading {
+  margin-block-start: var(--space-lg);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  line-height: var(--line-height-snug);
+}
+
+/* A pulled quote: the archive's own rule in the margin, not quotation marks. */
+.quote {
+  padding-inline-start: var(--space-md);
+  margin: 0;
+  margin-block-start: var(--space-md);
+  border-inline-start: 2px solid var(--color-accent);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-md);
+  font-style: italic;
+  line-height: var(--line-height-relaxed);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding-inline-start: var(--space-md);
+  margin-block-start: var(--space-md);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-relaxed);
+  list-style: disc;
+}
+
+.code {
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
+}

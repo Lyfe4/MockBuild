@@ -211,17 +211,22 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
     │   └── VisuallyHidden/   the reference implementation of the pattern
     ├── features/             feature slices
     │   ├── catalogue/        FilterPanel, SpecimenRow
+    │   ├── journal/          JournalProse — blocks to elements
     │   ├── specimen/         (empty)
     │   └── theme/            ThemeProvider, useSeason, SeasonSwitcher
     ├── hooks/                shared React hooks
+    ├── content/
+    │   └── journal/          the field journal, as markdown with frontmatter
     ├── lib/                  pure utilities — no React, no DOM
     │   ├── calendar/         months, runs, row order for the phenology chart
     │   ├── catalogue/        URL parsing, filtering, sorting
+    │   ├── journal/          frontmatter, markdown subset, sanitiser
     │   ├── key/              the derived identification key
     │   └── plate/            the plate schema, parser, validator, fit
     ├── styles/               index · tokens · reset · global · fonts
     ├── data/
     │   ├── institution.ts    the invented archive's own facts
+    │   ├── journal/          the content glob, parsed
     │   ├── references/       reference provenance — SOURCES.md is built from it
     │   └── species/          one record, one plate and one test per species
     ├── types/                shared types

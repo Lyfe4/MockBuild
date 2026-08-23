@@ -5,6 +5,8 @@ import { RouteErrorBoundary } from './RouteErrorBoundary';
 import { AboutRoute } from './routes/AboutRoute';
 import { CalendarRoute } from './routes/CalendarRoute';
 import { CatalogueRoute } from './routes/CatalogueRoute';
+import { JournalEntryRoute } from './routes/JournalEntryRoute';
+import { JournalRoute } from './routes/JournalRoute';
 import { KeyRoute } from './routes/KeyRoute';
 import { NotFoundRoute } from './routes/NotFoundRoute';
 import { SpecimenRoute } from './routes/SpecimenRoute';
@@ -71,6 +73,10 @@ export const router = createBrowserRouter([
       // The institution's own pages. `/about` is where the fiction is owned up
       // to in full, which is why the footer's disclaimer links to it.
       { path: 'about', element: <AboutRoute /> },
+      // The journal is a real path per entry rather than a query parameter: an
+      // entry is a document with an address, and the index is a list of them.
+      { path: 'journal', element: <JournalRoute /> },
+      { path: 'journal/:slug', element: <JournalEntryRoute /> },
       ...devOnlyRoutes,
       // Last: matches anything the routes above did not.
       { path: '*', element: <NotFoundRoute /> },

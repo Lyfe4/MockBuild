@@ -413,6 +413,45 @@ plot. `src/lib/calendar` is pure functions; the route renders them.
   right edge and the chart never needed to scroll at all. That is a shell fix
   rather than a route fix, because it is true of any wide content.
 
+## The field journal
+
+`/journal` is an index and `/journal/:slug` is an entry. The content is markdown
+files in `src/content/journal`, read at **build time** by `import.meta.glob`
+with `?raw` — no fetch, no loader, no runtime markdown dependency, and the CSP
+untouched. `src/lib/journal` is pure functions; `src/data/journal` does the glob
+and the parse; `features/journal/JournalProse` renders.
+
+- **Markdown never becomes an HTML string.** The parser returns blocks and
+  spans and `JournalProse` builds real elements, so there is no
+  `dangerouslySetInnerHTML` anywhere in the path. That is the mechanism.
+- **The sanitiser runs anyway, on first-party content**, and
+  `src/lib/journal/sanitise.ts` argues the case in full: the no-HTML-string
+  property has to be _maintained_, a lede goes into string sinks React does not
+  escape, and a block list carrying markup in a text span would be lying about
+  its own type. A sanitiser that only runs on untrusted input is one nobody
+  remembers to run on the day the input changes.
+- **A tag must start with a letter.** The first `TAGGISH` pattern was
+  `/<[^>]*>?/`, which ate the rest of the sentence after `2 < 4`.
+- **Unknown frontmatter keys are an error.** `speciesid` for `speciesId` would
+  otherwise parse cleanly and lose the entry's thumbnail without a word — which
+  is the whole class of failure this arrangement exists to make loud.
+- **The declared `season` is checked against the date** through
+  `seasonOfMonth`. It is southern, so a June entry is a winter entry; the index
+  says so, because unsaid it reads as a bug. A tag that disagrees with its own
+  date is invisible on the page, since the tag is what the page shows.
+- **A bad file fails a test, not the build.** `parseJournalEntry` never throws:
+  `JOURNAL_PARSES` keeps every file with its problems and `JOURNAL_ENTRIES`
+  keeps what parsed, so the route renders what is good and
+  `src/data/journal/journal.test.ts` fails by name with what is wrong. A route
+  filtering silently is what would make a typo invisible.
+- **Dates are strings, start to finish.** `formatEntryDate` reads
+  `YYYY-MM-DD` with a regex and takes the month name from `lib/calendar`. Going
+  through `new Date` would hand a day a time zone it has not got, and date an
+  entry the 31st of December for a reader in Perth.
+- **The index is a `ul`, not an `ol`.** The entries are in date order but the
+  position is not content — nobody refers to the third entry — and an ordered
+  list has a screen reader count them out.
+
 ## Known dead weight
 
 None. `src/lib/random` — a seeded `mulberry32` and `seedFromName` — was the

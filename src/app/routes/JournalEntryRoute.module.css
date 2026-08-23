@@ -1,0 +1,139 @@
+/**
+ * One journal entry. The margin is the specimen it is about; the body is prose
+ * and a pager, in the same furniture as a specimen sheet.
+ */
+
+.specimen {
+  margin: 0;
+}
+
+.plateLink {
+  display: block;
+  padding: var(--space-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+}
+
+.plateLink:hover {
+  border-color: var(--color-accent);
+}
+
+.specimenCaption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  margin-block-start: var(--space-xs);
+}
+
+.accession {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.specimenLink {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-sm);
+}
+
+.common {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-xs);
+}
+
+.sheet {
+  max-inline-size: var(--measure);
+}
+
+.header {
+  padding-block-end: var(--space-md);
+  border-block-end: 2px solid var(--color-ink);
+}
+
+.meta {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.title {
+  margin-block-start: var(--space-2xs);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-display);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  text-wrap: pretty;
+}
+
+.title:focus {
+  outline: none;
+}
+
+.title:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.prose {
+  margin-block-start: var(--space-lg);
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block-start: var(--space-lg);
+  margin-block-start: var(--space-2xl);
+  border-block-start: 1px solid var(--color-line);
+}
+
+.pagerLink {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  max-inline-size: 18rem;
+  min-block-size: 2.75rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pagerNext {
+  text-align: end;
+}
+
+.pagerDirection {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.pagerName {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-sm);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  text-wrap: pretty;
+}
+
+.pagerLink:hover .pagerName {
+  color: var(--color-accent-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+.back {
+  margin-block-start: var(--space-lg);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
