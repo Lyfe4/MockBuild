@@ -140,10 +140,45 @@ SpeciesPlate    ──┘        │
   file adds only what is true of that animal. `src/test/plateGeometry.ts` holds
   the geometry helpers they all need.
 
-Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it, a
-test that calls `describePlateContract`, a reference in `references/` with its
-entry in `SOURCES.md`, and two lines in `src/data/species/index.ts`. It touches
-no component.
+## The plate builder
+
+**`src/data/species/*.plate.ts` is generated.** The source is
+`src/data/species/landmarks/<slug>.json` — the points measured off the reference
+— and `scripts/plate-builder` turns those into path data.
+
+```bash
+npm run plate:build     # landmarks -> *.plate.ts
+npm run plate:verify    # fail if any committed plate has drifted from its landmarks
+```
+
+`plate:verify` runs inside `npm run check`, before the tests, and compares
+**bytes**. The build is deterministic on purpose — fixed rounding, no clock, no
+randomness, Prettier with the project's own config — so byte equality is a fair
+thing to demand, and it is what stops somebody fixing a wing in the generated
+file and losing it on the next build.
+
+- **Five shapes.** `curve` (a traced margin), `capsule` (a limb: spine plus
+  thickness), `ellipse` (an eye, a spot), `strip` (a band following an edge),
+  `fan` (hatching, striae, veins — one measurement, many strokes). The full
+  authoring workflow, reference to lab sheet, is in CONTRIBUTING.
+- **The smoothing is _centripetal_ Catmull-Rom, not uniform.** Uniform throws
+  control points far outside the curve where landmarks are unevenly spaced, and
+  `plateBounds` measures control points deliberately — so the first build of the
+  ladybird came out 0.64 as wide as it was long against the 0.85 measured off
+  the lithograph, with the curve itself not having moved at all.
+- **A landmark on the midline gets a vertical tangent** on any part that is
+  mirrored. That is what the anatomy says, and without it a control point lands
+  a hair left of `x = 0` and `validatePlate` reports `negative-x` — correctly,
+  because that is ink on the half the author did not draw.
+- **A curve that does not follow the reference wants another landmark**, not a
+  lower `tension`. The curve passes through every point it is given.
+- **Prose lives in the landmark file** (`doc`, and a part's `note`) because JSON
+  cannot hold a comment and the emitter has to own every byte it writes.
+
+Adding a species is a record in `src/data/species`, a landmark file in
+`src/data/species/landmarks`, a test that calls `describePlateContract`, a
+reference in `references/` with its entry in `SOURCES.md`, and two lines in
+`src/data/species/index.ts`. It touches no component.
 
 ## The lab route
 

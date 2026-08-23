@@ -1,0 +1,1176 @@
+{
+  "species": "papilio-machaon",
+  "constant": "PAPILIO_MACHAON_PLATE",
+  "order": "lepidoptera",
+  "sex": "unsexed",
+  "hallmark": "tailed hindwings with a blue band and one orange eyespot",
+  "reference": {
+    "title": "Schwalbenschwanz, from Das kleine Schmetterlingsbuch: Die Tagfalter",
+    "artist": "Jacob Hübner",
+    "yearNote": [
+      "Undated on the source page. Hübner died in 1826, which is both what the",
+      "public-domain claim rests on and the latest the drawing can be; the",
+      "Papilionidae plates of his *Sammlung europäischer Schmetterlinge* were",
+      "issued a good deal earlier. See references/SOURCES.md."
+    ],
+    "year": 1826,
+    "source": "https://commons.wikimedia.org/wiki/File:Papilio_machaon_Schwalbenschwanz.jpg",
+    "licence": "Public domain (PD-Art, PD-old-auto-1923)"
+  },
+  "doc": [
+    "*Papilio machaon*, dorsal, wings spread — the Old World swallowtail.",
+    "",
+    "Traced from Jacob Hübner's plate, reproduced in *Das kleine",
+    "Schmetterlingsbuch*; `references/SOURCES.md` has the provenance and",
+    "`references/papilio-machaon.jpg` is the file. The figure shows the upperside",
+    "on the left and the underside on the right; only the upperside is traced.",
+    "",
+    "## What the drawing has to get right",
+    "",
+    "The wing shape, which is what a swallowtail is recognised by before any of",
+    "the pattern resolves: a long-triangular forewing with the apex thrown well",
+    "forward of the costa's midpoint, and a hindwing whose margin is scalloped and",
+    "drawn out into the tail. Get the tail wrong and it is a different family.",
+    "",
+    "Then the pattern, and only as much of it as three line weights can carry. The",
+    "lithograph has a stippled yellow ground, a black border with pale lunules, a",
+    "row of blue lunules on the hindwing and one orange ocellus at the inner",
+    "corner. The stipple is left behind — this is an engraving — but the border,",
+    "the lunules and the ocellus stay, because those are what a key would ask for.",
+    "",
+    "## What the first pass got wrong",
+    "",
+    "The tail, and the shading at the front of the forewing, both measured off the",
+    "reference the second time round.",
+    "",
+    "The tail reached 0.47 of a body length below the abdomen tip where the",
+    "reference gives 0.54, and it was half again too wide, so it read as a torn",
+    "corner rather than as the thing the family is named for. It is now longer,",
+    "narrower, and inked to the tip — the reference draws it solid, not pale with",
+    "an outline round it.",
+    "",
+    "The shading was a rounded patch at the *trailing* corner of the wing base:",
+    "the wrong edge of the wing, and a smudge rather than a character. The",
+    "lithograph darkens the costal third, from the base out to where the apical",
+    "border takes over, and that is what is drawn now.",
+    "",
+    "## No legs",
+    "",
+    "A machaon with its wings spread shows none from above, so none are drawn, and",
+    "`REQUIRED_PARTS.lepidoptera` does not ask for them. Drawing legs that the",
+    "reference does not contain would be inventing the animal rather than tracing",
+    "it.",
+    "",
+    "## Plate space",
+    "",
+    "Midline at x = 0, y = 0 at the front of the head and y = 1000 at the tip of",
+    "the abdomen. The wings run out past x = 1500 and above y = -300, which is the",
+    "whole point of measuring the frame from the drawing: a swallowtail's body is",
+    "about a tenth of its wingspan."
+  ],
+  "parts": [
+    {
+      "id": "hindwing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [89.55, 391.04],
+          [137.95, 380.72],
+          [211.19, 389.48],
+          [290.78, 406.48],
+          [358.21, 420.9],
+          [608.96, 480.6],
+          [782.09, 552.24],
+          [843.11, 603.75],
+          [889.55, 659.7],
+          [925.37, 773.13],
+          [889.55, 868.66],
+          [853.73, 958.21],
+          [800, 1035.82],
+          [776.12, 1119.4],
+          [765.45, 1183.43],
+          [752.24, 1262.69],
+          [747, 1332],
+          [738, 1420],
+          [730, 1498],
+          [726, 1559.07],
+          [719.44, 1571.14],
+          [712, 1567.07],
+          [701, 1499],
+          [691, 1419],
+          [679, 1336],
+          [667.11, 1318.04],
+          [656.72, 1310.45],
+          [642.75, 1247.65],
+          [626.87, 1208.96],
+          [613.52, 1213.45],
+          [595.93, 1230.62],
+          [561.19, 1256.72],
+          [495.52, 1197.01],
+          [417.91, 1244.78],
+          [346.27, 1179.1],
+          [306.83, 1189],
+          [286.02, 1197.18],
+          [268.66, 1197.01],
+          [237.86, 1161.88],
+          [208.96, 1113.43],
+          [149.25, 1005.97],
+          [101.49, 844.78],
+          [86.38, 748.04],
+          [77.61, 641.79],
+          [68.04, 504.04],
+          [70.68, 434.38]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [172.34, 520.75],
+          [424.88, 571.25],
+          [716.71, 621.76]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [166.73, 610.53],
+          [267.75, 654.38],
+          [413.66, 705.93],
+          [608.67, 742.76],
+          [772.82, 767.66]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [161.12, 700.32],
+          [257.57, 759.6],
+          [396.82, 829.4],
+          [582.72, 879.56],
+          [739.15, 913.58]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [155.51, 790.11],
+          [357.54, 936.03],
+          [643.75, 1053.88]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [149.89, 874.3],
+          [295.81, 997.76],
+          [520.28, 1126.83]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [158.44, 958.68],
+          [181.53, 997.51],
+          [222.86, 1048.26],
+          [368.76, 1143.66]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [127.45, 717.16],
+          [228.47, 913.58],
+          [335.09, 1109.99]
+        ]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [768.6, 574.57],
+          [792.83, 590.5],
+          [822.6, 618.9],
+          [870.21, 676.18],
+          [904.09, 783.44],
+          [870.21, 873.77],
+          [836.34, 958.45],
+          [785.54, 1031.84],
+          [778.31, 1070.37],
+          [773.63, 1092.05],
+          [762.96, 1110.87],
+          [736.61, 1132.48],
+          [696.24, 1160.11],
+          [625.48, 1205.27],
+          [559.72, 1240.72],
+          [528.19, 1217.09],
+          [496.1, 1193.49],
+          [460.71, 1211.76],
+          [424.23, 1229.43],
+          [386.88, 1203.5],
+          [349.09, 1175.85],
+          [310.1, 1186.02],
+          [289.05, 1193.52],
+          [272.64, 1193.49],
+          [256.74, 1180.22],
+          [238.01, 1157.29],
+          [221.89, 1131.89],
+          [213.84, 1111.17],
+          [224.59, 1061.55],
+          [249.12, 1022.96],
+          [291.02, 1033.71],
+          [337.33, 1058.24],
+          [378.49, 1091.5],
+          [419.65, 1117.05],
+          [464.31, 1094.08],
+          [507.86, 1070],
+          [543.7, 1094.08],
+          [562.44, 1110.32],
+          [578.43, 1117.05],
+          [595.64, 1110.03],
+          [616.93, 1094.54],
+          [654.88, 1058.24],
+          [719.57, 958.28],
+          [746.95, 894.7],
+          [766.61, 828.91],
+          [748.97, 705.41],
+          [702.2, 651.08],
+          [666.64, 605.44],
+          [709, 580.55]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [821.62, 662.68],
+          [836.62, 678.49],
+          [837.17, 707.78],
+          [822.94, 733.39],
+          [802.26, 740.3],
+          [787.26, 724.49],
+          [786.71, 695.2],
+          [800.94, 669.6]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [804.18, 787.09],
+          [821.24, 800.66],
+          [825.86, 829.59],
+          [815.33, 856.92],
+          [795.82, 866.65],
+          [778.76, 853.08],
+          [774.14, 824.15],
+          [784.67, 796.82]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [778.21, 905.66],
+          [788.27, 925],
+          [780.73, 953.3],
+          [759.99, 973.99],
+          [738.21, 974.94],
+          [728.15, 955.6],
+          [735.69, 927.3],
+          [756.43, 906.61]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [717.21, 1010.11],
+          [720.06, 1031.72],
+          [703.28, 1055.74],
+          [676.72, 1068.09],
+          [655.93, 1061.53],
+          [653.08, 1039.92],
+          [669.86, 1015.9],
+          [696.42, 1003.56]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [628.63, 1111.69],
+          [623.91, 1132.97],
+          [599.93, 1149.8],
+          [570.75, 1152.32],
+          [553.45, 1139.05],
+          [558.17, 1117.77],
+          [582.15, 1100.94],
+          [611.33, 1098.42]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [517.39, 1145.07],
+          [507.66, 1164.58],
+          [480.33, 1175.11],
+          [451.4, 1170.49],
+          [437.83, 1153.43],
+          [447.56, 1133.92],
+          [474.89, 1123.39],
+          [503.82, 1128.01]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [409.54, 1132.32],
+          [394.81, 1148.39],
+          [365.64, 1150.98],
+          [339.1, 1138.57],
+          [330.76, 1118.42],
+          [345.49, 1102.35],
+          [374.66, 1099.76],
+          [401.2, 1112.17]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "hindwing",
+      "note": [
+        "The tail itself, inked.",
+        "",
+        "The black marginal band stops at the anal angle, and the tail below it",
+        "is solid in the reference rather than pale with an outline round it.",
+        "Drawn as its own part rather than by extending the band, because the",
+        "band is a ring and the tail is not."
+      ],
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [744, 1254],
+          [745.44, 1295.42],
+          [739, 1345],
+          [731, 1424],
+          [724, 1497],
+          [720, 1550],
+          [715.74, 1559.75],
+          [713.13, 1561.32],
+          [711, 1559],
+          [706.46, 1533.49],
+          [702, 1500],
+          [694, 1424],
+          [686, 1345],
+          [673.06, 1300.17],
+          [668, 1262]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment",
+      "clipTo": "hindwing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [360.51, 1083.58],
+          [342.35, 1124.59],
+          [298.51, 1141.58],
+          [254.67, 1124.59],
+          [236.51, 1083.58],
+          [254.67, 1042.57],
+          [298.51, 1025.58],
+          [342.35, 1042.57]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "forewing",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [83.58, 92.54],
+          [131.15, 57.39],
+          [216.14, 10.64],
+          [394.03, -74.63],
+          [782.09, -217.91],
+          [981.72, -270.15],
+          [1170.15, -313.43],
+          [1438.81, -361.19],
+          [1495.43, -368.84],
+          [1513.63, -366.64],
+          [1522.39, -355.22],
+          [1507.47, -274.07],
+          [1474.63, -176.12],
+          [1367.16, 8.96],
+          [1298.04, 97.77],
+          [1223.88, 182.09],
+          [1062.69, 319.4],
+          [980.6, 367.63],
+          [889.55, 402.99],
+          [835.9, 408.87],
+          [765.4, 410.83],
+          [632.84, 402.99],
+          [498.42, 366.79],
+          [370.15, 319.4],
+          [266.79, 260.82],
+          [179.1, 200],
+          [107.83, 148.51],
+          [82.13, 119.83],
+          [78.5, 105.85]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [216.27, 139.37],
+          [648.4, -28.99],
+          [1175.92, -202.96]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [221.88, 173.04],
+          [659.62, 60.8],
+          [1226.42, -68.28]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [266.06, 197.94],
+          [654.01, 139.37],
+          [1203.98, 77.64]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [282.06, 229.92],
+          [631.56, 223.55],
+          [1114.19, 212.32]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [332.82, 250.38],
+          [592.27, 296.5],
+          [996.34, 313.33]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [375.22, 268.29],
+          [438.15, 305.9],
+          [536.15, 347.01],
+          [816.75, 375.06]
+        ]
+      }
+    },
+    {
+      "id": "wing-vein",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [193.82, 122.53],
+          [367.8, 43.97],
+          [581.05, -51.44]
+        ]
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "note": [
+        "The dark costal third, not a basal blob.",
+        "",
+        "The lithograph darkens the front third of the forewing from the wing",
+        "base out towards the apex, where it runs into the black border. An",
+        "earlier pass drew that as a rounded patch at the trailing corner of the",
+        "wing base — the wrong edge of the wing, and it read as a smudge rather",
+        "than as the costal shading a key would name. Measured off the",
+        "reference: the band hugs the costa, is at its deepest where the wing",
+        "meets the thorax, and thins to nothing where the apical border starts."
+      ],
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [112, 112],
+          [212, 40],
+          [378, -43],
+          [606, -134],
+          [786, -196],
+          [968, -244],
+          [1152, -287],
+          [1238, -305],
+          [1281.58, -314.67],
+          [1318, -321],
+          [1324.67, -313.08],
+          [1318, -299],
+          [1281.58, -271.08],
+          [1238, -241],
+          [1152, -193],
+          [1064, -154.58],
+          [968, -116],
+          [786, -66],
+          [606, -6],
+          [378, 74],
+          [212, 126],
+          [155.08, 133.09],
+          [112, 134],
+          [103.67, 126.33]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [509.56, -92.23],
+          [531.64, -7.86],
+          [560.07, 92.59],
+          [577.43, 192.07],
+          [591.22, 272.22],
+          [601.49, 289.87],
+          [609.94, 285.37],
+          [619.24, 287.88],
+          [624.98, 268.13],
+          [611.95, 83.3],
+          [594.49, -21.25],
+          [574.1, -107.41],
+          [564.48, -124.51],
+          [553.85, -130.93],
+          [535, -128.86],
+          [517.24, -122.15],
+          [510.59, -111.65]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [785.67, -190.21],
+          [795.81, -101.41],
+          [808.88, 5.82],
+          [806.48, 114.64],
+          [803.22, 203.26],
+          [809.65, 223.35],
+          [818.74, 219.69],
+          [827.1, 225.02],
+          [836.71, 205.97],
+          [863.28, 5.82],
+          [862.33, -104.66],
+          [854.25, -195.77],
+          [847.04, -214.81],
+          [837.13, -223.04],
+          [817.46, -223.85],
+          [798.19, -219.64],
+          [789.73, -209.88]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1038.48, -257.81],
+          [1038.16, -179.68],
+          [1037.26, -84.06],
+          [1017.28, 16.1],
+          [998.7, 98.64],
+          [1001.11, 118],
+          [1009.9, 115.75],
+          [1016.35, 122.32],
+          [1028.09, 106.42],
+          [1086.25, -76.27],
+          [1099.31, -174.03],
+          [1102.41, -254.66],
+          [1098.07, -272.54],
+          [1089.92, -281.39],
+          [1071.86, -285],
+          [1053.52, -282.89]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1488.1, -334.2],
+          [1478.23, -258.26],
+          [1460.26, -207.49],
+          [1442.94, -164.84],
+          [1341.32, 10.17],
+          [1205.83, 173.88],
+          [1053.41, 303.72],
+          [967.46, 353.71],
+          [922.53, 374.36],
+          [889.69, 382.77],
+          [863.81, 373.47],
+          [838.23, 351.4],
+          [820.71, 325.15],
+          [819.02, 303.32],
+          [843.27, 284.4],
+          [888.11, 262.3],
+          [977.8, 215.11],
+          [1113.06, 73.98],
+          [1224.78, -78.92],
+          [1266.87, -161.13],
+          [1301.23, -237.69],
+          [1314.66, -293.88],
+          [1321.86, -318.48],
+          [1335.67, -334.2],
+          [1367.99, -342.8],
+          [1415.87, -347.49]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1429.13, -298.66],
+          [1441.81, -285.23],
+          [1442.25, -260.35],
+          [1430.18, -238.58],
+          [1412.67, -232.68],
+          [1399.99, -246.1],
+          [1399.55, -270.99],
+          [1411.63, -292.76]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1353.27, -146.44],
+          [1362.33, -130.34],
+          [1356.73, -106.09],
+          [1339.76, -87.89],
+          [1321.35, -86.4],
+          [1312.29, -102.49],
+          [1317.89, -126.75],
+          [1334.86, -144.95]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1263.64, 12.76],
+          [1269.16, 30.39],
+          [1258.64, 52.95],
+          [1238.25, 67.23],
+          [1219.94, 64.86],
+          [1214.42, 47.23],
+          [1224.94, 24.67],
+          [1245.33, 10.39]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1154.41, 160.24],
+          [1156.78, 178.55],
+          [1142.5, 198.94],
+          [1119.94, 209.46],
+          [1102.31, 203.94],
+          [1099.94, 185.63],
+          [1114.22, 165.24],
+          [1136.78, 154.72]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [1028.53, 288.75],
+          [1025.13, 306.91],
+          [1005.25, 321.89],
+          [980.55, 324.92],
+          [965.49, 314.23],
+          [968.89, 296.07],
+          [988.77, 281.09],
+          [1013.47, 278.06]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "wing-marking",
+      "rank": "detail",
+      "fill": "surface",
+      "clipTo": "forewing",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [905.31, 356.46],
+          [897.61, 373.25],
+          [874.7, 382.98],
+          [850, 379.94],
+          [837.97, 365.92],
+          [845.67, 349.13],
+          [868.58, 339.4],
+          [893.28, 342.44]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-46, 379.1],
+          [-44.54, 525.5],
+          [-36, 701.49],
+          [-28.01, 870.9],
+          [-19, 1005.97],
+          [-14.55, 1028.99],
+          [-9.61, 1032.61],
+          [0, 1023.07],
+          [9.61, 1032.61],
+          [14.55, 1028.99],
+          [19, 1005.97],
+          [28.01, 870.9],
+          [36, 701.49],
+          [44.54, 525.5],
+          [46, 379.1],
+          [38.47, 349.61],
+          [26.15, 337.94],
+          [0, 337.7],
+          [-26.15, 337.94],
+          [-38.47, 349.61]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-80, 492.54],
+          [-0.6, 498.54],
+          [80, 492.54]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-70, 594.03],
+          [-0.53, 600.03],
+          [70, 594.03]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-60, 695.52],
+          [-0.45, 701.52],
+          [60, 695.52]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-50, 797.01],
+          [-0.37, 803.01],
+          [50, 797.01]
+        ]
+      }
+    },
+    {
+      "id": "abdomen-segment",
+      "rank": "detail",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [-40, 892.54],
+          [-0.3, 898.54],
+          [40, 892.54]
+        ]
+      }
+    },
+    {
+      "id": "thorax",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 8.96],
+          [95.52, 62.69],
+          [131.34, 194.03],
+          [120.41, 269.79],
+          [108.97, 308.62],
+          [95.52, 337.31],
+          [50.93, 374.64],
+          [0, 391.04],
+          [-50.93, 374.64],
+          [-95.52, 337.31],
+          [-120.41, 269.79],
+          [-128.36, 228.9],
+          [-131.34, 194.03],
+          [-95.52, 62.69]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [22.45, 87.5],
+          [11.22, 205.35],
+          [22.45, 317.58]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [56.12, 93.11],
+          [67.34, 205.35],
+          [56.12, 311.97]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "thorax",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [89.79, 109.95],
+          [101.01, 205.35],
+          [84.18, 295.14]
+        ]
+      }
+    },
+    {
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, -32.84],
+          [71.64, -8.96],
+          [89.55, 50.75],
+          [65.54, 71.51],
+          [35.82, 86.57],
+          [0, 92.54],
+          [-35.82, 86.57],
+          [-65.54, 71.51],
+          [-89.55, 50.75],
+          [-71.64, -8.96],
+          [-38.67, -25.34]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [85.31, 34.3],
+          [81.49, 56.51],
+          [64.91, 68.35],
+          [45.28, 62.89],
+          [34.09, 43.32],
+          [37.91, 21.11],
+          [54.49, 9.27],
+          [74.12, 14.73]
+        ],
+        "closed": true
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [41.79, 32.84],
+          [149.25, -50.75],
+          [268.66, -140.3]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [268.66, -140.3],
+          [346.27, -194.03],
+          [405.97, -223.88]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [408.32, -211.4],
+          [436.29, -227.65],
+          [460.39, -249.72],
+          [462.72, -265.69],
+          [447.07, -269.68],
+          [417.44, -255.93],
+          [391.68, -236.36],
+          [388.77, -216.39]
+        ],
+        "closed": true
+      }
+    }
+  ]
+}

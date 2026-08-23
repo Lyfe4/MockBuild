@@ -97,9 +97,10 @@ No `any`. If a type is genuinely unknown, use `unknown` and narrow it.
 | `src/lib/`        | Pure utilities. **No React, no DOM, no imports from `features`** |
 | `src/hooks/`      | Shared React hooks. React, but no feature knowledge              |
 | `src/styles/`     | Tokens, reset, global styles, fonts                              |
-| `src/data/`       | Species records and their plates, typed                          |
+| `src/data/`       | Species records, their landmarks, and the plates built from them |
 | `src/types/`      | Types shared across more than one slice                          |
 | `src/test/`       | Vitest setup and shared test helpers                             |
+| `scripts/`        | Tooling that runs in Node. The plate builder lives here          |
 
 Feature slices do not import from each other. If two need the same thing, it
 moves up into `components`, `lib` or `types`.
@@ -160,8 +161,10 @@ record is written once from published sources, and the plate gets redrawn.
 ```
 src/data/species/
   papilio-machaon.ts             the record — taxonomy, sizes, months, sources
-  papilio-machaon.plate.ts       the drawing — path data and roles
+  papilio-machaon.plate.ts       GENERATED — do not edit
   papilio-machaon.plate.test.ts  validatePlate, plus what is true of this animal
+  landmarks/
+    papilio-machaon.json         the drawing: points measured off the reference
 references/
   papilio-machaon.jpg            the file it was traced from
   SOURCES.md                     its author, publication and licence
@@ -170,12 +173,76 @@ references/
 Then add both to the arrays in `src/data/species/index.ts`. Nothing else
 changes — no component knows what a mandible is.
 
+### The authoring workflow
+
+**`*.plate.ts` is generated.** Edit `landmarks/<slug>.json` and build; a change
+made in the plate file is lost the next time anyone runs the build, and
+`npm run plate:verify` fails the check in the meantime. It runs in
+`npm run check`, before the tests.
+
+**1. Find a public-domain reference.** Wikimedia Commons, filtered to PD — a
+lithograph or an engraving of the whole animal, dorsal, wings spread if it has
+them. A photograph works but gives you a specimen rather than a figure, and the
+plate style is engraving. Check the licence itself, not the thumbnail caption.
+
+**2. Record it in `references/SOURCES.md`** before you draw anything: author,
+publication, year, the file's Commons URL, and the licence in words. Save the
+image as `references/<slug>.jpg`. If the licence forbids redistribution the file
+is gitignored and `SOURCES.md` records the URL instead.
+
+**3. Measure landmarks.** Plate space has the midline at `x = 0`, `y = 0` at the
+head end and `y = 1000` at the tip of the abdomen, so the first two measurements
+you take off the photograph are those two, and every other point is expressed
+against them. Work out the pixels-per-plate-unit once and convert. Measure the
+**right half only**; the renderer supplies the other one.
+
+Reach for the shape that matches what you are measuring:
+
+| Shape     | For                                    | You measure                         |
+| --------- | -------------------------------------- | ----------------------------------- |
+| `curve`   | any traced margin — a wing, an elytron | points along the edge               |
+| `capsule` | a limb, an abdomen                     | the spine, and how thick it is      |
+| `ellipse` | an eye, a spot, a fleck                | the centre and two radii            |
+| `strip`   | a marginal border, a costal wash       | the edge, and how far in it reaches |
+| `fan`     | hatching, striae, veins                | the first stroke and the last       |
+
+`fan` is one entry and many parts, which is the point: sixteen hatching strokes
+measured by hand is sixteen chances to put one a hair out of step.
+
+Prose goes in `doc` (the file's comment) and in a part's `note`, because JSON
+cannot hold a comment and the emitter puts them back.
+
+**4. Build and validate.**
+
+```bash
+npm run plate:build
+```
+
+Then write `<slug>.plate.test.ts`, calling `describePlateContract(PLATE, SPECIES)`
+and adding what is true of this animal alone. `validatePlate` runs inside the
+contract; it must return `[]`.
+
+**5. Check it on the lab sheet.**
+
+```bash
+npm run dev
+```
+
+`/lab/plates` shows every plate at 80, 240 and 600 pixels beside the reference it
+was traced from. A drawing that only holds together at 600 is not finished.
+
+**Curves that do not follow the reference want another landmark, not a lower
+`tension`.** The smoothing is centripetal Catmull-Rom: the curve passes through
+every point it is given, so where it bulges away from the margin the honest fix
+is to measure the place it bulges.
+
 Rules the review will hold you to:
 
 - **Every field in the record is real and sourced.** `sources` carries the links
   it came from. A number nobody published is a number that does not go in.
 - **The plate is traced, not invented.** Proportions come off the reference,
-  measured rather than eyeballed.
+  measured rather than eyeballed — and the landmark file is what that
+  measurement looks like when it is written down.
 - **A licence that forbids redistribution means the file is gitignored** and
   recorded in `SOURCES.md` by URL instead.
 - **Right half only**, `x >= 0`, for anything that comes in a pair. Parts that

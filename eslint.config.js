@@ -101,11 +101,23 @@ export default tseslint.config(
   },
 
   {
-    files: ['src/**/*.test.{ts,tsx}', 'src/test/**/*.{ts,tsx}'],
+    files: ['src/**/*.test.{ts,tsx}', 'src/test/**/*.{ts,tsx}', 'scripts/**/*.test.ts'],
     rules: {
       // Test bodies routinely assert on values the type system cannot narrow.
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+
+  {
+    // The plate builder. Node, not the browser, and it prints to the console
+    // for a living.
+    files: ['scripts/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+    rules: {
+      'no-console': 'off',
     },
   },
 

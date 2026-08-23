@@ -20,7 +20,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "plate:build": "node scripts/plate-builder/build.ts",
+    "plate:verify": "node scripts/plate-builder/build.ts --verify",
+    "check": "npm run lint && npm run typecheck && npm run plate:verify && npm run test && npm run build",
     "prepare": "husky"
   },
   "lint-staged": {

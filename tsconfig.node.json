@@ -11,6 +11,9 @@
 
     "noEmit": true,
     "isolatedModules": true,
+    // The plate builder runs under Node's own type stripping, which resolves
+    // the specifier as written — so its imports carry the `.ts` extension.
+    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
 
@@ -21,5 +24,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "scripts"]
 }
