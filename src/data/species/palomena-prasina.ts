@@ -3,14 +3,13 @@ import type { Species } from '@/types';
 /**
  * *Palomena prasina* — the green shield bug.
  *
- * The first true bug in the collection, and the record where the morphology
- * vocabulary shows its first real seam. `wingCover` offers `elytra`,
- * `membranous`, `scaled` and `absent`, and a hemelytron is none of them: the
- * basal half is hardened like an elytron and the apical half is a membrane, and
- * the animal is named for exactly that. `membranous` is the closer of the two
- * wrong answers, because the membranes are what a reader sees crossed over the
- * end of the abdomen. If a fifth state is ever added, this is the record that
- * wanted it.
+ * The first true bug in the collection, and the record that asked for the fifth
+ * `wingCover` state. A hemelytron is hard at the base and membranous at the tip
+ * — half elytron, half wing — and the animal is named for exactly that, so for
+ * one release this record answered `membranous`, which is the closer of two
+ * wrong answers and still wrong: it filed a shield bug with the hornets on the
+ * character that separates them. `hemelytra` is now a state of its own and this
+ * is the record that carries it.
  */
 export const PALOMENA_PRASINA: Species = {
   id: 'palomena-prasina',
@@ -32,9 +31,8 @@ export const PALOMENA_PRASINA: Species = {
   // wing from April, the new one from August, and both are counted here.
   activeMonths: [4, 5, 6, 7, 8, 9, 10],
   morphology: {
-    // See the note above. A hemelytron is half of each and the schema has
-    // neither state.
-    wingCover: 'membranous',
+    // Hard at the base, membranous at the tip. See the note above.
+    wingCover: 'hemelytra',
     antennae: 'filiform',
     markings: 'none',
     bodyShape: 'oval',

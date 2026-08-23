@@ -75,8 +75,16 @@ export const MONTHS: readonly Month[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
  * The first question an identification key asks, and the one that decides how
  * the plate is built: `elytra` means two hardened cases meeting at a seam,
  * `scaled` means overlapping wings, and the two are drawn nothing alike.
+ *
+ * `hemelytra` is the true bugs' state and was the one this list was missing.
+ * A hemelytron is hard at the base and membranous at the tip — half elytron,
+ * half wing, and the animal is named for exactly that. The green shield bug had
+ * to answer `membranous`, which is the closer of two wrong answers and still
+ * wrong: it put a bug in with the hornets on the character that separates them.
+ * A key asking `elytra` or `membranous` of a shield bug is a key that cannot
+ * reach it.
  */
-export const WING_COVERS = ['elytra', 'membranous', 'scaled', 'absent'] as const;
+export const WING_COVERS = ['elytra', 'hemelytra', 'membranous', 'scaled', 'absent'] as const;
 
 export type WingCover = (typeof WING_COVERS)[number];
 

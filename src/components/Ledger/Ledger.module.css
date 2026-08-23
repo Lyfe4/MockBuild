@@ -19,20 +19,41 @@
 }
 
 @media (min-width: 60rem) {
-  .root {
+  /*
+   * Two columns only when there is a margin to put in the first one. Without
+   * the guard a page that passes none would drop its body into the 15rem
+   * column and read at a third of the width.
+   */
+  .withMargin {
     /* Narrow enough to read as a margin, wide enough for a filter label. */
     grid-template-columns: 15rem minmax(0, 1fr);
     gap: var(--space-2xl);
   }
 
   .margin {
-    /* The annotations stay with the reader as the entry scrolls past. */
+    align-self: start;
+    padding-inline-end: var(--space-lg);
+    border-inline-end: 1px solid var(--color-line);
+  }
+
+  /*
+   * A pinned margin, for a caller whose margin fits in a window.
+   *
+   * The height cap is the last resort rather than the mechanism: a margin
+   * taller than the viewport cannot be pinned to the top of it — the foot ends
+   * up below the fold with no scroll position that reaches it — so `sticky` is
+   * opt-in and the catalogue's filter panel, which is half again the height of
+   * an 800px window, does not take it. Where the cap does bite, on a very short
+   * window, the scrollbar gutter is held open and the thumb is inked in a
+   * seasonal token, so the column visibly scrolls instead of quietly ending.
+   */
+  .marginSticky {
     position: sticky;
     inset-block-start: var(--space-xl);
-    align-self: start;
     max-block-size: calc(100vh - var(--space-2xl) * 2);
-    padding-inline-end: var(--space-lg);
     overflow-y: auto;
-    border-inline-end: 1px solid var(--color-line);
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
   }
 }

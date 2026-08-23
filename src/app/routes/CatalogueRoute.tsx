@@ -3,8 +3,8 @@ import { useSearchParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
 import { catalogueNumberOf, SPECIES } from '@/data';
-import { FilterPanel, SpecimenRow } from '@/features/catalogue';
-import { useDocumentTitle } from '@/hooks';
+import { FilterDisclosure, FilterPanel, SpecimenRow } from '@/features/catalogue';
+import { useDocumentTitle, useMediaQuery } from '@/hooks';
 import {
   clearFilters,
   familiesOf,
@@ -33,8 +33,21 @@ const ALL_FAMILIES = familiesOf(SPECIES);
 /** Sorting by catalogue number needs to know what the numbers are. */
 const OPTIONS = { accessionOf: catalogueNumberOf } as const;
 
+/**
+ * The width at which the ledger grows its margin column. Matches the media
+ * query in `Ledger.module.css`, which is the thing that actually decides it.
+ *
+ * Read in JavaScript because the *markup* differs either side of it, not just
+ * its presentation: above the breakpoint the filters are the margin and are
+ * always open, and below it they are a disclosure inside the body column,
+ * between the heading and the list. Rendering both and hiding one with CSS
+ * would put two search boxes with the same label into the page.
+ */
+const HAS_MARGIN = '(min-width: 60rem)';
+
 export function CatalogueRoute() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const hasMargin = useMediaQuery(HAS_MARGIN);
 
   useDocumentTitle('Catalogue');
 
@@ -57,12 +70,12 @@ export function CatalogueRoute() {
     setSearchParams(params, { replace: true });
   };
 
+  const filters = (
+    <FilterPanel query={query} orders={ORDERS} families={families} onChange={applyQuery} />
+  );
+
   return (
-    <Ledger
-      margin={
-        <FilterPanel query={query} orders={ORDERS} families={families} onChange={applyQuery} />
-      }
-    >
+    <Ledger margin={hasMargin ? filters : null}>
       <div className={styles.header}>
         <h1 className={styles.title} tabIndex={-1}>
           Catalogue
@@ -111,6 +124,16 @@ export function CatalogueRoute() {
           </div>
         </div>
       </div>
+
+      {/*
+        Narrow screens only; above the breakpoint the same panel is the margin.
+        Placed after the heading and before the list, because that is where a
+        reader looks for the controls that narrow it — and because it is what
+        lets the first specimen be on screen when the page opens.
+      */}
+      {!hasMargin && (
+        <FilterDisclosure query={query} orders={ORDERS} families={families} onChange={applyQuery} />
+      )}
 
       {results.length === 0 ? (
         <div className={styles.empty}>

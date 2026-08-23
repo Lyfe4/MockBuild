@@ -9,6 +9,7 @@ export {
 } from './filter';
 export type { AccessionLookup, QueryOptions } from './filter';
 export {
+  activeFilterCount,
   clearFilters,
   EMPTY_QUERY,
   isFiltered,

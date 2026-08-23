@@ -114,16 +114,32 @@ export function toSearchParams(query: CatalogueQuery): URLSearchParams {
   return params;
 }
 
+/**
+ * How many filters are applied, counting each chosen value once.
+ *
+ * Two orders and a season is three, not two facets — because that is what a
+ * reader who ticked three boxes will count. A search term counts as one
+ * however long it is, and the sort order counts as nothing: it changes the
+ * arrangement of the list and not its contents.
+ *
+ * Used on the narrow-screen disclosure button, which is the one place a filter
+ * can be applied and not be on screen. A collapsed panel quietly narrowing the
+ * collection is worse than an open one.
+ */
+export function activeFilterCount(query: CatalogueQuery): number {
+  return (
+    (query.search === '' ? 0 : 1) +
+    query.orders.length +
+    query.families.length +
+    query.markings.length +
+    query.sizes.length +
+    query.seasons.length
+  );
+}
+
 /** Whether anything is narrowing the list. Sort order is not a filter. */
 export function isFiltered(query: CatalogueQuery): boolean {
-  return (
-    query.search !== '' ||
-    query.orders.length > 0 ||
-    query.families.length > 0 ||
-    query.markings.length > 0 ||
-    query.sizes.length > 0 ||
-    query.seasons.length > 0
-  );
+  return activeFilterCount(query) > 0;
 }
 
 /** Everything cleared except the sort, which the clear button must not touch. */

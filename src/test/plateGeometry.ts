@@ -163,6 +163,52 @@ export function capsuleWidth(d: string): number {
   return widest;
 }
 
+/**
+ * The axis of a capsule, base tip to far tip.
+ *
+ * A capsule's ring runs up one side, over the far tip, back down the other side
+ * and over the near one — so a spine of `n` points leaves `2n + 2` anchors and
+ * the two tips are anchor `n` and the last one. Recovered from the outline
+ * rather than read out of the landmark file on purpose: it measures the
+ * *drawing*, which is the thing that can be wrong.
+ */
+export function capsuleAxis(d: string): { from: Point; to: Point } | undefined {
+  const anchors = anchorsOf(d);
+  const first = anchors[0];
+  const last = anchors.at(-1);
+  // The closing anchor repeats the opening one, exactly as in `capsuleWidth`.
+  const ring = first?.x === last?.x && first?.y === last?.y ? anchors.slice(0, -1) : anchors;
+
+  if (ring.length < 6 || ring.length % 2 !== 0) return undefined;
+
+  const from = ring.at(-1);
+  const to = ring[(ring.length - 2) / 2];
+
+  if (from === undefined || to === undefined) return undefined;
+
+  return { from, to };
+}
+
+/**
+ * The angle between two capsules where they meet, in degrees.
+ *
+ * For a joint: an antenna's elbow, a leg's knee. Zero is a straight line
+ * through both, so a bend that has to be *visible* has a number it must clear.
+ * Undefined if either path is not a capsule.
+ */
+export function jointAngle(a: string, b: string): number | undefined {
+  const first = capsuleAxis(a);
+  const second = capsuleAxis(b);
+
+  if (first === undefined || second === undefined) return undefined;
+
+  const heading = ({ from, to }: { from: Point; to: Point }): number =>
+    Math.atan2(to.y - from.y, to.x - from.x);
+  const turn = Math.abs(heading(first) - heading(second)) % (Math.PI * 2);
+
+  return (Math.min(turn, Math.PI * 2 - turn) * 180) / Math.PI;
+}
+
 /** How wide and how tall a set of points reaches. */
 export function extent(points: readonly Point[]): { width: number; height: number } {
   const bounds = boundsOf(points);

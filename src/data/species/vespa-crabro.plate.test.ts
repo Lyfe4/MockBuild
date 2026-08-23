@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { MEMBRANOUS_PART_IDS, REQUIRED_PARTS, type PlatePartId } from '@/lib/plate';
 import { describePlateContract } from '@/test/plateContract';
-import { flattenClosed } from '@/test/plateGeometry';
+import { capsuleWidth, flattenClosed, jointAngle } from '@/test/plateGeometry';
 
 import { VESPA_CRABRO as SPECIES } from './vespa-crabro';
 import { VESPA_CRABRO_PLATE as PLATE } from './vespa-crabro.plate';
@@ -121,8 +121,34 @@ describe('the Vespa crabro plate', () => {
     // The reference caption names the male, and a male hornet's antennae are
     // longer than a worker's. A plate that draws one and labels neither is a
     // plate that cannot be checked.
+    const antennae = PLATE.parts.filter((part) => part.id === 'antenna');
+    const tip = Math.min(...antennae.flatMap((part) => flattenClosed(part.d)).map((p) => p.y));
+
     expect(PLATE.sex).toBe('male');
-    expect(count('antenna')).toBeGreaterThanOrEqual(3);
+    // Reaching well past the front of the head, which is the male's character.
+    expect(tip).toBeLessThan(Math.min(...outlineOf('head').map((point) => point.y)) - 100);
+  });
+
+  it('draws the antenna as two filled segments with the elbow between them', () => {
+    const antennae = PLATE.parts.filter((part) => part.id === 'antenna');
+    const [scape, flagellum] = antennae;
+
+    // A scape and a flagellum, both capsules. It was a scape and two `structure`
+    // strokes: 4.6 units across a frame two thousand wide, a fifth of a pixel at
+    // eighty, so the hornet lost its antennae at the size the contact sheet
+    // judges it at. Fewer paths and heavier ones, which is the trade a thumbnail
+    // wants in both directions.
+    expect(count('antenna')).toBe(2);
+    expect(antennae.every((part) => part.fill === 'pigment-deep')).toBe(true);
+
+    for (const part of antennae) {
+      expect(capsuleWidth(part.d), part.id).toBeGreaterThanOrEqual(8);
+    }
+
+    // Geniculate, and drawn as an angle rather than as a smoothed curve — a
+    // curve through both segments rounds the bend off and the bend is what
+    // says this is a wasp's antenna and not a beetle's.
+    expect(jointAngle(scape?.d ?? '', flagellum?.d ?? '')).toBeGreaterThan(20);
   });
 
   it('gives it three ocelli on the vertex, two mirrored and one on the axis', () => {

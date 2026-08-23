@@ -342,23 +342,26 @@ export const VESPA_CRABRO_PLATE: SpeciesPlate = {
     // A male's antenna: thirteen segments, elbowed, and long enough to reach
     // well past the head. A worker's is shorter by a segment, so this is one of
     // the two places the plate commits to a sex.
+    //
+    // Two filled segments meeting at the bend, not a scape with two hairlines
+    // trailing off it. Those were rank `structure`: 4.6 units across a frame
+    // nearly two thousand wide, which is a fifth of a pixel at eighty — so
+    // the animal lost its antennae at exactly the size the contact sheet
+    // judges it at. A capsule is measured in plate units and cannot.
     {
       id: 'antenna',
-      rank: 'detail',
+      rank: 'structure',
       fill: 'pigment-deep',
-      d: 'M38.01 47.54 C47.52 43.08 59.1 24.36 69.11 12.3 C79.14 0.22 95.43 -15.66 98.15 -24.88 C99.47 -29.39 99.17 -34.44 97.12 -36.15 C95.07 -37.85 90.05 -37.24 85.85 -35.12 C77.34 -30.83 65.54 -11.57 54.89 -0.3 C44.25 10.95 25.84 22.79 21.99 32.46 C19.76 38.06 19.79 45.5 22.46 48.01 C25.13 50.52 32.54 50.11 38.01 47.54 Z',
+      d: 'M45.63 59.81 C53.67 52.6 58.98 32.77 64.56 18.54 C70.27 3.99 80.02 -16.21 79.4 -26.58 C79.06 -32.24 76.55 -38.26 73.42 -39.4 C70.28 -40.54 64.48 -37.52 60.6 -33.42 C53.59 -26.01 49.9 -4.29 43.44 9.46 C37.12 22.89 23.3 37.65 22.37 48.19 C21.77 54.99 24.31 63.69 28.19 65.63 C32.06 67.57 40.51 64.4 45.63 59.81 Z',
     },
+    // The flagellum: one capsule from the elbow to the tip, tapering to about
+    // a third of the scape. Long, because a male hornet's is, and it is the
+    // reason plate space starts at the head end rather than at the topmost ink.
     {
       id: 'antenna',
       rank: 'structure',
-      fill: 'none',
-      d: 'M92 -30 C92 -30 122.92 -61.5 140 -76 C157.53 -90.88 196 -118 196 -118',
-    },
-    {
-      id: 'antenna',
-      rank: 'structure',
-      fill: 'none',
-      d: 'M196 -118 C196 -118 233.77 -140.51 252 -152 C269.75 -163.19 304 -186 304 -186',
+      fill: 'pigment-deep',
+      d: 'M75.41 -21.59 C91.83 -24.72 130.21 -59.77 158.09 -77.12 C185.4 -94.12 215.54 -109.62 240.95 -124.77 C262.97 -137.91 296.2 -154.71 302.01 -162.54 C303.64 -164.74 304.13 -166.86 303.46 -168.01 C302.79 -169.16 300.71 -169.79 297.99 -169.46 C288.33 -168.3 257.67 -147.27 235.05 -135.23 C208.87 -121.29 178.03 -106.82 149.91 -90.88 C121.2 -74.6 74.3 -52.1 64.59 -38.41 C60.95 -33.27 59.79 -27.4 61.59 -24.59 C63.39 -21.79 69.22 -20.41 75.41 -21.59 Z',
     },
   ],
 };

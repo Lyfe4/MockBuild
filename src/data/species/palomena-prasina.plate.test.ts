@@ -107,6 +107,9 @@ describe('the Palomena prasina plate', () => {
   });
 
   it('agrees with the record about a plain green filiform bug', () => {
+    // The drawing has always been a hemelytron — hard at the base, membranous
+    // at the tip — and the record now has a state that says so.
+    expect(SPECIES.morphology.wingCover).toBe('hemelytra');
     expect(SPECIES.morphology.antennae).toBe('filiform');
     expect(SPECIES.morphology.markings).toBe('none');
     expect(SPECIES.morphology.colourFamily).toBe('green');

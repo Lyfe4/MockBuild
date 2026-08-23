@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { boundsOf, parsePathData, pathPoints, type PlatePartId } from '@/lib/plate';
 import { describePlateContract } from '@/test/plateContract';
-import { capsuleWidth, flattenClosed } from '@/test/plateGeometry';
+import { capsuleWidth, flattenClosed, jointAngle } from '@/test/plateGeometry';
 
 import { BOMBUS_TERRESTRIS as SPECIES } from './bombus-terrestris';
 import { BOMBUS_TERRESTRIS_PLATE as PLATE } from './bombus-terrestris.plate';
@@ -104,13 +104,25 @@ describe('the Bombus terrestris plate', () => {
     expect(SPECIES.morphology.bodyShape).toBe('oval');
   });
 
-  it('elbows the antenna, which is the shape that survives to plate size', () => {
+  it('elbows the antenna, in two segments heavy enough to survive eighty pixels', () => {
     const antennae = PLATE.parts.filter((part) => part.id === 'antenna');
+    const [scape, flagellum] = antennae;
 
-    expect(antennae.length).toBeGreaterThanOrEqual(2);
-    // A filled scape and a stroke for the flagellum: twelve segments do not
-    // read at eighty pixels and the bend does.
-    expect(antennae.some((part) => part.fill === 'pigment-deep')).toBe(true);
-    expect(antennae.some((part) => part.fill === 'none')).toBe(true);
+    // Two filled capsules, and no hairline. The flagellum was a `structure`
+    // stroke for one release — 4.6 units across a frame eighteen hundred wide,
+    // which is a quarter of a pixel at eighty — so the bee arrived at thumbnail
+    // size with a scape and nothing on the end of it. A capsule is measured in
+    // plate units and shrinks with the animal instead of with nothing.
+    expect(antennae).toHaveLength(2);
+    expect(antennae.every((part) => part.fill === 'pigment-deep')).toBe(true);
+
+    for (const part of antennae) {
+      expect(capsuleWidth(part.d), part.id).toBeGreaterThanOrEqual(10);
+    }
+
+    // Twelve segments do not read at plate size; the bend does. Drawn as an
+    // angle between two capsules rather than smoothed through one curve,
+    // because a curve through both rounds the elbow away.
+    expect(jointAngle(scape?.d ?? '', flagellum?.d ?? '')).toBeGreaterThan(20);
   });
 });

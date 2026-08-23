@@ -573,34 +573,44 @@
     },
     {
       "note": [
-        "A short, elbowed antenna: a long scape, then a flagellum bent forward",
-        "from it. Twelve segments on a female, thirteen on a male, and neither",
-        "count survives to plate size — the elbow does."
+        "A short, elbowed antenna, drawn as two filled segments that meet at the",
+        "bend: a long scape off the face, and a flagellum kicked outward from it.",
+        "Twelve segments on a female and thirteen on a male, and neither count",
+        "survives to plate size — the elbow does, so the elbow is the drawing.",
+        "The flagellum was a single hairline for one release and disappeared at",
+        "eighty pixels: a stroke is one weight whatever the frame, and a capsule",
+        "carries its width in plate units and scales with the animal."
       ],
       "id": "antenna",
-      "rank": "detail",
+      "rank": "structure",
       "fill": "pigment-deep",
       "shape": {
         "kind": "capsule",
         "spine": [
-          [64, 30],
-          [86, -8],
-          [104, -46]
+          [52, 38],
+          [80, -4],
+          [100, -44]
         ],
-        "width": [22, 19, 16]
+        "width": [26, 23, 20]
       }
     },
     {
+      "note": [
+        "The flagellum, from the elbow outward. Its own segment rather than a",
+        "continuation of the scape, because a smoothed curve through both rounds",
+        "the bend off and the bend is the character."
+      ],
       "id": "antenna",
       "rank": "structure",
-      "fill": "none",
+      "fill": "pigment-deep",
       "shape": {
-        "kind": "curve",
-        "points": [
-          [104, -46],
-          [176, -78],
-          [252, -104]
-        ]
+        "kind": "capsule",
+        "spine": [
+          [100, -44],
+          [170, -72],
+          [244, -94]
+        ],
+        "width": [20, 15, 10]
       }
     }
   ]

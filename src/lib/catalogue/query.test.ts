@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  activeFilterCount,
   clearFilters,
   EMPTY_QUERY,
   isFiltered,
@@ -156,6 +157,46 @@ describe('isFiltered', () => {
     ['seasons', { seasons: ['winter'] as const }],
   ])('is true when %s is set', (_name, patch) => {
     expect(isFiltered({ ...EMPTY_QUERY, ...patch })).toBe(true);
+  });
+});
+
+describe('activeFilterCount', () => {
+  it('is zero for an empty query', () => {
+    expect(activeFilterCount(EMPTY_QUERY)).toBe(0);
+  });
+
+  it('counts each chosen value, not each facet', () => {
+    const count = activeFilterCount({
+      ...EMPTY_QUERY,
+      orders: ['Coleoptera', 'Odonata'],
+      seasons: ['winter'],
+    });
+
+    // Two orders and a season is three, because that is what a reader who
+    // ticked three boxes will count.
+    expect(count).toBe(3);
+  });
+
+  it('counts a search term once, however long it is', () => {
+    expect(activeFilterCount({ ...EMPTY_QUERY, search: 'a' })).toBe(1);
+    expect(activeFilterCount({ ...EMPTY_QUERY, search: 'stag beetle' })).toBe(1);
+  });
+
+  it('does not count the sort order, which is not a filter', () => {
+    expect(activeFilterCount({ ...EMPTY_QUERY, sort: 'size' })).toBe(0);
+  });
+
+  it('agrees with isFiltered, which is the same question asked coarsely', () => {
+    const queries = [
+      EMPTY_QUERY,
+      { ...EMPTY_QUERY, search: 'stag' },
+      { ...EMPTY_QUERY, sizes: ['large'] as const },
+      { ...EMPTY_QUERY, sort: 'name' as const },
+    ];
+
+    for (const query of queries) {
+      expect(isFiltered(query), JSON.stringify(query)).toBe(activeFilterCount(query) > 0);
+    }
   });
 });
 

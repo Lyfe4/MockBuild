@@ -214,6 +214,23 @@ normalised so two equivalent links parse identically, and the search term is
 trimmed and capped. `filter.ts` is pure functions over an array — every facet is
 an AND against the others and an OR within itself.
 
+**The filter panel has two presentations, one at a time.** Above the ledger's
+breakpoint it is the margin column, always open. Below it, it is a disclosure
+between the heading and the list, with the count of what is applied on the
+button — a phone opened the catalogue on nine hundred pixels of form otherwise,
+with the collection below the fold. The _markup_ differs, not just the CSS, so
+`CatalogueRoute` reads the breakpoint through `useMediaQuery`; rendering both
+and hiding one would put two search boxes with the same label into the page.
+
+**The catalogue's margin is deliberately not sticky.** `Ledger` takes `sticky`
+as a prop because only the caller knows how tall its margin is: a sticky element
+taller than the viewport pins its top and leaves its foot below the fold, where
+no scroll position reaches it, and the filter panel is half again the height of
+an 800px window. Capping it with `overflow-y: auto` only traded an unreachable
+foot for a scroll container with nothing on screen to say it scrolled. The
+specimen sheet, whose margin is one plate and a caption, is what passes
+`sticky`.
+
 **The season filter needs saying out loud wherever it appears.** `seasonOfMonth`
 maps a month to Thornfield's _southern_ season, and every record's months were
 observed in the northern hemisphere. A European stag beetle flying in May to

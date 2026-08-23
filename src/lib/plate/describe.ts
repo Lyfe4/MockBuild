@@ -53,6 +53,9 @@ const ANTENNA_WORDS: Record<AntennaForm, string> = {
  */
 const WING_COVER_WORDS: Record<WingCover, string> = {
   elytra: 'hardened wing cases',
+  // Said as what a listener would see rather than as the character state: the
+  // hard basal half is the shield and the clear tips cross over behind it.
+  hemelytra: 'half-hardened wing cases with clear tips',
   membranous: 'clear wings',
   scaled: 'scaled wings',
   absent: 'no wings',

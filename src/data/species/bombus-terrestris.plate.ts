@@ -344,20 +344,27 @@ export const BOMBUS_TERRESTRIS_PLATE: SpeciesPlate = {
       fill: 'ink',
       d: 'M103.61 63.74 C99.7 82.11 88.65 95.32 78.93 93.26 C69.21 91.19 64.49 74.62 68.39 56.26 C72.3 37.89 83.35 24.68 93.07 26.74 C102.79 28.81 107.51 45.38 103.61 63.74 Z',
     },
-    // A short, elbowed antenna: a long scape, then a flagellum bent forward
-    // from it. Twelve segments on a female, thirteen on a male, and neither
-    // count survives to plate size — the elbow does.
-    {
-      id: 'antenna',
-      rank: 'detail',
-      fill: 'pigment-deep',
-      d: 'M73.52 35.51 C81.42 29.25 88.07 9.57 94.41 -3.58 C100.62 -16.46 110.94 -33.61 111.23 -42.58 C111.38 -47.2 109.83 -52.09 107.42 -53.23 C105.01 -54.37 100.25 -52.46 96.77 -49.42 C90.1 -43.6 84.55 -24.6 77.59 -12.42 C70.48 0.04 55.96 14.64 54.48 24.49 C53.59 30.38 55.32 37.68 58.49 39.52 C61.66 41.36 68.84 39.22 73.52 35.51 Z',
-    },
+    // A short, elbowed antenna, drawn as two filled segments that meet at the
+    // bend: a long scape off the face, and a flagellum kicked outward from it.
+    // Twelve segments on a female and thirteen on a male, and neither count
+    // survives to plate size — the elbow does, so the elbow is the drawing.
+    // The flagellum was a single hairline for one release and disappeared at
+    // eighty pixels: a stroke is one weight whatever the frame, and a capsule
+    // carries its width in plate units and scales with the animal.
     {
       id: 'antenna',
       rank: 'structure',
-      fill: 'none',
-      d: 'M104 -46 C104 -46 151.46 -68.37 176 -78 C200.78 -87.72 252 -104 252 -104',
+      fill: 'pigment-deep',
+      d: 'M62.82 45.21 C72.48 38.53 82.1 16.32 89.95 1.77 C97.34 -11.93 108.39 -29.45 108.94 -39.53 C109.25 -45.15 107.45 -51.45 104.47 -52.94 C101.49 -54.43 95.35 -52.07 91.06 -48.47 C83.49 -42.13 78.05 -22.58 70.05 -9.77 C61.55 3.85 43.59 19.53 41.18 30.79 C39.72 37.63 41.18 46.41 44.79 48.82 C48.39 51.22 57.03 49.21 62.82 45.21 Z',
+    },
+    // The flagellum, from the elbow outward. Its own segment rather than a
+    // continuation of the scape, because a smoothed curve through both rounds
+    // the bend off and the bend is the character.
+    {
+      id: 'antenna',
+      rank: 'structure',
+      fill: 'pigment-deep',
+      d: 'M103.71 -34.72 C117.61 -34.78 148.99 -55.88 172.46 -64.92 C196.22 -74.06 236.93 -82.08 245.42 -89.21 C248 -91.37 249.27 -93.83 248.79 -95.42 C248.32 -97.02 245.92 -98.39 242.58 -98.79 C231.5 -100.13 192.06 -86.73 167.54 -79.08 C143.3 -71.53 106.45 -62.88 96.29 -53.28 C91.89 -49.14 89.48 -43.38 90.72 -40.29 C91.95 -37.19 97.68 -34.69 103.71 -34.72 Z',
     },
   ],
 };

@@ -1,0 +1,58 @@
+/**
+ * The narrow-screen filter disclosure: a button, and the panel it folds away.
+ *
+ * Sits between the catalogue heading and the list, which is where a reader
+ * looks for the controls that narrow it. Nothing here has a desktop rule,
+ * because above the ledger's breakpoint the component is not rendered.
+ */
+
+.root {
+  margin-block-end: var(--space-lg);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  /* 44px tap target, the same floor every control in the panel keeps. */
+  min-block-size: 2.75rem;
+  inline-size: 100%;
+  padding-inline: var(--space-md);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.toggle:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+.toggle:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* The count of what is applied. Inked, because a filtered list has to say so. */
+.count {
+  color: var(--color-accent-strong);
+  font-weight: var(--font-weight-medium);
+}
+
+.panel {
+  padding-block-start: var(--space-lg);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+/* The panel takes focus when it opens; show that only for keyboard users. */
+.panel:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}

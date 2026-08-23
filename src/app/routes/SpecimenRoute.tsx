@@ -155,6 +155,10 @@ export function SpecimenRoute() {
 
   return (
     <Ledger
+      // The plate and its caption are shorter than any window, so this margin
+      // is one that can honestly be pinned. The catalogue's filter panel is
+      // not, and does not ask for it. See `LedgerProps.sticky`.
+      sticky
       margin={
         <figure className={styles.plate}>
           {plate !== undefined && <SpeciesIllustration species={species} plate={plate} />}

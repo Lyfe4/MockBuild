@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { catalogueNumberOf, SPECIES } from '@/data';
 import { ThemeProvider } from '@/features/theme';
+import { NARROW_VIEWPORT, stubViewportWidth, WIDE_VIEWPORT } from '@/test/matchMedia';
 
 import { CatalogueRoute } from './CatalogueRoute';
 
@@ -15,8 +16,16 @@ import { CatalogueRoute } from './CatalogueRoute';
  * would pass while the real records broke on an accented common name or on a
  * family shared by two orders. Nothing here asserts a hard-coded count, so the
  * file survives the collection growing.
+ *
+ * The viewport is part of the fixture, because the page's *markup* differs
+ * across the ledger's breakpoint: wide, the filters are the margin column and
+ * are always open; narrow, they are a disclosure between the heading and the
+ * list. Everything below defaults to the wide arrangement and the narrow one
+ * has a section of its own.
  */
-function renderCatalogue(route = '/catalogue') {
+function renderCatalogue(route = '/catalogue', width = WIDE_VIEWPORT) {
+  stubViewportWidth(width);
+
   const router = createMemoryRouter([{ path: '*', element: <CatalogueRoute /> }], {
     initialEntries: [route],
   });
@@ -317,6 +326,102 @@ describe('CatalogueRoute', () => {
       // re-synchronised when the query changes from outside, or the input and
       // the results silently disagree.
       expect(search).toHaveValue('');
+    });
+  });
+
+  describe('on a narrow screen', () => {
+    const openFilters = async (user: ReturnType<typeof userEvent.setup>) => {
+      await user.click(screen.getByRole('button', { name: /^Filters/ }));
+    };
+
+    it('folds the whole panel behind one button', () => {
+      renderCatalogue('/catalogue', NARROW_VIEWPORT);
+
+      expect(screen.getByRole('button', { name: 'Filters' })).toHaveAttribute(
+        'aria-expanded',
+        'false',
+      );
+      // Not merely off-screen: `hidden` keeps it out of the accessibility tree,
+      // so a folded panel costs no tab stops and no announcements.
+      expect(screen.queryByRole('searchbox', { name: 'Search' })).toBeNull();
+      expect(screen.queryByRole('checkbox')).toBeNull();
+    });
+
+    it('still shows the collection, which is what the fold is for', () => {
+      renderCatalogue('/catalogue', NARROW_VIEWPORT);
+
+      // The panel used to sit between the heading and the list, so a phone
+      // opened the catalogue on a page of form controls.
+      expect(rows()).toHaveLength(SPECIES.length);
+    });
+
+    it('counts what is applied, so a collapsed panel cannot filter in silence', () => {
+      renderCatalogue('/catalogue?order=Coleoptera&markings=spots&q=beetle', NARROW_VIEWPORT);
+
+      // Three chosen values, not two facets: it is what a reader who ticked
+      // three boxes will count.
+      const toggle = screen.getByRole('button', { name: /^Filters/ });
+
+      expect(toggle).toHaveTextContent('Filters · 3');
+      // "Filters 3" would announce as three of something unnamed.
+      expect(toggle).toHaveAccessibleName('Filters, 3 applied');
+    });
+
+    it('opens the panel and moves focus into it', async () => {
+      const user = userEvent.setup();
+
+      renderCatalogue('/catalogue', NARROW_VIEWPORT);
+      await openFilters(user);
+
+      const toggle = screen.getByRole('button', { name: /^Filters/ });
+      const panel = screen.getByRole('group', { name: 'Filters' });
+
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      expect(toggle).toHaveAttribute('aria-controls', panel.id);
+      expect(screen.getByLabelText('Search')).toBeInTheDocument();
+      // The panel itself rather than the search box: focusing a text input
+      // raises the on-screen keyboard over the facets it was opened to show.
+      expect(panel).toHaveFocus();
+    });
+
+    it('closes on Escape and hands focus back to the button', async () => {
+      const user = userEvent.setup();
+
+      renderCatalogue('/catalogue', NARROW_VIEWPORT);
+      await openFilters(user);
+      await user.keyboard('{Escape}');
+
+      const toggle = screen.getByRole('button', { name: /^Filters/ });
+
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(toggle).toHaveFocus();
+      expect(screen.queryByRole('searchbox', { name: 'Search' })).toBeNull();
+    });
+
+    it('stays open while filters are applied', async () => {
+      const user = userEvent.setup();
+      const order = SPECIES[0]!.taxonomy.order;
+
+      renderCatalogue('/catalogue', NARROW_VIEWPORT);
+      await openFilters(user);
+      await user.click(screen.getByRole('checkbox', { name: order }));
+
+      // Ticking one box and having the panel shut is the fastest way to make a
+      // reader give up on the second.
+      expect(screen.getByRole('button', { name: /^Filters/ })).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
+      expect(screen.getByRole('checkbox', { name: order })).toBeChecked();
+    });
+
+    it('has no disclosure at all above the breakpoint', () => {
+      renderCatalogue();
+
+      // Wide, the panel is the margin: open, always, with no button in front of
+      // it and no JavaScript involved in showing it.
+      expect(screen.queryByRole('button', { name: /^Filters/ })).toBeNull();
+      expect(screen.getByLabelText('Search')).toBeInTheDocument();
     });
   });
 

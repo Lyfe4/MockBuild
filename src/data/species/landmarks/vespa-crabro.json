@@ -668,45 +668,45 @@
       "note": [
         "A male's antenna: thirteen segments, elbowed, and long enough to reach",
         "well past the head. A worker's is shorter by a segment, so this is one of",
-        "the two places the plate commits to a sex."
+        "the two places the plate commits to a sex.",
+        "",
+        "Two filled segments meeting at the bend, not a scape with two hairlines",
+        "trailing off it. Those were rank `structure`: 4.6 units across a frame",
+        "nearly two thousand wide, which is a fifth of a pixel at eighty — so",
+        "the animal lost its antennae at exactly the size the contact sheet",
+        "judges it at. A capsule is measured in plate units and cannot."
       ],
       "id": "antenna",
-      "rank": "detail",
+      "rank": "structure",
       "fill": "pigment-deep",
       "shape": {
         "kind": "capsule",
         "spine": [
-          [30, 40],
-          [62, 6],
-          [92, -30]
+          [34, 54],
+          [54, 14],
+          [70, -30]
         ],
-        "width": [22, 19, 16]
+        "width": [26, 23, 20]
       }
     },
     {
+      "note": [
+        "The flagellum: one capsule from the elbow to the tip, tapering to about",
+        "a third of the scape. Long, because a male hornet's is, and it is the",
+        "reason plate space starts at the head end rather than at the topmost ink."
+      ],
       "id": "antenna",
       "rank": "structure",
-      "fill": "none",
+      "fill": "pigment-deep",
       "shape": {
-        "kind": "curve",
-        "points": [
-          [92, -30],
-          [140, -76],
-          [196, -118]
-        ]
-      }
-    },
-    {
-      "id": "antenna",
-      "rank": "structure",
-      "fill": "none",
-      "shape": {
-        "kind": "curve",
-        "points": [
-          [196, -118],
-          [252, -152],
-          [304, -186]
-        ]
+        "kind": "capsule",
+        "spine": [
+          [70, -30],
+          [154, -84],
+          [238, -130],
+          [300, -166]
+        ],
+        "width": [20, 16, 12, 8]
       }
     }
   ]
