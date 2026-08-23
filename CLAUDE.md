@@ -249,23 +249,37 @@ keyable the moment its record exists, and no branch mentions an animal.
   "What do the antennae look like?" and offers "Ending in a stack of flat
   plates". Labels are `Record<Union, string>`, so a new character state fails
   the build here until somebody writes words a visitor could act on.
-- **Information gain, with its bias named.** Gain favours wide questions, so the
-  current key opens on colour with seven answers rather than on a two-way split.
-  That is the price of the shortest key; gain _ratio_ would trade depth for
-  narrower screens and is a change to one function.
+- **Information gain, weighted, and colour held back.** Raw gain favours
+  breadth, colour has the most states, and the first key therefore opened by
+  asking a reader to pick a colour out of seven and keyed out seven of eight
+  species on that one screen. Two questions, and it read as a menu rather than
+  a key. So `TRAIT_PRIORITY` weights gain — structure ahead of surface, wing
+  cover first, colour at a fifth — and `LAST_RESORT` is a separate hard rule
+  that will not ask a colour question above `LAST_RESORT_DEPTH` unless nothing
+  else separates anything. Two mechanisms because a weight is a ratio and
+  cannot promise "not before question three"; the rule can. Gain _ratio_ was
+  the alternative and fixes only the breadth half.
 - **Ties break by `KEY_TRAITS` order**, which is the whole determinism
   guarantee: the same records give the same tree, which is what lets a key in
   progress live in a URL.
 - **A leaf may hold more than one species.** Two records that answer all six
   questions the same way are a true statement about the archive's characters,
   and the key says so rather than picking a winner.
-- **The URL carries the trait as well as the value** (`?k=a0e3`). Branch indices
-  would be shorter and would silently mean something else the moment the
-  collection changes; carrying the question means a stale link stops where the
-  tree and the link disagree, which is what `advance` does with it.
-- **Depth is pinned by a test that prints it** — two questions for eight
-  species, today. A record that makes the key deeper has to be looked at rather
-  than absorbed.
+- **The URL carries the trait as well as the value**, and carries both as a
+  **hash of their names** — four base-36 characters per answer, `answerCode`.
+  Branch indices would be shorter and would silently mean something else the
+  moment the collection changed; carrying the question means a stale link stops
+  where the tree and the link disagree, which is what `advance` does with it.
+  Positions in the union were the first encoding and were wrong the same way one
+  level down: unions grow in the middle, so inserting a colour renumbered the
+  two after it and every shared link naming one came back naming the other.
+  A name hashes to itself wherever it sits. Four characters is collision
+  headroom over a forty-pair vocabulary, and the test asserts every code is
+  distinct.
+- **Depth is pinned by a test that prints it**, under a ceiling of five — three
+  questions for eight species, today. A record that makes the key deeper has to
+  be looked at rather than absorbed, and the same test prints the opening
+  question, which must not be colour.
 
 `/key` is the page, and it is one route for the intro, every question and every
 leaf, because the answers live in the query string rather than the path.

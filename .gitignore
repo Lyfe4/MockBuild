@@ -46,4 +46,9 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Screenshots taken while working on a route. Local only, and PNGs only: the
+# repository used to carry two self-contained HTML captures of whole pages under
+# docs/, which went stale the first time a stylesheet changed and were two
+# megabytes of machine-written markup nobody could review.
 captures/

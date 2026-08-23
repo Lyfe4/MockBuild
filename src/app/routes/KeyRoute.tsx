@@ -22,9 +22,10 @@ import styles from './KeyRoute.module.css';
  * ## The state is the URL
  *
  * Same reasoning as the catalogue's filters, and one more: a key in progress is
- * the interesting thing to send somebody. `?k=a0e3` is two answers, and every
- * answer is a **push**, so the browser's back button walks back up the key
- * without this page doing anything to arrange it.
+ * the interesting thing to send somebody. `?k=4lpc1ipc` is two answers — hard
+ * wing cases, almost circular — and every answer is a **push**, so the
+ * browser's back button walks back up the key without this page doing anything
+ * to arrange it.
  *
  * The parameter's *absence* is the intro screen and its presence — even empty —
  * is the key itself, which is why starting navigates to `?k=`. That is one more

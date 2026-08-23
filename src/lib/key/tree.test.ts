@@ -4,7 +4,15 @@ import { SPECIES } from '@/data';
 import type { Species } from '@/types';
 
 import { KEY_TRAITS, type KeyTraitId } from './traits';
-import { advance, buildKey, keyDepth, type KeyNode } from './tree';
+import {
+  advance,
+  buildKey,
+  keyDepth,
+  LAST_RESORT,
+  LAST_RESORT_DEPTH,
+  TRAIT_PRIORITY,
+  type KeyNode,
+} from './tree';
 
 /**
  * The key, checked against the real collection and against fixtures.
@@ -14,9 +22,12 @@ import { advance, buildKey, keyDepth, type KeyNode } from './tree';
  * Fixtures for the cases the archive does not happen to contain today: two
  * species that cannot be told apart, and a ninth species arriving.
  *
- * Nothing here asserts which question comes first. That is a consequence of the
- * records and it will change when they do; pinning it would make adding a
- * species a test failure rather than a new leaf.
+ * Nothing here pins *which* trait opens the key — that is a consequence of the
+ * records and will change when they do. What it pins is the *kind* of question:
+ * the key opens on something structural, and colour is not asked until the
+ * third question unless it is the only thing that separates anything. Those are
+ * promises the selection rule makes whatever the collection holds, and they are
+ * the ones a reader would notice being broken.
  */
 
 function species(overrides: Partial<Species> & Pick<Species, 'id'>): Species {
@@ -48,6 +59,9 @@ function species(overrides: Partial<Species> & Pick<Species, 'id'>): Species {
     ...overrides,
   };
 }
+
+/** The fixture's own characters, for a variant that changes exactly one. */
+const base = species({ id: 'base' });
 
 /** Every leaf of a tree, with the questions it took to reach each one. */
 function leaves(
@@ -84,7 +98,7 @@ describe('buildKey', () => {
     }
   });
 
-  it('keys out the whole collection in two questions at most', () => {
+  it('keys out the whole collection in a handful of questions', () => {
     const depth = keyDepth(TREE);
 
     // Printed as well as asserted: the number is the whole usability question,
@@ -95,11 +109,71 @@ describe('buildKey', () => {
         `${String(leaves(TREE).length)} leaves`,
     );
 
-    // Two, today: colour separates seven of the eight on its own, and the stag
-    // beetle and the southern hawker — both dark brown — are told apart on the
-    // second. Asserted exactly rather than as a ceiling, so a record that makes
-    // the key deeper has to be looked at rather than absorbed.
-    expect(depth).toBe(2);
+    // A ceiling first, because it is the number that decides whether the key is
+    // usable: nobody answers eight questions about a beetle. Six traits could in
+    // principle key out sixty-four species, and if the tree ever needs more than
+    // five of them for what the archive holds, the characters are the problem.
+    expect(depth).toBeLessThanOrEqual(5);
+
+    // Then exactly, so a record that makes the key deeper has to be looked at
+    // rather than absorbed. Three, today: the wing cases split the collection
+    // four ways, shape splits the beetles and the membranous-winged, and only
+    // the hornet and the southern hawker need a third question.
+    expect(depth).toBe(3);
+  });
+
+  it('opens on a structural character, not on colour', () => {
+    expect(TREE.kind).toBe('question');
+
+    const opening = TREE.kind === 'question' ? TREE.trait.id : undefined;
+
+    // The whole reason the selection rule is weighted. Gain on its own opened
+    // the key on colour with seven answers, keyed out seven of the eight species
+    // on that one screen, and read as a colour menu rather than as a key.
+    console.log(`first question: ${String(opening)}`);
+    expect(LAST_RESORT).not.toContain(opening);
+  });
+
+  it('does not ask about colour early unless colour is all there is', () => {
+    // The guarantee, checked as a guarantee rather than against a fixture that
+    // happens to show it: wherever a last-resort trait is asked above
+    // LAST_RESORT_DEPTH, nothing else on offer separated anything at all.
+    const walk = (node: KeyNode, path: readonly KeyTraitId[]): void => {
+      if (node.kind === 'leaf') return;
+
+      if (path.length < LAST_RESORT_DEPTH && LAST_RESORT.includes(node.trait.id)) {
+        const others = KEY_TRAITS.filter(
+          (trait) => !path.includes(trait.id) && trait.id !== node.trait.id,
+        );
+        const separates = others.filter(
+          (trait) => new Set(node.species.map((one) => one.morphology[trait.id])).size > 1,
+        );
+
+        expect(
+          separates.map((trait) => trait.id),
+          `at ${path.join(' → ')}`,
+        ).toStrictEqual([]);
+      }
+
+      for (const branch of node.branches) walk(branch.node, [...path, node.trait.id]);
+    };
+
+    walk(TREE, []);
+  });
+
+  it('asks about colour when colour is the only difference', () => {
+    // The escape clause, and the reason the rule is a deferral rather than a
+    // ban. Two records that differ only in colour do differ, and a key that
+    // refused to say so would hand back a leaf holding both — which would be
+    // false about the archive rather than cautious about it.
+    const green = species({ id: 'green-one', morphology: { ...base.morphology } });
+    const red = species({
+      id: 'red-one',
+      morphology: { ...base.morphology, colourFamily: 'red' },
+    });
+    const tree = buildKey([green, red]);
+
+    expect(tree.kind === 'question' && tree.trait.id).toBe('colourFamily');
   });
 
   it('never asks a question with only one answer left', () => {
@@ -145,18 +219,42 @@ describe('buildKey', () => {
     expect(shapeOf(buildKey(SPECIES))).toBe(shapeOf(buildKey(SPECIES)));
   });
 
-  it('breaks a tie by trait order, not by chance', () => {
-    // Two species differing in exactly two characters: both questions have the
-    // same information gain, and the earlier trait in KEY_TRAITS wins.
+  it('prefers the surer character when two separate a pair equally well', () => {
+    // Two species differing in exactly two characters, so both questions carry
+    // the same information. Shape wins over size because shape is the one a
+    // reader with the animal in front of them can answer without a ruler, which
+    // is what TRAIT_PRIORITY encodes.
     const a = species({ id: 'a' });
     const b = species({
       id: 'b',
-      morphology: { ...a.morphology, markings: 'spots', sizeClass: 'small' },
+      morphology: { ...a.morphology, bodyShape: 'oval', sizeClass: 'small' },
     });
+
+    expect(TRAIT_PRIORITY.bodyShape).toBeGreaterThan(TRAIT_PRIORITY.sizeClass);
+
     const tree = buildKey([a, b]);
 
     expect(tree.kind).toBe('question');
-    expect(tree.kind === 'question' && tree.trait.id).toBe('markings');
+    expect(tree.kind === 'question' && tree.trait.id).toBe('bodyShape');
+  });
+
+  it('still asks the weaker character when it separates much better', () => {
+    // A priority is a thumb on the scale, not a sort order. Size separates all
+    // four of these on its own; the wing cases split one off from three, and
+    // being the most trustworthy character does not make that worth more.
+    const four = (['tiny', 'small', 'medium', 'large'] as const).map((sizeClass, index) =>
+      species({
+        id: `sized-${String(index)}`,
+        morphology: {
+          ...base.morphology,
+          sizeClass,
+          ...(index === 0 ? { wingCover: 'absent' as const } : {}),
+        },
+      }),
+    );
+    const tree = buildKey(four);
+
+    expect(tree.kind === 'question' && tree.trait.id).toBe('sizeClass');
   });
 
   it('lists both species in one leaf when they answer everything the same', () => {

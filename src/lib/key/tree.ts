@@ -1,7 +1,7 @@
 import type { Species } from '@/types';
 
 import type { KeyAnswer } from './answers';
-import { KEY_TRAITS, traitValue, type KeyOption, type KeyTrait } from './traits';
+import { KEY_TRAITS, traitValue, type KeyOption, type KeyTrait, type KeyTraitId } from './traits';
 
 /**
  * Building a dichotomous key out of the records, rather than writing one.
@@ -22,13 +22,23 @@ import { KEY_TRAITS, traitValue, type KeyOption, type KeyTrait } from './traits'
  * into two of four, and a question every remaining species answers the same way
  * is worth nothing and is not asked.
  *
- * It has a known bias, and it is worth naming rather than working around: gain
- * favours questions with many answers, so a key built this way tends to open
- * with a wide question — colour, for the current collection — rather than the
- * two-way split the word "dichotomous" suggests. That is the honest consequence
- * of asking for the shortest key. Gain *ratio*, which penalises breadth, would
- * trade a shorter key for narrower screens, and if that is ever wanted it is a
- * change to `informationGain` and to nothing else.
+ * Gain on its own is not enough, and the first version of this file shipped
+ * with the reason: gain favours breadth, colour has more states than anything
+ * else, and the key therefore opened by asking a reader to pick their animal's
+ * colour out of seven and then keyed most of them out in one more question. Two
+ * questions is a wonderfully short key and it did not read as a key at all — it
+ * read as a colour menu, which is the one thing an identification key must not
+ * be. Colour is also the character a reader is most likely to get wrong: a rose
+ * chafer is green, bronze or coppery depending on the beetle and the light, and
+ * the animal's *shape* is not a matter of opinion.
+ *
+ * So gain is weighted by `TRAIT_PRIORITY` — structure ahead of surface — and
+ * colour is held back by `LAST_RESORT` until the key genuinely needs it. See
+ * both for what each one is doing and why they are two mechanisms rather than
+ * one. Gain *ratio* was the other candidate and it fixes only half of this: it
+ * would stop colour winning on breadth alone, and would still let it win on a
+ * node where it happens to separate cleanly, which is exactly the first screen
+ * the old key produced.
  *
  * Ties go to the earliest trait in `KEY_TRAITS`. That is the whole of the
  * determinism guarantee: the same records in the same order always produce the
@@ -124,32 +134,130 @@ function informationGain(species: readonly Species[], trait: KeyTrait): number {
   return Math.log2(total) - after;
 }
 
-/** The best question to ask, or nothing when no question separates anything. */
+/**
+ * What a trait's gain is worth, relative to the others.
+ *
+ * A multiplier on information gain, not a sort order: two questions that
+ * separate the same species equally well should be decided by which one a
+ * visitor can answer more reliably, and a question that separates *much* better
+ * should still win. So this is a thumb on the scale rather than a veto.
+ *
+ * Structure first, in the order a person actually looks at an animal. What
+ * covers the back is the character that separates the orders and the one nobody
+ * mistakes — hard cases, scaled wings and clear membrane are not a judgement
+ * call. Shape and antennae come next because they are properties of the
+ * silhouette. Markings and size are further down: a marking can be worn off a
+ * specimen, and size needs a comparison a reader in a field does not have.
+ *
+ * Colour is last and is barely on the scale, because it is the character most
+ * likely to be answered wrongly and the one most likely to change under a
+ * different light. It also has ten states, which gain rewards on breadth alone;
+ * a fifth of the credit is roughly what it takes to stop that. It is held back
+ * further by `LAST_RESORT`, and the two do different jobs — see there.
+ *
+ * Written as a `Record<KeyTraitId, number>` so a new trait fails the build here
+ * until somebody has decided how much it is worth. A default would quietly make
+ * that decision as "as good as the wing cases".
+ */
+export const TRAIT_PRIORITY: Record<KeyTraitId, number> = {
+  wingCover: 1,
+  bodyShape: 0.92,
+  antennae: 0.84,
+  markings: 0.72,
+  sizeClass: 0.6,
+  colourFamily: 0.2,
+};
+
+/**
+ * Traits the key will not ask early, however well they would separate.
+ *
+ * `TRAIT_PRIORITY` alone cannot make this promise. A weight is a ratio, and
+ * there is always some node where colour separates six species cleanly and
+ * every structural character separates two — at which point a fifth of a large
+ * number beats all of a small one and the reader is asked their animal's colour
+ * on the second screen. That is the behaviour the weights were introduced to
+ * remove, so it is removed here instead, as a rule rather than a coefficient:
+ * below `LAST_RESORT_DEPTH`, a last-resort trait is considered only when no
+ * other trait separates anything at all.
+ *
+ * The escape clause matters as much as the rule. Two species that differ *only*
+ * in colour have to be told apart on colour, and a key that refused would
+ * either loop or hand back a leaf holding both — a worse answer, and a false
+ * one, because the records do distinguish them.
+ */
+export const LAST_RESORT: readonly KeyTraitId[] = ['colourFamily'];
+
+/**
+ * The first depth at which a last-resort trait may be asked by preference.
+ *
+ * Zero-based, so 2 means "not the first question and not the second, but the
+ * third is allowed". Chosen rather than derived: two structural questions is
+ * enough for the key to read as a key, and holding colour back further starts
+ * costing depth for nothing — a reader would answer four questions about shape
+ * to avoid one about colour.
+ */
+export const LAST_RESORT_DEPTH = 2;
+
+const isLastResort = (trait: KeyTrait): boolean => LAST_RESORT.includes(trait.id);
+
+/**
+ * The best question to ask, or nothing when no question separates anything.
+ *
+ * Two passes rather than one weighted comparison over everything: the
+ * structural traits are asked first, and the last-resort ones only get a look in
+ * when the first pass came back empty or the walk is already deep enough. See
+ * `LAST_RESORT` for why that is a rule and not a bigger penalty.
+ */
 function chooseTrait(
   species: readonly Species[],
   available: readonly KeyTrait[],
+  depth: number,
 ): KeyTrait | undefined {
-  let best: KeyTrait | undefined;
-  let bestGain = 0;
+  const structural = available.filter((trait) => !isLastResort(trait));
+  const early = depth < LAST_RESORT_DEPTH;
+  const preferred = best(species, early ? structural : available);
 
-  for (const trait of available) {
+  // Deep enough to ask anything, or something structural still separates them.
+  if (!early || preferred !== undefined) return preferred;
+
+  // Nothing structural is left that says anything. Colour it is — this is the
+  // case the rule exists to allow rather than to forbid.
+  return best(species, available);
+}
+
+/** The highest weighted gain among these traits, or nothing if none separates. */
+function best(species: readonly Species[], traits: readonly KeyTrait[]): KeyTrait | undefined {
+  let winner: KeyTrait | undefined;
+  let bestValue = 0;
+
+  for (const trait of traits) {
     const gain = informationGain(species, trait);
+
+    // A question with no gain is not asked whatever it is worth, so the
+    // priority is applied to a gain that is already known to be positive.
+    if (gain <= 0) continue;
+
+    const value = gain * TRAIT_PRIORITY[trait.id];
 
     // Strictly greater, so a tie leaves the earlier trait in place. This is
     // where the tree's determinism comes from.
-    if (gain > bestGain) {
-      best = trait;
-      bestGain = gain;
+    if (value > bestValue) {
+      winner = trait;
+      bestValue = value;
     }
   }
 
-  return best;
+  return winner;
 }
 
-function build(species: readonly Species[], available: readonly KeyTrait[]): KeyNode {
+function build(
+  species: readonly Species[],
+  available: readonly KeyTrait[],
+  depth: number,
+): KeyNode {
   if (species.length <= 1) return { kind: 'leaf', species };
 
-  const trait = chooseTrait(species, available);
+  const trait = chooseTrait(species, available, depth);
 
   // Nothing left to ask that separates them: they share every character the key
   // knows about, and the leaf says so by holding both.
@@ -167,7 +275,7 @@ function build(species: readonly Species[], available: readonly KeyTrait[]): Key
     branches: trait.options.flatMap((option) => {
       const group = groups.get(option.value);
 
-      return group === undefined ? [] : [{ option, node: build(group, rest) }];
+      return group === undefined ? [] : [{ option, node: build(group, rest, depth + 1) }];
     }),
   };
 }
@@ -183,7 +291,7 @@ export function buildKey(
   species: readonly Species[],
   traits: readonly KeyTrait[] = KEY_TRAITS,
 ): KeyNode {
-  return build(species, traits);
+  return build(species, traits, 0);
 }
 
 /**

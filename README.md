@@ -84,10 +84,7 @@ roles; the renderer turns it into SVG and the CSS turns roles into ink.
 
 Adding a species is a record in `src/data/species`, a `*.plate.ts` beside it and
 a test. It touches no component. `/lab/plates` (dev only) shows every plate at
-three sizes with its reference below, and
-[`docs/captures/`](docs/captures/README.md) holds a static, self-contained copy
-of that page and of the catalogue for anyone who does not want to run the dev
-server.
+three sizes with its reference below.
 
 ## Getting started
 
@@ -196,7 +193,6 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
 │   └── dependabot.yml        weekly npm + actions updates
 ├── .husky/                   pre-commit, pre-push
 ├── public/fonts/             self-hosted variable fonts go here
-├── docs/captures/            static, self-contained copies of two routes
 ├── references/               traced references + SOURCES.md. Never shipped.
 ├── index.html                CSP, meta, Open Graph
 ├── eslint.config.js          flat config
