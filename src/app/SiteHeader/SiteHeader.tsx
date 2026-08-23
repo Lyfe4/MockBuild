@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 
+import { INSTITUTION } from '@/data';
 import { SeasonSwitcher } from '@/features/theme';
 
 import { SiteNav } from '../SiteNav';
@@ -24,7 +25,9 @@ export function SiteHeader() {
           <Link to="/" className={styles.wordmarkLink}>
             <span className={styles.wordmark}>Thornfield Entomological Archive</span>
           </Link>
-          <p className={styles.establishment}>Est. 1887 &middot; Armidale</p>
+          <p className={styles.establishment}>
+            Est. {INSTITUTION.founded} &middot; {INSTITUTION.town}
+          </p>
         </div>
 
         <div className={styles.controls}>

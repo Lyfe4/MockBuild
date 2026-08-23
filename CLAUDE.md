@@ -140,10 +140,10 @@ SpeciesPlate    ──┘        │
   measured across at roughly six and four per cent of the width across the wing
   cases. The first pass drew them half again as heavy and the animal looked
   moulded rather than engraved.
-- **`references/`** holds every traced reference, committed, with
-  `references/SOURCES.md` recording author, publication and licence. A reference
-  whose licence forbids redistribution is gitignored and recorded by URL
-  instead. Nothing in `references/` is ever bundled.
+- **`references/`** holds every traced reference, committed. A reference whose
+  licence forbids redistribution is gitignored and recorded by URL instead.
+  Nothing in `references/` is ever bundled. **`references/SOURCES.md` is
+  generated** — see _The source records_ below.
 
 - **The sixteen plates share one test contract.** `src/test/plateContract.ts`
   asks the six things that go wrong on every plate — validator, reference,
@@ -193,6 +193,48 @@ Adding a species is a record in `src/data/species`, a landmark file in
 `src/data/species/landmarks`, a test that calls `describePlateContract`, a
 reference in `references/` with its entry in `SOURCES.md`, and two lines in
 `src/data/species/index.ts`. It touches no component.
+
+## The source records
+
+`src/data/references/sources.ts` is **the single source of truth for
+provenance**, and two things render it: `references/SOURCES.md`, built by
+`npm run sources:build`, and the About page's credits list.
+
+```bash
+npm run sources:build     # src/data/references -> references/SOURCES.md
+npm run sources:verify    # fail if the committed markdown has drifted
+```
+
+`sources:verify` runs inside `npm run check` and in CI, and compares **bytes**,
+exactly like `plate:verify` — same reasoning, same emitter shape, Prettier with
+the project's own config so a generated markdown file passes `format:check`.
+The CI job runs both in one _Verify generated files_ step; it ran neither until
+the credits list started reading the same records as the markdown.
+
+- **Prose about one reference lives in the data module** (`notes`); prose about
+  the folder as a whole lives in the emitter. Same split the plate builder makes
+  between a landmark file's `doc` and its banner.
+- **The emitter hard-wraps prose at 78 columns before Prettier sees it**, because
+  the project's Prettier config sets `proseWrap: preserve` for markdown. Prettier
+  keeps whatever wrapping it is given, so a paragraph stored as one long string
+  would be committed as one 400-character line.
+- **`publicationLine` is composed, not stored.** Stored whole it repeated the
+  work, the figure and the year that are already fields, and a credits list
+  wanting the title alone had to parse it back out.
+- **Each plate keeps its own short `reference` block** — a drawing has to be able
+  to caption itself without loading this module, and the specimen sheet reads it.
+  `sources.test.ts` asserts the two agree on artist, year, licence and source
+  URL. That is the one drift this arrangement can still have, and the only kind
+  it can have quietly.
+- **`Used by` is derived from the slug**, not stored. The hand-written file said
+  `*.plate.ts` for the four entries written before the builder existed and the
+  landmark file for the twelve after it. Both were true when written; neither was
+  checkable.
+- **`src/data/institution.ts`** holds the invented archive's own facts — founding
+  year, town, reading room hours — because the masthead, the colophon and the
+  About page all state them. Three copies of a fictional year is how a fictional
+  institution gets founded twice. Nothing _derived_ from the collection goes
+  there: the About page counts specimens and orders out of `SPECIES`.
 
 ## The lab route
 

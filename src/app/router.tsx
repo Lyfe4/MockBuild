@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router';
 
 import { RootLayout } from './RootLayout';
 import { RouteErrorBoundary } from './RouteErrorBoundary';
+import { AboutRoute } from './routes/AboutRoute';
 import { CalendarRoute } from './routes/CalendarRoute';
 import { CatalogueRoute } from './routes/CatalogueRoute';
 import { KeyRoute } from './routes/KeyRoute';
@@ -67,6 +68,9 @@ export const router = createBrowserRouter([
       // be a link to the chart somebody was looking at.
       { path: 'calendar', element: <CalendarRoute /> },
       { path: 'specimen/:id', element: <SpecimenRoute /> },
+      // The institution's own pages. `/about` is where the fiction is owned up
+      // to in full, which is why the footer's disclaimer links to it.
+      { path: 'about', element: <AboutRoute /> },
       ...devOnlyRoutes,
       // Last: matches anything the routes above did not.
       { path: '*', element: <NotFoundRoute /> },

@@ -1,5 +1,7 @@
 import { Link } from 'react-router';
 
+import { INSTITUTION } from '@/data';
+
 import styles from './SiteFooter.module.css';
 
 /**
@@ -39,8 +41,8 @@ export function SiteFooter() {
           <section className={styles.column}>
             <h2 className={styles.heading}>Visit</h2>
             <ul className={styles.list} role="list">
-              <li>Reading room, Tuesday to Friday</li>
-              <li>10.00 &ndash; 16.00</li>
+              <li>Reading room, {INSTITUTION.readingRoom.days}</li>
+              <li>{INSTITUTION.readingRoom.hours}</li>
               <li>
                 <Link className={styles.link} to="/request">
                   Request material

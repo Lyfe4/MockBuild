@@ -96,20 +96,22 @@ nvm use && npm install && npm run dev
 
 ## Scripts
 
-| Script                  | What it does                                                  |
-| ----------------------- | ------------------------------------------------------------- |
-| `npm run dev`           | Vite dev server with HMR                                      |
-| `npm run build`         | Typecheck, then build to `dist/`                              |
-| `npm run preview`       | Serve the built `dist/` locally                               |
-| `npm run lint`          | ESLint over the whole project                                 |
-| `npm run lint:fix`      | ESLint with `--fix`                                           |
-| `npm run format`        | Prettier, writing changes                                     |
-| `npm run format:check`  | Prettier, failing on unformatted files (what CI runs)         |
-| `npm run typecheck`     | `tsc -b` across both project references                       |
-| `npm run test`          | Vitest, single run                                            |
-| `npm run test:watch`    | Vitest in watch mode                                          |
-| `npm run test:coverage` | Vitest with a V8 coverage report in `coverage/`               |
-| `npm run check`         | lint → typecheck → test → build. Run this before opening a PR |
+| Script                   | What it does                                                   |
+| ------------------------ | -------------------------------------------------------------- |
+| `npm run dev`            | Vite dev server with HMR                                       |
+| `npm run build`          | Typecheck, then build to `dist/`                               |
+| `npm run preview`        | Serve the built `dist/` locally                                |
+| `npm run lint`           | ESLint over the whole project                                  |
+| `npm run lint:fix`       | ESLint with `--fix`                                            |
+| `npm run format`         | Prettier, writing changes                                      |
+| `npm run format:check`   | Prettier, failing on unformatted files (what CI runs)          |
+| `npm run typecheck`      | `tsc -b` across both project references                        |
+| `npm run test`           | Vitest, single run                                             |
+| `npm run test:watch`     | Vitest in watch mode                                           |
+| `npm run test:coverage`  | Vitest with a V8 coverage report in `coverage/`                |
+| `npm run sources:build`  | Rebuild `references/SOURCES.md` from `src/data/references`     |
+| `npm run sources:verify` | Fail if the committed `SOURCES.md` has drifted from it         |
+| `npm run check`          | lint → typecheck → generated files → test → build. Before a PR |
 
 ## Tooling
 
@@ -193,11 +195,14 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
 │   └── dependabot.yml        weekly npm + actions updates
 ├── .husky/                   pre-commit, pre-push
 ├── public/fonts/             self-hosted variable fonts go here
-├── references/               traced references + SOURCES.md. Never shipped.
+├── references/               traced references + generated SOURCES.md. Never shipped.
 ├── index.html                CSP, meta, Open Graph
 ├── eslint.config.js          flat config
 ├── vite.config.ts            build, aliases, Vitest, dev-only CSP relaxation
 ├── tsconfig.json             solution file → app + node projects
+├── scripts/
+│   ├── plate-builder/        landmarks → *.plate.ts
+│   └── sources-builder/      src/data/references → references/SOURCES.md
 └── src/
     ├── app/                  router, providers, root layout, error boundary
     │   └── routes/           route components
@@ -210,11 +215,14 @@ so there was nothing to migrate; keep it in mind when the catalogue gains them.
     │   └── theme/            ThemeProvider, useSeason, SeasonSwitcher
     ├── hooks/                shared React hooks
     ├── lib/                  pure utilities — no React, no DOM
+    │   ├── calendar/         months, runs, row order for the phenology chart
     │   ├── catalogue/        URL parsing, filtering, sorting
-    │   ├── plate/            the plate schema, parser, validator, fit
-    │   └── random/           seeded PRNG
+    │   ├── key/              the derived identification key
+    │   └── plate/            the plate schema, parser, validator, fit
     ├── styles/               index · tokens · reset · global · fonts
     ├── data/
+    │   ├── institution.ts    the invented archive's own facts
+    │   ├── references/       reference provenance — SOURCES.md is built from it
     │   └── species/          one record, one plate and one test per species
     ├── types/                shared types
     ├── test/                 Vitest setup, the plate test contract, geometry

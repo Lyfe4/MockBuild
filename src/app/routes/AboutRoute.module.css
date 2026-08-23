@@ -1,0 +1,188 @@
+/**
+ * About the collection: a reading page, so the body column is prose measure and
+ * the margin is the label voice the rest of the archive's metadata uses.
+ *
+ * The credits list is the exception. It is a bibliography rather than prose, so
+ * it goes into mono at the small size and rules between entries — the same
+ * treatment a catalogue card gets, because that is what each entry is.
+ */
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.factsHeading {
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  padding-block-end: var(--space-2xs);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.factList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.factTerm {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.factValue {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+.factNote {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-xs);
+}
+
+.sheet {
+  max-inline-size: var(--measure);
+}
+
+.header {
+  padding-block-end: var(--space-md);
+  border-block-end: 2px solid var(--color-ink);
+}
+
+.eyebrow {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.title {
+  margin-block-start: var(--space-2xs);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-display);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.title:focus {
+  outline: none;
+}
+
+.title:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.standfirst {
+  margin-block-start: var(--space-xs);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+.section {
+  margin-block-start: var(--space-2xl);
+}
+
+.sectionHeading {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  padding-block-end: var(--space-2xs);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.paragraph {
+  margin-block-start: var(--space-md);
+  font-size: var(--font-size-md);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  line-height: var(--line-height-relaxed);
+  text-wrap: pretty;
+}
+
+.creditsHeading {
+  margin-block-start: var(--space-xl);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+  line-height: var(--line-height-tight);
+}
+
+.credits {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: var(--space-md);
+  padding: 0;
+  list-style: none;
+}
+
+.credit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding-block: var(--space-sm);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.creditWork {
+  font-size: var(--font-size-sm);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+.creditWork cite {
+  font-style: italic;
+}
+
+.creditMeta,
+.creditUse {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-snug);
+  text-wrap: pretty;
+}
+
+.creditLink {
+  color: inherit;
+}
+
+.creditLink:hover {
+  color: var(--color-accent-strong);
+}
+
+/*
+ * The facts stay stacked at every width, term above value. Above 60rem the
+ * margin is a 15rem column, and a term-and-value grid inside it puts "Tuesday
+ * to Friday" through a 9rem gutter — the ledger's own two-column trick does not
+ * survive being nested in the narrow half of itself.
+ */

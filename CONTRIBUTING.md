@@ -167,11 +167,20 @@ src/data/species/
     papilio-machaon.json         the drawing: points measured off the reference
 references/
   papilio-machaon.jpg            the file it was traced from
-  SOURCES.md                     its author, publication and licence
+  SOURCES.md                     GENERATED — do not edit
+src/data/references/
+  sources.ts                     its author, publication and licence
 ```
 
-Then add both to the arrays in `src/data/species/index.ts`. Nothing else
-changes — no component knows what a mandible is.
+Then add both to the arrays in `src/data/species/index.ts`, append the
+reference record to `REFERENCE_SOURCES` in `src/data/references/sources.ts`,
+and run `npm run sources:build` to regenerate `references/SOURCES.md`. Nothing
+else changes — no component knows what a mandible is.
+
+`SOURCES.md` and the About page's credits list are two renderings of that one
+record, and `npm run sources:verify` fails the check if the committed markdown
+stops matching. A licence that is right in one place and stale in the other is
+worse than one that is wrong in both, because nothing looks broken.
 
 ### The authoring workflow
 

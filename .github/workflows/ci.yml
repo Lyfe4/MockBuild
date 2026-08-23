@@ -50,6 +50,15 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # The generated files: the plates built from their landmarks, and
+      # references/SOURCES.md built from src/data/references/sources.ts. Both
+      # compare bytes, and both catch the same mistake — a generated file edited
+      # by hand, after which the source of truth is fiction. `npm run check`
+      # runs them locally; nothing ran them here until the credits list started
+      # being rendered from the same records as SOURCES.md.
+      - name: Verify generated files
+        run: npm run plate:verify && npm run sources:verify
+
       - name: Test
         run: npm run test
 
