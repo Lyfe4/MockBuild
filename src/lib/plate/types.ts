@@ -85,6 +85,9 @@ export const PLATE_PART_IDS = [
   'pronotum',
   'scutellum',
   'elytron',
+  // A stria is an engraved line *on* an elytron rather than the elytron itself,
+  // and needs its own id because a part cannot be clipped to the id it carries.
+  'stria',
   'seam',
   // Legs, front to back, each in three segments
   'foreleg-femur',

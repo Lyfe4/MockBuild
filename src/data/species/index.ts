@@ -17,3 +17,4 @@ export function findSpecies(id: string): Species | undefined {
 }
 
 export { LUCANUS_CERVUS } from './lucanus-cervus';
+export { LUCANUS_CERVUS_PLATE } from './lucanus-cervus.plate';
