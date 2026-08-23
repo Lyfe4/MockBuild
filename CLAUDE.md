@@ -237,6 +237,36 @@ observed in the northern hemisphere. A European stag beetle flying in May to
 August comes out as autumn and winter. That is not a bug and it is not a claim
 about the animal; the panel and the specimen sheet both say so in words.
 
+## The identification key
+
+`src/lib/key` is **pure data out** — no React, no DOM — and the key is
+_derived_, never written. Each `Morphology` field is a question, each state of
+its union an answer, and `buildKey` chooses at every node the question with the
+most information gain over the species still in play. A species is therefore
+keyable the moment its record exists, and no branch mentions an animal.
+
+- **The lay label is the product.** The record says `lamellate`; the key asks
+  "What do the antennae look like?" and offers "Ending in a stack of flat
+  plates". Labels are `Record<Union, string>`, so a new character state fails
+  the build here until somebody writes words a visitor could act on.
+- **Information gain, with its bias named.** Gain favours wide questions, so the
+  current key opens on colour with seven answers rather than on a two-way split.
+  That is the price of the shortest key; gain _ratio_ would trade depth for
+  narrower screens and is a change to one function.
+- **Ties break by `KEY_TRAITS` order**, which is the whole determinism
+  guarantee: the same records give the same tree, which is what lets a key in
+  progress live in a URL.
+- **A leaf may hold more than one species.** Two records that answer all six
+  questions the same way are a true statement about the archive's characters,
+  and the key says so rather than picking a winner.
+- **The URL carries the trait as well as the value** (`?k=a0e3`). Branch indices
+  would be shorter and would silently mean something else the moment the
+  collection changes; carrying the question means a stale link stops where the
+  tree and the link disagree, which is what `advance` does with it.
+- **Depth is pinned by a test that prints it** — two questions for eight
+  species, today. A record that makes the key deeper has to be looked at rather
+  than absorbed.
+
 ## Known dead weight
 
 None. `src/lib/random` — a seeded `mulberry32` and `seedFromName` — was the
