@@ -327,6 +327,22 @@
   --insect-stroke-structure: 0.68;
   --insect-stroke-detail: 0.34;
 
+  /**
+   * The same three ranks for a hand-authored plate.
+   *
+   * A second set rather than one shared set, because these are view-box units
+   * and the two coordinate spaces are nothing like each other: a generated
+   * insect is drawn in a box 140 units tall, a plate in one about 1300 tall.
+   * One shared number would draw a plate in hairlines or an insect in slabs.
+   * The *ratios* are deliberately the generator's, so the two read as the same
+   * hand — which is the whole point of putting them side by side on `/lab/plates`.
+   *
+   * Outline must stay the heaviest here too.
+   */
+  --plate-stroke-outline: 8;
+  --plate-stroke-structure: 4.6;
+  --plate-stroke-detail: 2.2;
+
   /* Derived roles — every season inherits these without restating them. */
   --color-focus-ring: var(--color-accent-strong);
   --focus-ring-width: 2px;

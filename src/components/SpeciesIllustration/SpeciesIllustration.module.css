@@ -1,0 +1,164 @@
+/**
+ * A hand-authored species plate.
+ *
+ * Ink lines over a pigment wash, ranked in three weights. Every colour is a
+ * semantic token, so a plate recolours with the season exactly as a generated
+ * insect or a pressed plant does.
+ *
+ * ## How a plate gets its colour
+ *
+ * The species record names one of six pigments and the renderer puts the index
+ * on the svg as `data-pigment`. Each index below resolves the two local custom
+ * properties the rest of the file paints from. An attribute rather than a
+ * custom property written onto the element, because setting one inline needs a
+ * `style` attribute and `style-src 'self'` forbids it.
+ *
+ * Deliberately a copy of `InsectIllustration`'s pigment block rather than a
+ * shared one: the generator is being removed, and a shared stylesheet would
+ * have to be untangled on the way out. When it goes, this stays.
+ */
+
+.root {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+
+  /* The default, for a record that somehow arrives without an index. */
+  --pigment: var(--pigment-1);
+  --pigment-deep: var(--pigment-deep-1);
+}
+
+.root[data-pigment='1'] {
+  --pigment: var(--pigment-1);
+  --pigment-deep: var(--pigment-deep-1);
+}
+
+.root[data-pigment='2'] {
+  --pigment: var(--pigment-2);
+  --pigment-deep: var(--pigment-deep-2);
+}
+
+.root[data-pigment='3'] {
+  --pigment: var(--pigment-3);
+  --pigment-deep: var(--pigment-deep-3);
+}
+
+.root[data-pigment='4'] {
+  --pigment: var(--pigment-4);
+  --pigment-deep: var(--pigment-deep-4);
+}
+
+.root[data-pigment='5'] {
+  --pigment: var(--pigment-5);
+  --pigment-deep: var(--pigment-deep-5);
+}
+
+.root[data-pigment='6'] {
+  --pigment: var(--pigment-6);
+  --pigment-deep: var(--pigment-deep-6);
+}
+
+/*
+ * Every path in the drawing is stroked in ink. That is what makes it an
+ * engraving rather than a silhouette: the line carries the drawing and the fill
+ * is a wash underneath it.
+ */
+.part {
+  stroke: var(--color-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/*
+ * The line hierarchy. Three ranks, given their widths here so a plate reads
+ * before any of it resolves: the silhouette heaviest, the structure inside it a
+ * step back, the surface texture finer again.
+ *
+ * The ranks are what make one plate work at three sizes. At 600 pixels every
+ * stria and every stroke of hatching is legible; at 80 the detail rank falls
+ * below a pixel and disappears, leaving the silhouette and the antlers — which
+ * is the correct thumbnail of a stag beetle, and not a decision the renderer
+ * had to make.
+ */
+.rankOutline {
+  stroke-width: var(--plate-stroke-outline);
+}
+
+.rankStructure {
+  stroke-width: var(--plate-stroke-structure);
+}
+
+.rankDetail {
+  stroke-width: var(--plate-stroke-detail);
+}
+
+/*
+ * The five fills.
+ *
+ * A part says which role it wants and the season decides what that resolves to.
+ * `pigment` is the earth let down into the paper — a wash, weak on purpose,
+ * because the ink outline is what carries the drawing. `pigment-deep` is the
+ * same earth ground darker, for the chitin: head, pronotum, mandibles, legs.
+ *
+ * Both mix into the surface token rather than sitting over it at an opacity.
+ * Mixing composites against the colour the plate is actually made of, where
+ * `fill-opacity` would composite against whatever happens to be behind the svg,
+ * so a specimen dropped onto a dark card would go muddy.
+ */
+.fillNone {
+  fill: none;
+}
+
+.fillSurface {
+  fill: var(--color-surface);
+}
+
+.fillPigment {
+  fill: color-mix(in srgb, var(--pigment) 34%, var(--color-surface));
+}
+
+.fillDeep {
+  fill: color-mix(in srgb, var(--pigment-deep) 72%, var(--color-surface));
+}
+
+.fillInk {
+  fill: var(--color-ink);
+}
+
+/* Season changes ease, on the same token as the rest of the site. */
+.part {
+  transition:
+    fill var(--duration-palette) var(--ease-standard),
+    stroke var(--duration-palette) var(--ease-standard);
+}
+
+/*
+ * A plain fade, matching the generated insects. A beetle has no growth order,
+ * and drawing it limb by limb would look like an assembly diagram.
+ */
+@keyframes plate-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animated {
+  animation: plate-fade-in var(--duration-base) var(--ease-out) backwards;
+}
+
+/*
+ * The duration token is already zeroed under reduced motion; this states the
+ * end position outright because a zero-duration animation is the one case where
+ * browsers differ on whether the fill mode commits, and the failure mode is an
+ * invisible illustration.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animated {
+    animation: none;
+    opacity: 1;
+  }
+}

@@ -50,6 +50,16 @@ const devOnlyRoutes = import.meta.env.DEV
           return { Component: InsectLabRoute };
         },
       },
+      {
+        // SPIKE — hand-authored plate against the generator. Same technique,
+        // and the one that decides whether the generator survives at all.
+        path: 'lab/plates',
+        lazy: async () => {
+          const { PlateLabRoute } = await import('./routes/PlateLabRoute');
+
+          return { Component: PlateLabRoute };
+        },
+      },
     ]
   : [];
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { LINE_WEIGHTS, PIGMENTS } from '@/lib/insect';
+import { PLATE_RANKS } from '@/lib/plate';
 
 // `?raw` rather than reading the file: it goes through the same resolver the
 // app uses, so the test cannot end up asserting against a stylesheet the build
@@ -137,6 +138,46 @@ describe('the illustration line hierarchy', () => {
 
       for (const weight of LINE_WEIGHTS) {
         expect(seasonal.has(`--insect-stroke-${weight}`)).toBe(false);
+      }
+    }
+  });
+
+  /**
+   * The hand-authored plates rank their lines the same way, in their own
+   * coordinate space. Two sets of numbers, one hierarchy — and if the plate
+   * ratios drift far from the generator's, the two stop looking like the same
+   * hand, which is exactly what the comparison sheet exists to judge.
+   */
+  it('gives every plate rank a width, and keeps the same ranking', () => {
+    const width = (name: string): number => Number(declared.get(name));
+
+    for (const rank of PLATE_RANKS) {
+      expect(declared.has(`--plate-stroke-${rank}`), rank).toBe(true);
+    }
+
+    expect(width('--plate-stroke-outline')).toBeGreaterThan(width('--plate-stroke-structure'));
+    expect(width('--plate-stroke-structure')).toBeGreaterThan(width('--plate-stroke-detail'));
+    expect(width('--plate-stroke-detail')).toBeGreaterThan(0);
+  });
+
+  it('scales the plate weights to plate space rather than reusing the insect numbers', () => {
+    // A plate is drawn in a box roughly nine times the size of the generator's,
+    // so its lines have to be roughly nine times the number to look the same
+    // weight. This catches the mistake of copying one set over the other.
+    const ratio =
+      Number(declared.get('--plate-stroke-outline')) /
+      Number(declared.get('--insect-stroke-outline'));
+
+    expect(ratio).toBeGreaterThan(4);
+    expect(ratio).toBeLessThan(16);
+  });
+
+  it('does not move the plate weights with the season either', () => {
+    for (const season of SEASONS) {
+      const seasonal = declarations(block(`:root[data-season='${season}']`));
+
+      for (const rank of PLATE_RANKS) {
+        expect(seasonal.has(`--plate-stroke-${rank}`)).toBe(false);
       }
     }
   });

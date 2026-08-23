@@ -12,6 +12,8 @@
  */
 
 export { describePlate } from './describe';
+export { platePoints, plateViewBox, viewBoxAttribute } from './fit';
+export type { PlateViewBox } from './fit';
 export type { DescribeOptions } from './describe';
 export { boundsOf, formatPathData, parsePathData, pathPoints, PathSyntaxError } from './pathData';
 export type { PlateBounds, PlatePoint, PlateSegment } from './pathData';
@@ -24,6 +26,7 @@ export {
   PLATE_SEXES,
   REQUIRED_PARTS,
 } from './types';
+export { SPECIES_PIGMENTS } from '@/types';
 export type {
   PlateFill,
   PlateOrder,
@@ -32,6 +35,7 @@ export type {
   PlateRank,
   PlateReference,
   PlateSex,
+  SpeciesPigment,
   SpeciesPlate,
 } from './types';
 export { isValidPlate, PLATE_ERROR_CODES, validatePlate } from './validate';

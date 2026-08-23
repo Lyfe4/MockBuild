@@ -134,6 +134,14 @@ describe('generatePlant', () => {
           }
         }
       },
+      /**
+       * Longer than the 5s default, because the first case genuinely needs it:
+       * the densest plant is tens of thousands of points across five seeds and
+       * four assertions each. It passed in isolation and timed out inside the
+       * full parallel run, which is the worst way for a test to fail — it looks
+       * like a flake in whatever else happens to be running.
+       */
+      30_000,
     );
   });
 

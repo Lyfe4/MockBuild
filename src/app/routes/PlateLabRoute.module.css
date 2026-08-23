@@ -1,0 +1,159 @@
+/*
+ * TEMPORARY — throwaway styling for the plate spike's contact sheet. Plain on
+ * purpose: this is an instrument for judging a drawing, not a page.
+ */
+
+.intro {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-sm);
+  color: var(--color-ink-muted);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+}
+
+/* The validator's verdict, loud enough to notice on the way past. */
+.valid,
+.invalid {
+  margin-block-start: var(--space-sm);
+  padding: var(--space-2xs) var(--space-xs);
+  border-inline-start: 3px solid var(--color-line);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.valid {
+  color: var(--color-ink-muted);
+}
+
+.invalid {
+  color: var(--color-accent-strong);
+  border-inline-start-color: var(--color-accent-strong);
+}
+
+.problems {
+  margin-block-start: var(--space-xs);
+  padding-inline-start: var(--space-md);
+  color: var(--color-accent-strong);
+  font-size: var(--font-size-sm);
+}
+
+/*
+ * One column per approach, side by side from the tablet breakpoint up. Stacked
+ * below it, which is the honest mobile answer: a 600-pixel plate and a
+ * 600-pixel generated beetle will not sit next to each other on a phone, and
+ * shrinking them to fit would destroy the comparison the page exists to make.
+ */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xl);
+  margin-block-start: var(--space-xl);
+}
+
+@media (min-width: 48rem) {
+  .columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.column {
+  min-inline-size: 0;
+}
+
+.columnTitle {
+  font-size: var(--font-size-md);
+}
+
+.note {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-2xs);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  margin-block-start: var(--space-md);
+}
+
+.cell {
+  margin: 0;
+}
+
+/*
+ * Absolute frames, in pixels, and deliberately so.
+ *
+ * Everything else in the project is fluid. This is not, because the comparison
+ * is about size itself: a drawing that only holds together at 600 pixels has to
+ * be seen failing at 80, and a frame that flexed with the viewport would hide
+ * exactly that. The frames are square so neither drawing gets an advantage from
+ * the aspect ratio it happens to prefer.
+ */
+.frame80,
+.frame240,
+.frame600 {
+  display: grid;
+  place-items: center;
+  padding: var(--space-3xs);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+}
+
+.frame80 {
+  inline-size: 80px;
+  block-size: 80px;
+}
+
+.frame240 {
+  inline-size: 240px;
+  block-size: 240px;
+}
+
+.frame600 {
+  inline-size: min(600px, 100%);
+  block-size: auto;
+  aspect-ratio: 1;
+}
+
+.caption {
+  margin-block-start: var(--space-3xs);
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.altText,
+.reference {
+  margin-block-start: var(--space-2xl);
+}
+
+.quote {
+  max-inline-size: var(--measure);
+  margin: var(--space-xs) 0 0;
+  padding-inline-start: var(--space-sm);
+  border-inline-start: 2px solid var(--color-line);
+  color: var(--color-ink);
+  font-style: italic;
+}
+
+.referenceImage {
+  display: block;
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: auto;
+  margin-block-start: var(--space-md);
+  border: 1px solid var(--color-line);
+}
+
+.credit {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-xs);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+}
