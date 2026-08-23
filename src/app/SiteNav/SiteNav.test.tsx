@@ -116,6 +116,25 @@ describe('SiteNav', () => {
     expect(toggle()).toHaveAttribute('aria-expanded', 'false');
   });
 
+  it('offers Identify between the catalogue and the about page', async () => {
+    const user = userEvent.setup();
+
+    renderNav();
+
+    await user.click(toggle());
+
+    // Order is content, not decoration: the key is the other way in to the same
+    // eight specimens, so it sits beside the catalogue rather than after the
+    // pages about the institution.
+    expect(screen.getAllByRole('link').map((link) => link.textContent)).toStrictEqual([
+      'Catalogue',
+      'Identify',
+      'About',
+      'Journal',
+      'Request',
+    ]);
+  });
+
   it('marks the current section', async () => {
     const user = userEvent.setup();
 

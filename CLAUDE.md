@@ -267,6 +267,27 @@ keyable the moment its record exists, and no branch mentions an animal.
   species, today. A record that makes the key deeper has to be looked at rather
   than absorbed.
 
+`/key` is the page, and it is one route for the intro, every question and every
+leaf, because the answers live in the query string rather than the path.
+
+- **The parameter's absence is the intro**; its presence, even empty, is the key
+  — which is why the start button navigates to `?k=`. That is one state more
+  than a list of answers can hold and it has to be held somewhere.
+- **Every answer is a push**, so the browser's own back button walks back up the
+  key and the page does nothing to arrange it. The Back control goes to the
+  previous question, and out to the intro from the first.
+- **A stale link is never rewritten under the reader.** The next answer is
+  written from `position.answers`, so the URL heals on the first tap.
+- **The h2 takes focus on each answer.** `RootLayout` only moves focus when the
+  _path_ changes, and answering changes the query — so without it a keyboard
+  reader is left on a button that no longer exists. The remaining count is the
+  page's one live region; the question is announced by the heading.
+- **Options are buttons, not radios.** Choosing an answer moves the reader on,
+  and a radio that navigates is a radio lying about what it does. Arrow keys
+  move focus along them, handled on each button rather than on the group.
+- **An option shows a count, never a name.** Naming the species behind an
+  answer would key the collection out on the first screen.
+
 ## Known dead weight
 
 None. `src/lib/random` — a seeded `mulberry32` and `seedFromName` — was the

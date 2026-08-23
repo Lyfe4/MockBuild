@@ -1,0 +1,224 @@
+/**
+ * The identification key.
+ *
+ * One column, narrow enough to read in one glance: a question is not a page of
+ * text, and a reader holding an insect in one hand is answering it with the
+ * other. Mobile-first, and the only thing the wide rule changes is that the
+ * options stop being full-bleed.
+ */
+
+.root {
+  max-inline-size: var(--measure);
+}
+
+.header {
+  padding-block-end: var(--space-lg);
+  margin-block-end: var(--space-lg);
+  border-block-end: 2px solid var(--color-ink);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-display);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+}
+
+.title:focus {
+  outline: none;
+}
+
+/* The heading takes focus on navigation; show that only for keyboard users. */
+.title:focus-visible,
+.question:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/*
+ * Each screen is a fresh element — the component keys it on the answers — so
+ * this plays once per question. The duration is a token, and the tokens are
+ * zeroed under `prefers-reduced-motion`, which is what makes the fade optional
+ * without a second rule here saying so.
+ */
+.screen {
+  animation: settle var(--duration-base) var(--ease-out) both;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+.lede {
+  max-inline-size: var(--measure-narrow);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-md);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  text-wrap: pretty;
+}
+
+.start {
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-lg);
+  margin-block-start: var(--space-lg);
+  color: var(--color-on-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  background-color: var(--color-accent-strong);
+  border: 1px solid var(--color-accent-strong);
+  border-radius: var(--radius-xs);
+}
+
+.start:hover {
+  background-color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.start:focus-visible,
+.option:focus-visible,
+.control:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Where the reader is, in the mono label voice the archive uses for metadata. */
+.progress {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.question {
+  margin-block-start: var(--space-xs);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  text-wrap: balance;
+}
+
+.question:focus {
+  outline: none;
+}
+
+.note {
+  max-inline-size: var(--measure-narrow);
+  margin-block-start: var(--space-sm);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  font-variation-settings: 'opsz' var(--font-optical-text);
+  text-wrap: pretty;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-xl);
+}
+
+/*
+ * An answer. Tall, full width, and the label set at reading size rather than in
+ * the label voice: this is the one thing on the screen a reader is being asked
+ * to read, and a 12px uppercase mono string is not it.
+ */
+.option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  /* Comfortably past the 44px floor: these are the targets of the whole page. */
+  min-block-size: 3.5rem;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-ink);
+  text-align: start;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.option:hover {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent-wash);
+}
+
+.optionLabel {
+  font-family: var(--font-family-text);
+  font-size: var(--font-size-lg);
+  font-variation-settings: 'opsz' var(--font-optical-heading);
+  line-height: var(--line-height-snug);
+}
+
+.option:hover .optionLabel {
+  color: var(--color-accent-strong);
+}
+
+/* How much of the collection is behind this answer. A count, never a name. */
+.optionCount {
+  flex: none;
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.results {
+  padding: 0;
+  margin-block-start: var(--space-lg);
+  border-block-start: 1px solid var(--color-line);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-xl);
+}
+
+.control {
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-md);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xs);
+}
+
+.control:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+@media (min-width: 48rem) {
+  .option {
+    /* Pointer users get a slightly tighter row; the target is still 56px. */
+    padding-inline: var(--space-lg);
+  }
+
+  .start,
+  .control {
+    min-block-size: 2.25rem;
+  }
+}

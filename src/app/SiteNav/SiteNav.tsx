@@ -13,6 +13,9 @@ interface NavItem {
 
 const NAV_ITEMS: readonly NavItem[] = [
   { to: '/catalogue', label: 'Catalogue' },
+  // Next to the catalogue, because it is the other way in to the same eight
+  // specimens: browse them, or key one out.
+  { to: '/key', label: 'Identify' },
   { to: '/about', label: 'About' },
   { to: '/journal', label: 'Journal' },
   { to: '/request', label: 'Request' },

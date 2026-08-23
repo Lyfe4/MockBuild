@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router';
 import { RootLayout } from './RootLayout';
 import { RouteErrorBoundary } from './RouteErrorBoundary';
 import { CatalogueRoute } from './routes/CatalogueRoute';
+import { KeyRoute } from './routes/KeyRoute';
 import { NotFoundRoute } from './routes/NotFoundRoute';
 import { SpecimenRoute } from './routes/SpecimenRoute';
 
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
       // a link to either keeps working when a real landing page arrives.
       { index: true, element: <CatalogueRoute /> },
       { path: 'catalogue', element: <CatalogueRoute /> },
+      // The key keeps its answers in the query string rather than the path, so
+      // one route serves the intro, every question and every leaf. See
+      // `KeyRoute` for why the parameter's absence is the intro.
+      { path: 'key', element: <KeyRoute /> },
       { path: 'specimen/:id', element: <SpecimenRoute /> },
       ...devOnlyRoutes,
       // Last: matches anything the routes above did not.
