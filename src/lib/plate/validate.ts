@@ -1,5 +1,11 @@
 import { parsePathData, pathPoints, PathSyntaxError, type PlateSegment } from './pathData';
-import { REQUIRED_PARTS, type PlatePart, type PlatePartId, type SpeciesPlate } from './types';
+import {
+  MEMBRANOUS_PART_IDS,
+  REQUIRED_PARTS,
+  type PlatePart,
+  type PlatePartId,
+  type SpeciesPlate,
+} from './types';
 
 /**
  * Checking a hand-authored plate.
@@ -33,6 +39,8 @@ export const PLATE_ERROR_CODES = [
   'midline-off-axis',
   /** The plate has no parts at all. */
   'empty-plate',
+  /** A part that is not a wing declared itself membranous. */
+  'solid-part-as-membrane',
 ] as const;
 
 export type PlateErrorCode = (typeof PLATE_ERROR_CODES)[number];
@@ -163,6 +171,22 @@ export function validatePlate(plate: SpeciesPlate): PlateError[] {
           ),
         );
       }
+    }
+
+    /*
+     * A membrane is a window, and only a wing is one. Letting the flag through
+     * on anything else would produce a see-through abdomen that reads as a
+     * rendering bug rather than as the typo it is — and it would not show up at
+     * all until the part happened to overlap something.
+     */
+    if (part.opacity === 'membrane' && !MEMBRANOUS_PART_IDS.includes(part.id)) {
+      errors.push(
+        error(
+          'solid-part-as-membrane',
+          `${label}: declared membrane, which only a wing may be (${MEMBRANOUS_PART_IDS.join(', ')})`,
+          where,
+        ),
+      );
     }
 
     if (part.clipTo !== undefined) {

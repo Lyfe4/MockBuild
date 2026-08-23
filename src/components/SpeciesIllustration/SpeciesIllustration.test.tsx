@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { LUCANUS_CERVUS, LUCANUS_CERVUS_PLATE } from '@/data/species';
-import { describePlate, SPECIES_PIGMENTS } from '@/lib/plate';
+import { describePlate, SPECIES_PIGMENTS, type SpeciesPlate } from '@/lib/plate';
 import type { Species } from '@/types';
 
 import { SpeciesIllustration } from './SpeciesIllustration';
@@ -229,6 +229,72 @@ describe('SpeciesIllustration', () => {
       expect(container.querySelectorAll('path')).toHaveLength(
         mirrored * 2 + midline + clipOutlines,
       );
+    });
+  });
+
+  describe('membranous wings', () => {
+    /**
+     * A dragonfly's wings overlap each other and the abdomen, so they are drawn
+     * with a real `fill-opacity`. The flag has to reach the markup as a *class*
+     * — the CSP forbids the inline style that setting it directly would need —
+     * and it has to reach only the parts that asked for it.
+     */
+    const WINGED: SpeciesPlate = {
+      species: LUCANUS_CERVUS.id,
+      order: 'odonata',
+      sex: 'unsexed',
+      reference: PLATE.reference,
+      parts: [
+        {
+          id: 'abdomen',
+          rank: 'outline',
+          fill: 'pigment',
+          d: 'M-30 200 L30 200 L0 900 Z',
+          mirror: false,
+        },
+        {
+          id: 'forewing',
+          rank: 'outline',
+          fill: 'pigment',
+          d: 'M40 200 C300 160 500 210 340 310 Z',
+          opacity: 'membrane',
+        },
+        {
+          id: 'hindwing',
+          rank: 'outline',
+          fill: 'pigment',
+          d: 'M40 270 C300 240 480 300 330 380 Z',
+        },
+      ],
+    };
+
+    function classesOf(container: HTMLElement, index: number): string {
+      return container.querySelectorAll('g > path')[index]?.getAttribute('class') ?? '';
+    }
+
+    it('gives a membrane part a class of its own', () => {
+      const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={WINGED} />);
+
+      // Authored order: abdomen is a midline part and is drawn last, so the
+      // first two paths are the forewing and the hindwing of the right half.
+      expect(classesOf(container, 0)).toMatch(/membrane/);
+      expect(classesOf(container, 1)).not.toMatch(/membrane/);
+    });
+
+    it('carries it onto the reflected half too, so both wings match', () => {
+      const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={WINGED} />);
+      const membranes = [...container.querySelectorAll('path')].filter((path) =>
+        (path.getAttribute('class') ?? '').includes('membrane'),
+      );
+
+      expect(membranes).toHaveLength(2);
+    });
+
+    it('still writes no inline style, which is the reason it is a class', () => {
+      const { container } = render(<SpeciesIllustration species={LUCANUS_CERVUS} plate={WINGED} />);
+
+      expect(container.querySelectorAll('[style]')).toHaveLength(0);
+      expect(container.querySelectorAll('[fill-opacity]')).toHaveLength(0);
     });
   });
 });

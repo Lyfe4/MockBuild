@@ -18,8 +18,10 @@ export type { DescribeOptions } from './describe';
 export { boundsOf, formatPathData, parsePathData, pathPoints, PathSyntaxError } from './pathData';
 export type { PlateBounds, PlatePoint, PlateSegment } from './pathData';
 export {
+  MEMBRANOUS_PART_IDS,
   PLATE_BODY_LENGTH,
   PLATE_FILLS,
+  PLATE_OPACITIES,
   PLATE_ORDERS,
   PLATE_PART_IDS,
   PLATE_RANKS,
@@ -29,6 +31,7 @@ export {
 export { SPECIES_PIGMENTS } from '@/types';
 export type {
   PlateFill,
+  PlateOpacity,
   PlateOrder,
   PlatePart,
   PlatePartId,

@@ -192,6 +192,11 @@ Rules the review will hold you to:
   defence for curved margins, not the thing keeping the ink on the wing case.
 - **`validatePlate(PLATE)` must return `[]`** in the plate's own test. Its
   error classes all catch mistakes that otherwise fail silently.
+- **The order's required parts are in `REQUIRED_PARTS`** and differ by order,
+  deliberately. If your plate is missing one, draw it; if the requirement is
+  wrong for the animal, change the map and say why in the comment above it.
+- **`opacity: 'membrane'` is for wings only.** Use it where the wing is a window
+  — a dragonfly, a bee — and leave it off where the wing is a surface.
 
 Judge the result on `/lab/plates`, which is dev-only and shows every plate at 80,
 240 and 600 pixels with the reference below it.

@@ -89,10 +89,22 @@ SpeciesPlate    ──┘        │
   `<g transform="scale(-1,1)">` resolves in that group's own user space, so one
   clip definition confines the hatching on both wing cases. Do not "simplify"
   this into a `<use>` without re-reading `SpeciesIllustration`'s comment.
-- **`validatePlate` runs in a test for every plate.** Seven error classes, all
+- **`validatePlate` runs in a test for every plate.** Eight error classes, all
   of them mistakes that otherwise fail _quietly_: a stray minus sign puts a leg
   on the wrong side and the mirror puts a second one on top of it, so the plate
   renders, looks nearly right, and has five legs.
+- **`REQUIRED_PARTS` is per order** — Coleoptera, Lepidoptera, Odonata,
+  Hymenoptera, Hemiptera. It lists the parts whose _absence_ is a mistake in a
+  dorsal drawing, not every organ the animal has: a dragonfly is not asked for
+  antennae (two bristles), a spread-wing butterfly is not asked for legs (none
+  show), and a true bug is not asked for the hindwings folded under its
+  scutellum. Read the comment above the map before adding an order.
+- **`opacity: 'membrane'`** makes a wing a window: a real `fill-opacity`, and
+  the one place in the project where a fill is composited rather than
+  `color-mix`ed into the surface token. Four dragonfly wings overlap each other
+  and the abdomen, and what is behind them is the point. Only `forewing` and
+  `hindwing` may declare it; the validator rejects it anywhere else. It travels
+  as a class, never an inline style.
 - **Containment is proved in the data, not by the clip.** The plate test samples
   every clipped stroke against its surface's outline.
 - **Three ranks.** `--plate-stroke-*` are large numbers because plate space is

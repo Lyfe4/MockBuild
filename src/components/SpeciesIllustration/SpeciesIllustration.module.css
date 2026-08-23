@@ -135,6 +135,22 @@
   fill: var(--color-ink);
 }
 
+/*
+ * A membranous wing.
+ *
+ * The one place in the project where a fill is composited at an opacity rather
+ * than mixed into the surface token. Everywhere else that would be a bug — a
+ * plate dropped onto a dark card would go muddy — but a dragonfly's wing is a
+ * window, and four of them overlap each other and the abdomen. What is behind
+ * it is exactly what should show through.
+ *
+ * The stroke stays at full strength. The venation is what makes the wing read;
+ * fading it with the membrane would leave a smudge.
+ */
+.membrane {
+  fill-opacity: 0.28;
+}
+
 /* Season changes ease, on the same token as the rest of the site. */
 .part {
   transition:

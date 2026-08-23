@@ -6,6 +6,7 @@ import {
   plateViewBox,
   viewBoxAttribute,
   type PlateFill,
+  type PlateOpacity,
   type PlatePart,
   type PlatePartId,
   type PlateRank,
@@ -48,6 +49,18 @@ const FILL_CLASS: Record<PlateFill, string | undefined> = {
   ink: styles.fillInk,
 };
 
+/**
+ * The class that makes a wing a window.
+ *
+ * `solid` resolves to nothing: it is the default treatment and adding a class
+ * that sets `fill-opacity: 1` would only give the cascade something to fight
+ * over. Only `membrane` carries one.
+ */
+const OPACITY_CLASS: Record<PlateOpacity, string | undefined> = {
+  solid: undefined,
+  membrane: styles.membrane,
+};
+
 /** `Genus species` — the name a plate is captioned with. */
 function binomial(species: Species): string {
   return `${species.taxonomy.genus} ${species.taxonomy.species}`;
@@ -75,6 +88,15 @@ function binomial(species: Species): string {
  * Parts declaring `mirror: false` straddle the axis and are drawn once, after
  * both halves, so the scutellum and the pronotal grooves sit over the seam
  * rather than being reflected into a doubled line.
+ *
+ * ## Membranous wings
+ *
+ * A dragonfly's four wings overlap each other and the abdomen. Painting them
+ * opaque would hide the animal behind itself, so a part may declare
+ * `opacity: 'membrane'` and get a `fill-opacity` — the one place in the project
+ * where a fill is composited rather than mixed, and deliberately so, because
+ * here the thing behind it is the point. `validatePlate` rejects the flag on
+ * anything that is not a wing.
  *
  * ## Colour
  *
@@ -138,7 +160,12 @@ export function SpeciesIllustration({
   const renderPart = (part: PlatePart, index: number) => (
     <path
       key={`${part.id}-${String(index)}`}
-      className={cx(styles.part, RANK_CLASS[part.rank], FILL_CLASS[part.fill])}
+      className={cx(
+        styles.part,
+        RANK_CLASS[part.rank],
+        FILL_CLASS[part.fill],
+        OPACITY_CLASS[part.opacity ?? 'solid'],
+      )}
       d={part.d}
       {...(part.clipTo === undefined ? {} : { clipPath: `url(#${clipId(part.clipTo)})` })}
     />

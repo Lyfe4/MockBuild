@@ -77,17 +77,41 @@ export const PLATE_PART_IDS = [
   // Head and its appendages
   'head',
   'eye',
+  // A dragonfly's eyes wrap most of its head and meet on top of it; drawing
+  // them as `eye` would say nothing about the one feature that identifies the
+  // order at a glance. `eye` stays the generic id for everything else.
+  'compound-eye',
+  // The three simple eyes on the vertex, between the compound pair.
+  'ocellus',
   'antenna',
   'mandible',
   'palp',
-  // Thorax and wing cases
+  // Thorax. `thorax` is the whole box for an animal whose plates are not
+  // separable in dorsal view — a moth, a dragonfly; `pronotum` is the front
+  // plate where it is a distinct shield, which for a beetle it always is.
+  'thorax',
   'pronotum',
   'scutellum',
+  // Wing cases and wings
   'elytron',
   // A stria is an engraved line *on* an elytron rather than the elytron itself,
   // and needs its own id because a part cannot be clipped to the id it carries.
   'stria',
   'seam',
+  'forewing',
+  'hindwing',
+  // Veins and markings are drawn *on* a wing and clipped to it, so like `stria`
+  // they cannot share the wing's id.
+  'wing-vein',
+  'wing-marking',
+  // Abdomen. One `abdomen` outline, and `abdomen-segment` for the ring lines
+  // across it — a dragonfly's ten segments are the length of the animal.
+  'abdomen',
+  'abdomen-segment',
+  // The paired appendages at the tip of the abdomen: a dragonfly's claspers, a
+  // cricket's tails.
+  'cercus',
+  'stinger',
   // Legs, front to back, each in three segments
   'foreleg-femur',
   'foreleg-tibia',
@@ -104,6 +128,29 @@ export const PLATE_PART_IDS = [
 ] as const;
 
 export type PlatePartId = (typeof PLATE_PART_IDS)[number];
+
+/**
+ * How solid a shape is.
+ *
+ * `solid` is the default and is what everything on a beetle is: the pigment
+ * fills are `color-mix`ed into the surface token rather than sitting over it at
+ * an opacity, so a plate dropped onto a dark card does not go muddy.
+ *
+ * `membrane` is the deliberate exception, and it exists because a dragonfly's
+ * wing is not a surface — it is a window. Four of them overlap each other and
+ * the abdomen, and painting them opaque would hide the animal behind its own
+ * wings. A membrane part is drawn with a real `fill-opacity`, so what is under
+ * it shows through, which is the whole point.
+ *
+ * Only a wing may declare it; `validatePlate` rejects it anywhere else. A
+ * membranous abdomen is not a drawing decision, it is a typo.
+ */
+export const PLATE_OPACITIES = ['solid', 'membrane'] as const;
+
+export type PlateOpacity = (typeof PLATE_OPACITIES)[number];
+
+/** The parts a `membrane` opacity makes sense on. */
+export const MEMBRANOUS_PART_IDS: readonly PlatePartId[] = ['forewing', 'hindwing'];
 
 /** One path of a plate. */
 export interface PlatePart {
@@ -128,6 +175,12 @@ export interface PlatePart {
    * because almost everything is.
    */
   readonly mirror?: false;
+  /**
+   * Whether what is behind this shape shows through it.
+   *
+   * Absent means `solid`, because almost everything is. See `PLATE_OPACITIES`.
+   */
+  readonly opacity?: PlateOpacity;
   /**
    * The part whose outline confines this one.
    *
@@ -157,7 +210,13 @@ export type PlateSex = (typeof PLATE_SEXES)[number];
  * mistake every time; a moth plate missing its elytra is not, because a moth
  * has none.
  */
-export const PLATE_ORDERS = ['coleoptera', 'lepidoptera'] as const;
+export const PLATE_ORDERS = [
+  'coleoptera',
+  'lepidoptera',
+  'odonata',
+  'hymenoptera',
+  'hemiptera',
+] as const;
 
 export type PlateOrder = (typeof PLATE_ORDERS)[number];
 
@@ -201,43 +260,67 @@ export interface SpeciesPlate {
 }
 
 /**
- * The parts a complete plate of each order must carry.
+ * The parts a complete plate of each order must carry, in dorsal view.
  *
- * Six legs' worth of segments on a beetle, checked as the three authored groups
- * — the renderer's reflection supplies the other three, so requiring six here
- * would be requiring the author to draw the plate twice.
+ * Not "every organ the animal has" — the parts whose *absence* is a mistake in
+ * a drawing rather than a fact about the animal. A beetle plate with no
+ * antennae is always an error; a moth plate with no elytra is not, because a
+ * moth has none, and a dragonfly plate with no antennae is not either, because
+ * a dragonfly's are two bristles you would need a lens to see.
+ *
+ * The legs are the interesting case. A beetle, a dragonfly and a bee all show
+ * six legs from above and a plate that omits them is unfinished; a butterfly
+ * with its wings spread shows none, and requiring them would make the validator
+ * demand a drawing of something the reference does not contain. So Lepidoptera
+ * does not list them, and the comment is here rather than in a commit message
+ * because it is the sort of omission that looks like a bug.
+ *
+ * Three legs' worth of segments, not six: the renderer's reflection supplies
+ * the other side, so requiring six would be requiring the author to draw the
+ * plate twice.
  */
+const LEGS = [
+  'foreleg-femur',
+  'foreleg-tibia',
+  'foreleg-tarsus',
+  'midleg-femur',
+  'midleg-tibia',
+  'midleg-tarsus',
+  'hindleg-femur',
+  'hindleg-tibia',
+  'hindleg-tarsus',
+] as const satisfies readonly PlatePartId[];
+
 export const REQUIRED_PARTS: Record<PlateOrder, readonly PlatePartId[]> = {
-  coleoptera: [
+  // Beetles: the pronotum and the elytra are the order, and the head bears
+  // visible antennae in every family the archive is likely to hold.
+  coleoptera: ['head', 'eye', 'antenna', 'pronotum', 'elytron', ...LEGS],
+  // Butterflies and moths, wings spread: four wings, a furred thorax, an
+  // abdomen, and antennae that are half the identification. No legs — see
+  // above.
+  lepidoptera: ['head', 'eye', 'antenna', 'thorax', 'abdomen', 'forewing', 'hindwing', 'wing-vein'],
+  // Dragonflies: eyes that meet on the head, four separately veined wings, and
+  // an abdomen long enough to be most of the animal. No antennae.
+  odonata: [
     'head',
-    'eye',
-    'antenna',
-    'pronotum',
-    'elytron',
-    'foreleg-femur',
-    'foreleg-tibia',
-    'foreleg-tarsus',
-    'midleg-femur',
-    'midleg-tibia',
-    'midleg-tarsus',
-    'hindleg-femur',
-    'hindleg-tibia',
-    'hindleg-tarsus',
+    'compound-eye',
+    'thorax',
+    'abdomen',
+    'abdomen-segment',
+    'forewing',
+    'hindwing',
+    'wing-vein',
+    ...LEGS,
   ],
-  lepidoptera: [
-    'head',
-    'eye',
-    'antenna',
-    'foreleg-femur',
-    'foreleg-tibia',
-    'foreleg-tarsus',
-    'midleg-femur',
-    'midleg-tibia',
-    'midleg-tarsus',
-    'hindleg-femur',
-    'hindleg-tibia',
-    'hindleg-tarsus',
-  ],
+  // Bees, wasps and ants: the waist between thorax and abdomen is the order,
+  // and it is drawn as the gap between the two parts rather than as a part of
+  // its own. A stinger is not required — most Hymenoptera do not show one from
+  // above, and many do not have one.
+  hymenoptera: ['head', 'eye', 'antenna', 'thorax', 'abdomen', 'forewing', 'hindwing', ...LEGS],
+  // True bugs: the big triangular scutellum between the folded forewings is
+  // what identifies the order from above. The hindwings are underneath it and
+  // are not required.
+  hemiptera: ['head', 'eye', 'antenna', 'pronotum', 'scutellum', 'forewing', 'abdomen', ...LEGS],
 };
 
 /** The length of the body axis, head end to abdomen tip, in plate units. */
