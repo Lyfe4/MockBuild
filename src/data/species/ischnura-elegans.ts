@@ -32,6 +32,7 @@ export const ISCHNURA_ELEGANS: Species = {
   // A long season for a damselfly, and two generations in a warm year. On the
   // wing from late spring until the first cold nights.
   activeMonths: [5, 6, 7, 8, 9],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'membranous',
     antennae: 'setaceous',

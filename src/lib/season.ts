@@ -28,12 +28,17 @@ import type { Month, Season } from '@/types';
  * spring, December to February summer, March to May autumn, June to August
  * winter.
  *
- * The archive uses this on records whose months were observed in the *northern*
- * hemisphere, which is deliberate and needs saying out loud wherever it is
+ * Most records in the archive were observed in the *northern* hemisphere, and
+ * for those the mismatch is deliberate and needs saying out loud wherever it is
  * shown. A European stag beetle flies in May to August, and this reports that
  * as autumn and winter — because those are Thornfield's names for those months,
- * not because anyone has claimed the beetle flies in the southern winter. The
- * catalogue's filter is labelled to say so.
+ * not because anyone has claimed the beetle flies in the southern winter.
+ *
+ * Not all of them, though, which is what `Species.monthsHemisphere` is for. The
+ * two Australian scarabs were observed here, so November and December really are
+ * their spring and summer and the pages say nothing about a mismatch on their
+ * rows. A caveat printed over a record that has not got the problem is as wrong
+ * as one left off a record that has.
  */
 export function seasonOfMonth(month: Month): Season {
   if (month >= 9 && month <= 11) return 'spring';

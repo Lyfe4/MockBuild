@@ -1,0 +1,632 @@
+{
+  "species": "eupoecila-australasiae",
+  "constant": "EUPOECILA_AUSTRALASIAE_PLATE",
+  "order": "coleoptera",
+  "sex": "unsexed",
+  "hallmark": "the dark fiddle across the pale wing cases, and the two yellow lines along the black pronotum",
+  "reference": {
+    "title": "Cetonia australasiae, from An epitome of the natural history of the insects of New Holland, plate 1",
+    "artist": "Edward Donovan",
+    "year": 1805,
+    "source": "https://archive.org/details/epitomeofnatura00dono",
+    "licence": "Public domain (published 1805, author died 1837)"
+  },
+  "doc": [
+    "*Eupoecila australasiae*, dorsal - the fiddler beetle.",
+    "",
+    "Traced from plate 1 of Edward Donovan's *An epitome of the natural history",
+    "of the insects of New Holland* (1805), where it is figured and named",
+    "*Cetonia australasiae* - the description the species still carries, and the",
+    "reason this figure is its type. It is the same sheet the king Christmas",
+    "beetle came off, three figures away, so the two plates in this collection",
+    "that show Australian animals were drawn by one hand in one year.",
+    "`references/eupoecila-australasiae.jpg` is that figure, cut from the sheet",
+    "and turned upright.",
+    "",
+    "## What identifies it",
+    "",
+    "The **fiddle**: a dark field either side of the suture, broad at the",
+    "shoulder, waisted two thirds of the way down and closing at the apex, which",
+    "read across both wing cases at once is the outline of a violin. Then the",
+    "**two yellow lines** along the margins of an otherwise black pronotum -",
+    "which is the character Donovan's specific description opens with, before he",
+    "gets to the wing cases at all. Both are drawn.",
+    "",
+    "## Which way round the animal is",
+    "",
+    "The ground here is the *pale* colour and the pattern is dark on top of it,",
+    "which is the opposite of every other beetle in this collection. A fiddler",
+    "beetle is a yellow-green insect with a black figure on it, not a black",
+    "insect with yellow marks. Drawn the other way round it keys out on the same",
+    "six characters and looks like a different animal, so the fills are the",
+    "thing to check first if this plate is ever redrawn.",
+    "",
+    "Donovan's hand-colouring makes the pale ground ferruginous - rust and ochre",
+    "- and his own Latin says *elytris ferrugineis*. The living animal is usually",
+    "lime-green to yellow. The plate is inked in one seasonal earth and takes no",
+    "position on which; `morphology.colourFamily` says `yellow`, which is what a",
+    "reader looking at the specimen would say, and the record's notes carry the",
+    "rest.",
+    "",
+    "## Three colours, two pigments",
+    "",
+    "The figure has a black field, a rust band and a pale margin. A plate has one",
+    "pigment at two strengths, so the rust band is drawn as a *boundary* rather",
+    "than as a fill - a structure-rank line along its outer edge. That is also",
+    "what carries the pattern at eighty pixels, where the detail rank has gone",
+    "and the fills have flattened.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front margin of the clypeus, y = 1000 at the apex of the wing",
+    "cases. There is no pygidium in this drawing: Donovan's figure rounds the",
+    "elytra off over it and shows none, and `REQUIRED_PARTS` does not ask a",
+    "beetle for an abdomen. The middle legs reach past x = 750."
+  ],
+  "parts": [
+    {
+      "note": [
+        "Legs first, so they pass under the wing cases.",
+        "",
+        "Slighter than the Christmas beetle's, and that is the point of drawing",
+        "the two together: both are scarabs, one digs and one visits flowers, and",
+        "the femora come out at about five and a half per cent of the width",
+        "across the wing cases against the other's eight. `eupoecila-australasiae",
+        ".plate.test.ts` measures both and asserts the difference, because a",
+        "proportion is only a fact when something else is beside it."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [152, 702],
+          [253, 771],
+          [348, 846]
+        ],
+        "width": [38, 33, 28]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [348, 846],
+          [434, 936],
+          [508, 1021]
+        ],
+        "width": [27, 24, 20]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [508, 1021],
+          [551, 1096]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [556, 1112],
+          [588, 1186]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [593, 1202],
+          [614, 1266]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [136, 356],
+          [253, 399],
+          [364, 441]
+        ],
+        "width": [38, 33, 28]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [364, 441],
+          [465, 484],
+          [561, 527]
+        ],
+        "width": [27, 24, 20]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [561, 527],
+          [620, 553]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [630, 561],
+          [689, 585]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [699, 593],
+          [753, 612]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [88, 160],
+          [178, 101],
+          [263, 43]
+        ],
+        "width": [36, 31, 26]
+      }
+    },
+    {
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [263, 43],
+          [348, -5],
+          [428, -53]
+        ],
+        "width": [26, 23, 19]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [428, -53],
+          [481, -90]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [492, -101],
+          [545, -144]
+        ],
+        "width": [13, 11]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [556, -154],
+          [598, -197]
+        ],
+        "width": [11, 5]
+      }
+    },
+    {
+      "note": [
+        "One wing case, pale. The ground colour is the light one here and the",
+        "pattern is drawn on top of it, which is the opposite of every other",
+        "beetle in the collection - see the fiddle below."
+      ],
+      "id": "elytron",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 372],
+          [106, 375],
+          [213, 388],
+          [245, 473],
+          [266, 606],
+          [269, 739],
+          [245, 846],
+          [191, 926],
+          [98, 979],
+          [0, 1000]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The fiddle. This is the identification and the reason the animal has the",
+        "name it has: a dark field either side of the suture, broad at the",
+        "shoulder, waisted at about two thirds of the way down and closing again",
+        "at the apex - the outline of a violin, laid across both wing cases at",
+        "once.",
+        "",
+        "Drawn as ink on a pale ground rather than as a pale mark on a dark one,",
+        "because that is the way round the animal is built: a fiddler beetle is a",
+        "yellow-green beetle with a black pattern, not a black beetle with yellow",
+        "on it. Getting that backwards would have produced a plate that keys to",
+        "the same six characters and looks like a different insect."
+      ],
+      "id": "marking",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 383],
+          [77, 394],
+          [117, 495],
+          [82, 601],
+          [98, 686],
+          [122, 771],
+          [90, 878],
+          [40, 957],
+          [0, 979]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The rust band that separates the black field from the pale margin.",
+        "",
+        "A plate has two strengths of one pigment and this animal wants three",
+        "colours, so the third is drawn as a *boundary* rather than as a fill -",
+        "which is what an engraver working in one ink did with it too. The line",
+        "is what carries the fiddle's outer edge at small sizes; at eighty pixels",
+        "the fill has gone grey and this is all that is left of the pattern."
+      ],
+      "id": "marking",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [114, 399],
+          [157, 495],
+          [122, 606],
+          [138, 691],
+          [162, 777],
+          [128, 888],
+          [66, 968]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The reticulation. Donovan draws the pale part of each wing case as a",
+        "close net of engraved cells, several hundred of them; five strokes along",
+        "the margin is what survives of that at plate size."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [199, 473],
+          [221, 660],
+          [199, 819]
+        ],
+        "to": [
+          [168, 527],
+          [189, 702],
+          [152, 862]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "The costae - the low longitudinal ribs a cetoniine's wing case carries,",
+        "running the length of the pale field outside the fiddle. Four, and only",
+        "on the pale side: on the dark field they would be invisible on the animal",
+        "and noise on the plate.",
+        "",
+        "The dark field carried three of its own for one pass and lost the waist",
+        "under them. What identifies this animal is the *shape* of that field, so",
+        "it is left flat and every stroke on this wing case sits outside it."
+      ],
+      "id": "stria",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [146, 447],
+          [168, 612],
+          [152, 793]
+        ],
+        "to": [
+          [226, 463],
+          [247, 628],
+          [215, 814]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "The suture, drawn once on the axis. Reflecting it would lay a second copy",
+        "a hair off the first and show as a doubled line."
+      ],
+      "id": "seam",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 399],
+          [0, 660],
+          [0, 979]
+        ]
+      }
+    },
+    {
+      "id": "scutellum",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 362],
+          [82, 394],
+          [45, 479],
+          [0, 527],
+          [-45, 479],
+          [-82, 394]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The pronotum, and the one part of this plate filled with the deep pigment",
+        "rather than the pale: it is black on the animal, and it is black in every",
+        "figure of it. The yellow margins are laid over it below."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 106],
+          [93, 122],
+          [152, 197],
+          [194, 287],
+          [221, 367],
+          [109, 378],
+          [0, 383],
+          [-109, 378],
+          [-221, 367],
+          [-194, 287],
+          [-152, 197],
+          [-93, 122]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The yellow along each side of the pronotum - two lines, in Donovan's own",
+        "words, and the character his specific description opens with, before he",
+        "gets to the wing cases at all.",
+        "",
+        "Filled `pigment` and not `surface`, which is the more truthful of the two",
+        "and reads better as well. The yellow along this shield is the *same*",
+        "yellow as the wing cases, so it wants the same fill they have; bare paper",
+        "made two hard white patches on a black ground that read as a second pair",
+        "of eyes.",
+        "",
+        "A `strip` rather than a closed curve. Drawn as an outer chain of points",
+        "and an inner one, the smoothing bows each corner outward and the band",
+        "came out half the width of the shield - two white eyes rather than two",
+        "margins. A strip offsets along the measured edge's own normal, which is",
+        "what a band following a margin actually is."
+      ],
+      "id": "marking",
+      "rank": "detail",
+      "fill": "pigment",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "strip",
+        "edge": [
+          [88, 128],
+          [146, 202],
+          [189, 293],
+          [213, 362]
+        ],
+        "depth": [40, 46, 46, 40]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [24, 181],
+          [29, 287]
+        ],
+        "to": [
+          [88, 207],
+          [114, 309]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "note": [
+        "The head. Narrow and squared off in front, where the Christmas beetle's",
+        "is a broad shovel - the difference between a scarab that digs and one",
+        "that feeds at flowers, and visible in dorsal view without a lens.",
+        "",
+        "Donovan draws it cocked about ten pixels to the animal's right, as he",
+        "does the Christmas beetle's. Drawn square here for the same reason."
+      ],
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 0],
+          [56, 11],
+          [77, 64],
+          [66, 112],
+          [0, 133],
+          [-66, 112],
+          [-77, 64],
+          [-56, 11]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [56, 74],
+        "radii": [18, 13],
+        "rotate": -22
+      }
+    },
+    {
+      "note": [
+        "A lamellate club, as on every scarab. Drawn as one filled club with two",
+        "lines across it rather than as three separate plates, which at plate size",
+        "would be three smudges."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [61, 48],
+          [109, 27],
+          [152, 11]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [157, 5],
+          [189, -16],
+          [215, -37]
+        ],
+        "width": [22, 24, 19]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [170, -21],
+          [181, 0]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [197, -37],
+          [207, -16]
+        ]
+      }
+    }
+  ]
+}

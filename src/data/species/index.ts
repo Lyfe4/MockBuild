@@ -7,6 +7,8 @@ import { AESHNA_CYANEA } from './aeshna-cyanea';
 import { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
 import { AGLAIS_IO } from './aglais-io';
 import { AGLAIS_IO_PLATE } from './aglais-io.plate';
+import { ANOPLOGNATHUS_VIRIDIAENEUS } from './anoplognathus-viridiaeneus';
+import { ANOPLOGNATHUS_VIRIDIAENEUS_PLATE } from './anoplognathus-viridiaeneus.plate';
 import { BOMBUS_TERRESTRIS } from './bombus-terrestris';
 import { BOMBUS_TERRESTRIS_PLATE } from './bombus-terrestris.plate';
 import { CARABUS_VIOLACEUS } from './carabus-violaceus';
@@ -17,6 +19,8 @@ import { CHRYSOLINA_COERULANS } from './chrysolina-coerulans';
 import { CHRYSOLINA_COERULANS_PLATE } from './chrysolina-coerulans.plate';
 import { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
 import { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
+import { EUPOECILA_AUSTRALASIAE } from './eupoecila-australasiae';
+import { EUPOECILA_AUSTRALASIAE_PLATE } from './eupoecila-australasiae.plate';
 import { FORMICA_RUFA } from './formica-rufa';
 import { FORMICA_RUFA_PLATE } from './formica-rufa.plate';
 import { GRAPHOSOMA_ITALICUM } from './graphosoma-italicum';
@@ -66,6 +70,8 @@ export const SPECIES: readonly Species[] = [
   FORMICA_RUFA,
   GRAPHOSOMA_ITALICUM,
   GRYLLUS_CAMPESTRIS,
+  ANOPLOGNATHUS_VIRIDIAENEUS,
+  EUPOECILA_AUSTRALASIAE,
 ];
 
 const PLATES: readonly SpeciesPlate[] = [
@@ -85,6 +91,8 @@ const PLATES: readonly SpeciesPlate[] = [
   FORMICA_RUFA_PLATE,
   GRAPHOSOMA_ITALICUM_PLATE,
   GRYLLUS_CAMPESTRIS_PLATE,
+  ANOPLOGNATHUS_VIRIDIAENEUS_PLATE,
+  EUPOECILA_AUSTRALASIAE_PLATE,
 ];
 
 /** The prefix on every accession number. Thornfield Entomological Archive. */
@@ -154,6 +162,8 @@ export { AESHNA_CYANEA } from './aeshna-cyanea';
 export { AESHNA_CYANEA_PLATE } from './aeshna-cyanea.plate';
 export { AGLAIS_IO } from './aglais-io';
 export { AGLAIS_IO_PLATE } from './aglais-io.plate';
+export { ANOPLOGNATHUS_VIRIDIAENEUS } from './anoplognathus-viridiaeneus';
+export { ANOPLOGNATHUS_VIRIDIAENEUS_PLATE } from './anoplognathus-viridiaeneus.plate';
 export { BOMBUS_TERRESTRIS } from './bombus-terrestris';
 export { BOMBUS_TERRESTRIS_PLATE } from './bombus-terrestris.plate';
 export { CARABUS_VIOLACEUS } from './carabus-violaceus';
@@ -164,6 +174,8 @@ export { CHRYSOLINA_COERULANS } from './chrysolina-coerulans';
 export { CHRYSOLINA_COERULANS_PLATE } from './chrysolina-coerulans.plate';
 export { COCCINELLA_SEPTEMPUNCTATA } from './coccinella-septempunctata';
 export { COCCINELLA_SEPTEMPUNCTATA_PLATE } from './coccinella-septempunctata.plate';
+export { EUPOECILA_AUSTRALASIAE } from './eupoecila-australasiae';
+export { EUPOECILA_AUSTRALASIAE_PLATE } from './eupoecila-australasiae.plate';
 export { FORMICA_RUFA } from './formica-rufa';
 export { FORMICA_RUFA_PLATE } from './formica-rufa.plate';
 export { GRAPHOSOMA_ITALICUM } from './graphosoma-italicum';

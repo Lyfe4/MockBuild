@@ -31,6 +31,7 @@ export const GRAPHOSOMA_ITALICUM: Species = {
   // Adults overwinter under leaf litter and are on the umbels from late spring
   // to autumn; one generation a year.
   activeMonths: [5, 6, 7, 8, 9, 10],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'hemelytra',
     antennae: 'filiform',

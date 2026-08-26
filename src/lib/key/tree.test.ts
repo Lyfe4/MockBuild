@@ -45,6 +45,7 @@ function species(overrides: Partial<Species> & Pick<Species, 'id'>): Species {
     sizeBasis: 'body length',
     distribution: 'Nowhere',
     activeMonths: [5, 6],
+    monthsHemisphere: 'northern',
     morphology: {
       wingCover: 'elytra',
       antennae: 'lamellate',
@@ -117,10 +118,21 @@ describe('buildKey', () => {
     expect(depth).toBeLessThanOrEqual(5);
 
     // Then exactly, so a record that makes the key deeper has to be looked at
-    // rather than absorbed. Three, today: the wing cases split the collection
-    // four ways, shape splits the beetles and the membranous-winged, and only
-    // the hornet and the southern hawker need a third question.
-    expect(depth).toBe(3);
+    // rather than absorbed.
+    //
+    // Four, today, and it went from three when the two Australian scarabs were
+    // accessioned. The first question is the wing cases, which now put *seven*
+    // beetles down one branch — a stag beetle, a ladybird, two ground and leaf
+    // beetles and three scarabs. Seven cannot be separated in two questions by
+    // characters that split at best three ways, so that branch needs a fourth
+    // where every other branch still needs two or three.
+    //
+    // Which is the shape of the problem to watch: the archive's beetles
+    // outnumber every other order together, and the character the key opens on
+    // is the one they all answer the same way. An eighth beetle will not make it
+    // deeper, but a fifteenth will, and at that point the fix is a character
+    // that divides Coleoptera rather than a deeper tree.
+    expect(depth).toBe(4);
   });
 
   it('opens on a structural character, not on colour', () => {

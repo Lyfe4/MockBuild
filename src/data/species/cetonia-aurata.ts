@@ -29,6 +29,7 @@ export const CETONIA_AURATA: Species = {
   // take two years in rotting wood, so the adults are the short part of the
   // life cycle.
   activeMonths: [5, 6, 7, 8, 9],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'elytra',
     antennae: 'lamellate',

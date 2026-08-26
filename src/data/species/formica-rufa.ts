@@ -36,6 +36,7 @@ export const FORMICA_RUFA: Species = {
   // clustered deep in the mound. The winged castes fly in a few days of high
   // summer, which is not what this record describes.
   activeMonths: [3, 4, 5, 6, 7, 8, 9, 10],
+  monthsHemisphere: 'northern',
   morphology: {
     // A worker has none at all. The only record in the collection that says so.
     wingCover: 'absent',

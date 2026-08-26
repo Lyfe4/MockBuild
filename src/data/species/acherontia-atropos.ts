@@ -33,6 +33,7 @@ export const ACHERONTIA_ATROPOS: Species = {
   // reach northern Europe from late summer and a second brood may emerge there
   // in autumn; almost nothing is seen before August.
   activeMonths: [8, 9, 10, 11],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'scaled',
     // Stout at the base and tapering to a fine point, which is a hawkmoth's.

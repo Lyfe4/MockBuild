@@ -33,6 +33,7 @@ export const CARABUS_VIOLACEUS: Species = {
   // frosts. Nocturnal, so the months are when it is active rather than when it
   // is seen.
   activeMonths: [4, 5, 6, 7, 8, 9, 10],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'elytra',
     antennae: 'filiform',

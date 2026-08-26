@@ -36,6 +36,7 @@ export const CHRYSOLINA_COERULANS: Species = {
   // Adults overwinter in the soil and are on the plant from the first warm
   // weather; two generations in a good year, so they are found until autumn.
   activeMonths: [4, 5, 6, 7, 8, 9],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'elytra',
     antennae: 'filiform',

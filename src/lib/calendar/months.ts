@@ -1,5 +1,5 @@
 import { seasonOfMonth } from '@/lib/season';
-import type { Month, Season, Species } from '@/types';
+import type { Hemisphere, Month, Season, Species } from '@/types';
 
 /**
  * The month arithmetic a phenology calendar needs, and nothing else.
@@ -19,12 +19,18 @@ import type { Month, Season, Species } from '@/types';
  * spring, summer and autumn as an unbroken run of three columns. Only winter is
  * split, two columns at the start and one at the end.
  *
- * The cost is real and it is worth stating rather than discovering. Every record
- * here was observed in the **northern** hemisphere, where the flight season is
+ * The cost is real and it is worth stating rather than discovering. Most records
+ * here were observed in the **northern** hemisphere, where the flight season is
  * centred on June and July — so a great many of these animals are on the wing
  * *across the cut*, and their bars appear at both ends of the row. The stag
  * beetle flies May to August: one period, four months, and in a July-first chart
  * two columns at the left edge and two at the right.
+ *
+ * The two Australian scarabs are the exception and they show it: November to
+ * February sits squarely in the middle of a July-first year, which is exactly
+ * what a southern-hemisphere flight season does to this layout. They are the
+ * only rows on the chart that need no explaining, and `Species.monthsHemisphere`
+ * is what lets the page tell the difference.
  *
  * Which is why everything below treats the year as the ring it is. `activeRuns`
  * joins a run that crosses the cut, so the prose says "May to August" rather
@@ -191,6 +197,24 @@ export function firstActiveIndex(species: Species): number {
   if (first === undefined) return CALENDAR_MONTHS.length;
 
   return CALENDAR_MONTHS.indexOf(first.from);
+}
+
+/**
+ * Whether any record in a collection had its months observed in `hemisphere`.
+ *
+ * The calendar and the catalogue's filter both have to explain that a
+ * northern-hemisphere flight season read against Thornfield's southern months
+ * is a relabelling rather than a claim about the animal. That explanation is
+ * only worth printing while there is something on the page it applies to, and
+ * "sixteen of these were northern" was a sentence typed in when sixteen of them
+ * were all of them.
+ *
+ * A boolean rather than a count, deliberately. A count would have to be spelled
+ * out in words to sit in the prose, and prose that says "most" stays true
+ * however the collection grows.
+ */
+export function hasHemisphere(species: readonly Species[], hemisphere: Hemisphere): boolean {
+  return species.some((one) => one.monthsHemisphere === hemisphere);
 }
 
 /** `activeRuns` in words. Empty months read as a sentence too, not as silence. */

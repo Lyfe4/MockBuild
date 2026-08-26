@@ -27,6 +27,7 @@ export const AESHNA_CYANEA: Species = {
   // On the wing from June to October, with the odd individual in May and
   // November.
   activeMonths: [5, 6, 7, 8, 9, 10, 11],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'membranous',
     antennae: 'setaceous',

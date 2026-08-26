@@ -35,6 +35,7 @@ export const BOMBUS_TERRESTRIS: Species = {
   // February in mild years, and in southern England some colonies now stay
   // active through the winter on garden flowers.
   activeMonths: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'membranous',
     antennae: 'filiform',

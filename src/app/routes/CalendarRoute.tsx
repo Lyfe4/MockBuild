@@ -13,6 +13,7 @@ import {
   CALENDAR_ORDERS,
   calendarRows,
   describeActiveMonths,
+  hasHemisphere,
   isActiveIn,
   monthAbbreviation,
   monthName,
@@ -58,10 +59,16 @@ import styles from './CalendarRoute.module.css';
  * switcher changes what the *data* looks like rather than only what colour it
  * is drawn in.
  *
- * The months on every record were observed in the **northern** hemisphere and
+ * Most records' months were observed in the **northern** hemisphere and
  * `seasonOfMonth` reads them as Thornfield's southern ones. That has to be said
  * out loud wherever it appears, so the note under the heading says it — the same
  * rule the catalogue's season filter and the specimen sheet follow.
+ *
+ * The word is "most" and it is read off the data through `hasHemisphere`, not
+ * typed in. It said "every" while every record was European, which was true
+ * when written and became false the moment two Australian scarabs were
+ * accessioned — and their rows are the only two on this chart that need no
+ * explaining at all.
  */
 
 /**
@@ -84,6 +91,12 @@ export function CalendarRoute() {
   const rows = useMemo(() => calendarRows(SPECIES, order), [order]);
   const currentMonth = useMemo(() => monthOfDate(TODAY), []);
   const seasonMonths = useMemo(() => new Set<Month>(monthsOfSeason(season)), [season]);
+
+  // Read off the records rather than written into the prose. See the note above
+  // `TODAY` — the sentence said "every record" for as long as every record was
+  // European, and nothing on the page could have caught it changing.
+  const northernRecords = hasHemisphere(SPECIES, 'northern');
+  const southernRecords = hasHemisphere(SPECIES, 'southern');
 
   const summary =
     `Months of adult activity for all ${String(SPECIES.length)} specimens, ` +
@@ -112,10 +125,18 @@ export function CalendarRoute() {
 
         <p className={styles.note}>
           The year runs <strong>July to June</strong>, which keeps spring, summer and autumn as
-          unbroken runs of three columns and splits only winter. Every record&rsquo;s months were
-          observed in the <strong>northern</strong> hemisphere and are shown against
-          Thornfield&rsquo;s southern seasons, so a European stag beetle flying from May to August
-          lands in autumn and winter. That is what the months say, not a claim about the animal.
+          unbroken runs of three columns and splits only winter.{' '}
+          {northernRecords ? (
+            <>
+              Most of these records&rsquo; months were observed in the <strong>northern</strong>{' '}
+              hemisphere and are shown against Thornfield&rsquo;s southern seasons, so a European
+              stag beetle flying from May to August lands in autumn and winter. That is what the
+              months say, not a claim about the animal.
+              {southernRecords ? (
+                <> The Australian species are the exception: their months were observed here.</>
+              ) : null}
+            </>
+          ) : null}
         </p>
 
         <p className={styles.note}>

@@ -33,6 +33,7 @@ export const LUCANUS_CERVUS: Species = {
     'Widespread across continental Europe and locally in south-east England, absent from Ireland, and extending east through Asia Minor and the Caucasus to western Kazakhstan.',
   // Adults emerge from late May and are gone by early August.
   activeMonths: [5, 6, 7, 8],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'elytra',
     antennae: 'lamellate',

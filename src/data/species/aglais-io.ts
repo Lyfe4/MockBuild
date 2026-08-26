@@ -38,6 +38,7 @@ export const AGLAIS_IO: Species = {
   // February are the only months no peacock is about, and a warm February will
   // wake them.
   activeMonths: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'scaled',
     antennae: 'clavate',

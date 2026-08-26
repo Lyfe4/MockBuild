@@ -1,0 +1,602 @@
+{
+  "species": "anoplognathus-viridiaeneus",
+  "constant": "ANOPLOGNATHUS_VIRIDIAENEUS_PLATE",
+  "order": "coleoptera",
+  "sex": "unsexed",
+  "hallmark": "the unbroken oval of pronotum and wing cases, and the hairy pygidium left uncovered behind them",
+  "reference": {
+    "title": "Melolontha viridi-aenea, from An epitome of the natural history of the insects of New Holland, plate 1",
+    "artist": "Edward Donovan",
+    "year": 1805,
+    "source": "https://archive.org/details/epitomeofnatura00dono",
+    "licence": "Public domain (published 1805, author died 1837)"
+  },
+  "doc": [
+    "*Anoplognathus viridiaeneus*, dorsal - the king Christmas beetle.",
+    "",
+    "Traced from plate 1 of Edward Donovan's *An epitome of the natural history",
+    "of the insects of New Holland* (1805), where the animal is figured and named",
+    "*Melolontha viridi-aenea* - the description Donovan published it under, and",
+    "the reason his plate is the type figure for the species.",
+    "`references/anoplognathus-viridiaeneus.jpg` is that figure, cut from the",
+    "sheet and turned upright; the whole plate carries nine beetles and this is",
+    "the large one in the middle.",
+    "",
+    "## What identifies it",
+    "",
+    "Size and shape, before colour. It is one of the largest Christmas beetles -",
+    "28 to 34 mm - and the outline is one unbroken oval from the front of the",
+    "clypeus to the apex of the wing cases, because the pronotum is at its widest",
+    "exactly where the elytra begin. Then the **pygidium**, uncovered behind the",
+    "wing cases, and the broad squared **clypeus** at the front. All three are",
+    "drawn.",
+    "",
+    "The colour is not drawn and cannot be: red-brown under a gold-green sheen",
+    "that shifts with the angle it is held at. `morphology.colourFamily` says",
+    "`metallic`, which is where that fact belongs - the same call the rose chafer",
+    "made.",
+    "",
+    "## The figure leans, and the plate does not",
+    "",
+    "Donovan's beetle is rolled onto its left side by something like twenty",
+    "degrees, and cocks its head a few more. A roll about the long axis",
+    "foreshortens width and leaves length alone, so the figure measures 0.48 as",
+    "wide as it is long against the 0.57 the published measurements give - 16 to",
+    "19.5 mm across at 28 to 34 mm long. Every x measured off the reference is",
+    "therefore multiplied by 1.19, the factor that restores that ratio, and the",
+    "head is drawn square.",
+    "",
+    "Both corrections are written down rather than quietly applied. A reader",
+    "checking this plate against the reference will measure the same 0.48 and is",
+    "owed the reason the numbers here differ. It is the same bargain the field",
+    "cricket's plate struck - arrangement off the reference, proportions off the",
+    "published measurements - and it is struck for the same reason.",
+    "",
+    "## Plate space",
+    "",
+    "y = 0 at the front margin of the clypeus, y = 1000 at the tip of the",
+    "pygidium, so the wing cases end at about y = 976 and the last stretch is",
+    "abdomen - exactly as on the rose chafer. The middle legs reach past x = 570",
+    "and the fore tarsi above y = -100."
+  ],
+  "parts": [
+    {
+      "note": [
+        "Legs first, so they pass under the wing cases.",
+        "",
+        "A Christmas beetle is a heavy animal on stout legs, and the tibiae",
+        "carry a fringe of stiff spines that Donovan draws one by one. They are",
+        "not drawn here: at eighty pixels a spine is a burr on the outline and",
+        "six burred limbs read as a smudge. The femora are measured at about",
+        "eight per cent of the width across the wing cases rather than the six",
+        "CLAUDE.md gives as usual, which is what the reference shows and what",
+        "separates a scarab's leg from a ground beetle's."
+      ],
+      "id": "hindleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [160, 740],
+          [268, 787],
+          [382, 833]
+        ],
+        "width": [46, 40, 33]
+      }
+    },
+    {
+      "id": "hindleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [382, 833],
+          [498, 898],
+          [600, 959]
+        ],
+        "width": [33, 29, 24]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [600, 959],
+          [655, 1016]
+        ],
+        "width": [19, 16]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [663, 1030],
+          [701, 1089]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "hindleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [706, 1102],
+          [730, 1150]
+        ],
+        "width": [13, 6]
+      }
+    },
+    {
+      "id": "midleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [140, 394],
+          [285, 435],
+          [426, 472]
+        ],
+        "width": [46, 40, 33]
+      }
+    },
+    {
+      "id": "midleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [426, 472],
+          [535, 508],
+          [639, 541]
+        ],
+        "width": [33, 29, 24]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [639, 541],
+          [697, 561]
+        ],
+        "width": [19, 16]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [706, 567],
+          [759, 581]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "midleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [769, 585],
+          [813, 589]
+        ],
+        "width": [13, 6]
+      }
+    },
+    {
+      "id": "foreleg-femur",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [116, 260],
+          [184, 183],
+          [237, 110]
+        ],
+        "width": [44, 38, 32]
+      }
+    },
+    {
+      "note": [
+        "The fore tibia, toothed on its outer edge for digging. Drawn as a taper",
+        "rather than as three separate spurs, for the reason given above the hind",
+        "femur: the widening towards the tip is what actually reads."
+      ],
+      "id": "foreleg-tibia",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [237, 110],
+          [256, 41],
+          [266, -28]
+        ],
+        "width": [32, 28, 23]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [266, -28],
+          [256, -81]
+        ],
+        "width": [19, 16]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [252, -93],
+          [232, -146]
+        ],
+        "width": [16, 13]
+      }
+    },
+    {
+      "id": "foreleg-tarsus",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [227, -159],
+          [203, -203]
+        ],
+        "width": [13, 6]
+      }
+    },
+    {
+      "note": [
+        "The pygidium - the last abdominal segment, left uncovered because a",
+        "chafer's wing cases stop short of it. Bright green on the living animal",
+        "and clothed in pale hair, which is why Donovan gives it a colour of its",
+        "own. Drawn behind the elytra so they overlap its front edge, exactly as",
+        "the reference shows.",
+        "",
+        "It is also what y = 1000 is measured to. The elytral apex is at about",
+        "y = 950 and the last fifty units of this plate are abdomen. Fifty rather",
+        "than the twenty-eight of the first pass, which the wing cases covered",
+        "entirely - a pygidium that does not clear them is not drawn at all."
+      ],
+      "id": "abdomen",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 841],
+          [116, 870],
+          [126, 935],
+          [82, 984],
+          [0, 1008],
+          [-82, 984],
+          [-126, 935],
+          [-116, 870]
+        ]
+      }
+    },
+    {
+      "note": [
+        "One wing case. The suture between the pair is the midline, so the inner",
+        "edge of this shape is the axis and the renderer's reflection draws the",
+        "other one against it."
+      ],
+      "id": "elytron",
+      "rank": "outline",
+      "fill": "pigment",
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 370],
+          [119, 372],
+          [227, 382],
+          [256, 435],
+          [273, 537],
+          [278, 675],
+          [268, 780],
+          [242, 846],
+          [198, 898],
+          [126, 923],
+          [0, 935]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The striae. An Anoplognathus is polished rather than deeply grooved, so",
+        "what shows is three shallow lines and the raised shoulder - not the eight",
+        "sharp furrows a ground beetle gets."
+      ],
+      "id": "stria",
+      "rank": "structure",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [39, 455],
+          [34, 667],
+          [44, 833]
+        ],
+        "to": [
+          [208, 447],
+          [247, 675],
+          [164, 850]
+        ],
+        "count": 3
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [24, 585],
+          [19, 732],
+          [29, 846]
+        ],
+        "to": [
+          [126, 780],
+          [140, 866],
+          [121, 902]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "note": [
+        "The swell of the wing case, and the correction that took two passes.",
+        "",
+        "It was first drawn as a long panel of bare paper clipped to the elytron -",
+        "the gloss every figure of a polished scarab shows. On the page that read",
+        "as a pale *marking*, which is the one thing this animal has not got, and",
+        "a plate suggesting the rose chafer's flecks on an unmarked beetle keys a",
+        "reader to the wrong species. So the highlight became its opposite: five",
+        "fine strokes crowding the outer margin, leaving the crown of the case",
+        "bare. Shading is what an engraver had, and it cannot be mistaken for a",
+        "mark on the animal."
+      ],
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "elytron",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [160, 472],
+          [198, 634],
+          [213, 780]
+        ],
+        "to": [
+          [82, 634],
+          [111, 797],
+          [140, 902]
+        ],
+        "count": 5
+      }
+    },
+    {
+      "note": [
+        "The suture, drawn once on the axis. Reflecting it would lay a second",
+        "copy a hair off the first and show as a doubled line down the back."
+      ],
+      "id": "seam",
+      "rank": "structure",
+      "fill": "none",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [0, 394],
+          [0, 675],
+          [0, 959]
+        ]
+      }
+    },
+    {
+      "id": "scutellum",
+      "rank": "structure",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 374],
+          [77, 398],
+          [44, 463],
+          [0, 496],
+          [-44, 463],
+          [-77, 398]
+        ]
+      }
+    },
+    {
+      "note": [
+        "The pronotum: broad, strongly convex, narrowing forward to about two",
+        "thirds of its basal width. It is widest at its own base, where it meets",
+        "the wing cases - which is what makes the outline of this animal a single",
+        "unbroken oval from the head backwards, and is the first thing to get",
+        "right about it."
+      ],
+      "id": "pronotum",
+      "rank": "outline",
+      "fill": "pigment",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 163],
+          [92, 171],
+          [164, 232],
+          [203, 313],
+          [227, 366],
+          [160, 374],
+          [0, 378],
+          [-160, 374],
+          [-227, 366],
+          [-203, 313],
+          [-164, 232],
+          [-92, 171]
+        ]
+      }
+    },
+    {
+      "id": "hatching",
+      "rank": "detail",
+      "fill": "none",
+      "clipTo": "pronotum",
+      "shape": {
+        "kind": "fan",
+        "from": [
+          [24, 220],
+          [24, 313]
+        ],
+        "to": [
+          [150, 232],
+          [184, 325]
+        ],
+        "count": 4
+      }
+    },
+    {
+      "note": [
+        "The head, which on this animal is mostly clypeus: a broad plate, squared",
+        "across the front and turned up at the margin, and what a Christmas",
+        "beetle pushes soil with.",
+        "",
+        "Donovan draws it cocked a few degrees to the animal's right. It is drawn",
+        "square here, because a plate that inherited the tilt would be drawing",
+        "that specimen's pose rather than the species."
+      ],
+      "id": "head",
+      "rank": "outline",
+      "fill": "pigment-deep",
+      "mirror": false,
+      "shape": {
+        "kind": "curve",
+        "closed": true,
+        "points": [
+          [0, 0],
+          [73, 4],
+          [102, 57],
+          [111, 118],
+          [92, 159],
+          [0, 171],
+          [-92, 159],
+          [-111, 118],
+          [-102, 57],
+          [-73, 4]
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "rank": "detail",
+      "fill": "ink",
+      "shape": {
+        "kind": "ellipse",
+        "at": [92, 114],
+        "radii": [26, 17],
+        "rotate": -28
+      }
+    },
+    {
+      "note": [
+        "A lamellate club - three flat plates that open like a fan, and the",
+        "character that puts this beetle in the Scarabaeoidea. Drawn as one filled",
+        "club with two lines across it, because three separate lamellae at plate",
+        "size is three smudges. The record says `lamellate`; this is the drawing",
+        "of that word."
+      ],
+      "id": "antenna",
+      "rank": "structure",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [82, 85],
+          [131, 65],
+          [169, 49]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "pigment-deep",
+      "shape": {
+        "kind": "capsule",
+        "spine": [
+          [174, 45],
+          [208, 24],
+          [237, 4]
+        ],
+        "width": [30, 32, 26]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [189, 12],
+          [208, 45]
+        ]
+      }
+    },
+    {
+      "id": "antenna",
+      "rank": "detail",
+      "fill": "none",
+      "shape": {
+        "kind": "curve",
+        "points": [
+          [218, -4],
+          [237, 28]
+        ]
+      }
+    }
+  ]
+}

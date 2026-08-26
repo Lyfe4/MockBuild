@@ -30,6 +30,7 @@ export const PALOMENA_PRASINA: Species = {
   // gap in the middle rather than at the ends: the old generation is on the
   // wing from April, the new one from August, and both are counted here.
   activeMonths: [4, 5, 6, 7, 8, 9, 10],
+  monthsHemisphere: 'northern',
   morphology: {
     // Hard at the base, membranous at the tip. See the note above.
     wingCover: 'hemelytra',

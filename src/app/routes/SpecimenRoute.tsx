@@ -6,6 +6,7 @@ import { SpeciesIllustration } from '@/components/SpeciesIllustration';
 import { catalogueNumberOf, findPlate, SPECIES } from '@/data';
 import { useSeason } from '@/features/theme';
 import { useDocumentTitle } from '@/hooks';
+import { activeRuns, monthName } from '@/lib/calendar';
 import { binomialOf, sortSpecies } from '@/lib/catalogue';
 import { cx } from '@/lib/classNames';
 import { seasonOfMonth } from '@/lib/season';
@@ -39,21 +40,6 @@ const MONTH_INITIALS: Record<Month, string> = {
   12: 'D',
 };
 
-const MONTH_NAMES: Record<Month, string> = {
-  1: 'January',
-  2: 'February',
-  3: 'March',
-  4: 'April',
-  5: 'May',
-  6: 'June',
-  7: 'July',
-  8: 'August',
-  9: 'September',
-  10: 'October',
-  11: 'November',
-  12: 'December',
-};
-
 interface LabelRowProps {
   term: string;
   children: ReactNode;
@@ -68,29 +54,20 @@ function LabelRow({ term, children }: LabelRowProps) {
   );
 }
 
-/** `May–August`, or `May, July` where the months do not run together. */
-function formatMonths(months: readonly Month[]): string {
-  const sorted = [...months].sort((a, b) => a - b);
-  const runs: Month[][] = [];
-
-  for (const month of sorted) {
-    const last = runs.at(-1);
-    const previous = last?.at(-1);
-
-    if (last !== undefined && previous !== undefined && month === previous + 1) last.push(month);
-    else runs.push([month]);
-  }
-
-  return runs
-    .map((run) => {
-      const first = run[0];
-      const final = run.at(-1);
-
-      if (first === undefined || final === undefined) return '';
-
-      return run.length > 1 ? `${MONTH_NAMES[first]}–${MONTH_NAMES[final]}` : MONTH_NAMES[first];
-    })
-    .join(', ');
+/**
+ * `May–August`, or `May, July` where the months do not run together.
+ *
+ * Over `activeRuns`, which walks the year as the ring it is. The sheet had its
+ * own run-finder that read the array in January-first order and broke a run at
+ * the turn of the year: a king Christmas beetle flying November to February came
+ * out as "January–February, November–December" — two flight periods, neither of
+ * which exists. It was invisible while every record was European, because a
+ * northern flight season never crosses December.
+ */
+function formatMonths(species: Species): string {
+  return activeRuns(species)
+    .map(({ from, to }) => (from === to ? monthName(from) : `${monthName(from)}–${monthName(to)}`))
+    .join(', and again ');
 }
 
 interface PhenologyProps {
@@ -101,11 +78,13 @@ interface PhenologyProps {
 /**
  * Twelve cells, one a month, filled where the adult is on the wing.
  *
- * The months in the record were observed in the northern hemisphere and
  * Thornfield keeps a southern calendar, so the strip marks the months of the
- * *current* season as well — which is the honest way to show the mismatch
- * rather than quietly resolving it. The sentence under the strip says which is
- * which.
+ * *current* season as well — which is the honest way to show a mismatch rather
+ * than quietly resolving it. The sentence under the strip says which is which,
+ * and reads `monthsHemisphere` to say it: for a European animal the two sets of
+ * months are not the same weather, and for the two Australian scarabs they are.
+ * Printing the caveat over a record that has not got the problem would be the
+ * same failure in the other direction.
  *
  * The strip itself is `aria-hidden`: twelve one-letter cells read aloud are
  * noise, and the same information is in the prose beside it.
@@ -131,9 +110,12 @@ function Phenology({ months, species }: PhenologyProps) {
         ))}
       </ol>
       <p className={styles.phenologyNote}>
-        Adults on the wing {formatMonths(months)}. The outlined cells are the months of
-        Thornfield&rsquo;s {season}; {binomialOf(species)} was recorded in the northern hemisphere,
-        so the two are not the same weather.
+        Adults on the wing {formatMonths(species)}. The outlined cells are the months of
+        Thornfield&rsquo;s {season}; {binomialOf(species)} was recorded in the{' '}
+        {species.monthsHemisphere} hemisphere,{' '}
+        {species.monthsHemisphere === 'southern'
+          ? 'so these are Thornfield’s own months.'
+          : 'so the two are not the same weather.'}
       </p>
     </div>
   );

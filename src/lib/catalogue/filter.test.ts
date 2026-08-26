@@ -37,6 +37,7 @@ function species(overrides: Partial<Species> & Pick<Species, 'id'>): Species {
     sizeBasis: 'body length',
     distribution: 'Europe',
     activeMonths: [5, 6, 7, 8],
+    monthsHemisphere: 'northern',
     morphology: {
       wingCover: 'elytra',
       antennae: 'lamellate',

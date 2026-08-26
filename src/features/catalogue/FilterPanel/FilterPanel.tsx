@@ -216,8 +216,12 @@ export function FilterPanel({ query, orders, families, onChange }: FilterPanelPr
       <CheckboxGroup<Season>
         legend="On the wing"
         // Said plainly, because it would otherwise read as a claim about the
-        // animals: every species here was recorded in the northern hemisphere,
-        // and Thornfield keeps a southern calendar.
+        // animals: most species here were recorded in the northern hemisphere
+        // and Thornfield keeps a southern calendar, so the facet relabels their
+        // months rather than describing their weather. The hint is worded to be
+        // true of both halves of the collection — the two Australian scarabs
+        // were recorded in these seasons — which is why it names the seasons as
+        // Thornfield's rather than calling the records northern.
         hint="Months of adult activity, read against Thornfield’s southern seasons."
         options={SEASONS}
         labels={SEASON_LABELS}

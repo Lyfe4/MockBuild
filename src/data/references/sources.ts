@@ -514,6 +514,62 @@ export const REFERENCE_SOURCES: readonly ReferenceSource[] = [
       'It was chosen anyway, because the alternatives were worse. The Orthoptera are badly served by public-domain specimen plates, and this was the only figure of the species with a usable licence and a legible outline; the several sharper images on Commons are modern photographs under Creative Commons terms, which the plate contract does not accept.',
     ],
   },
+  {
+    species: 'anoplognathus-viridiaeneus',
+    heading: 'Anoplognathus viridiaeneus',
+    subject:
+      '_Anoplognathus viridiaeneus_ (Donovan, 1805) — king Christmas beetle. Figured and named _Melolontha viridi-aenea_, the description the species was erected on.',
+    view: '**Dorsal, whole animal, legs spread — the large figure in the middle of the sheet.** Cut from the plate and rotated 135° so the body axis runs down the page; nothing else altered.',
+    pixels: '580 × 710',
+    weight: '105 KB',
+    sourcePage: 'https://archive.org/details/epitomeofnatura00dono',
+    fileUrl: 'https://archive.org/download/epitomeofnatura00dono/page/n13_w3000.jpg',
+    artist: 'Edward Donovan',
+    artistLine: 'Edward Donovan (1768–1837), author and engraver',
+    work: 'An epitome of the natural history of the insects of New Holland, New Zealand, New Guinea, Otaheite, and other islands in the Indian, Southern, and Pacific oceans',
+    imprint: 'London: printed for the author, and F. C. and J. Rivington, 1805',
+    figure: 'Plate 1 (Coleoptera), the fifth name in the plate’s own caption',
+    publishedNote:
+      'Scanned by the Biodiversity Heritage Library from the Smithsonian Libraries copy; the item records “Not in copyright. The BHL knows of no copyright restrictions on this item.”',
+    year: 1805,
+    licence: 'Public domain (published 1805, author died 1837)',
+    licenceDetail:
+      '**Public domain.** Published in 1805, and Donovan died in 1837 — expired everywhere on both counts. The scan carries no separate claim: the Internet Archive item, digitised for the Biodiversity Heritage Library, records `possible-copyright-status: Not in copyright. The BHL knows of no copyright restrictions on this item.`',
+    downloaded: '2026-08-26',
+    notes: [
+      'The oldest reference in the folder by seventy years, and the only one that is a **type figure** — Donovan published the species off this drawing, so it is not merely a picture of the animal but the picture the name was attached to. That is worth more here than sharpness would be.',
+      'Two corrections were needed and both are recorded in the landmark file. Donovan’s beetle is rolled onto its left side by something like twenty degrees, which foreshortens width and leaves length alone: the figure measures 0.48 as wide as it is long against the 0.57 the published measurements give, so every x taken off it is multiplied by 1.19. And the head is drawn cocked a few degrees, which the plate squares up. A reader checking the plate against this file will measure the same 0.48 and is owed the reason.',
+      'Everything else came straight off the figure: the pronotum at its widest exactly where the wing cases begin, the hairy pygidium left uncovered behind them, the toothed fore tibiae and the broad squared clypeus. The gold-green lustre did not, and could not — a plate is inked in one seasonal earth, and the record says `metallic` in words instead.',
+    ],
+  },
+  {
+    species: 'eupoecila-australasiae',
+    heading: 'Eupoecila australasiae',
+    subject:
+      '_Eupoecila australasiae_ (Donovan, 1805) — fiddler beetle. Figured and named _Cetonia australasiae_.',
+    view: '**Dorsal, whole animal, legs spread — the middle figure on the left of the sheet.** Cut from the plate and rotated 38.8° so the body axis runs down the page; nothing else altered.',
+    pixels: '660 × 760',
+    weight: '100 KB',
+    sourcePage: 'https://archive.org/details/epitomeofnatura00dono',
+    fileUrl: 'https://archive.org/download/epitomeofnatura00dono/page/n13_w3000.jpg',
+    artist: 'Edward Donovan',
+    artistLine: 'Edward Donovan (1768–1837), author and engraver',
+    work: 'An epitome of the natural history of the insects of New Holland, New Zealand, New Guinea, Otaheite, and other islands in the Indian, Southern, and Pacific oceans',
+    imprint: 'London: printed for the author, and F. C. and J. Rivington, 1805',
+    figure: 'Plate 1 (Coleoptera), the first name in the plate’s own caption',
+    publishedNote:
+      'The same sheet, and the same scan, as the king Christmas beetle — three figures away on it.',
+    year: 1805,
+    licence: 'Public domain (published 1805, author died 1837)',
+    licenceDetail:
+      '**Public domain.** As above: published 1805, author died 1837, and the BHL scan carries no separate claim.',
+    downloaded: '2026-08-26',
+    notes: [
+      'A type figure, like the Christmas beetle beside it, and the second plate taken off one sheet. That was the point of taking it: three of the sixteen European specimens were traced from Hochdanz’s hand for the same reason, and two Australian animals from Donovan’s in one year give the newest corner of the collection the same consistency.',
+      'This figure needed no width correction. It is drawn square to the page — the elytral outline is symmetric about a vertical axis to within three pixels over three hundred and sixty — and only the head is cocked, about ten pixels, which the plate squares up. It is the better of the two figures to measure, which is worth saying because it is the smaller animal and the less striking drawing.',
+      'The one thing it will not support is the colour. Donovan hand-coloured the pale ground a deep ferruginous rust and his Latin says he meant to — _elytris ferrugineis_ — where the living animal is usually lime-green to yellow. Both fall inside the range the species shows and the plate takes no position: it is inked in one seasonal earth, the pattern is drawn as the dark figure on the pale ground it actually is, and the record’s notes carry the rest.',
+    ],
+  },
 ];
 
 /**

@@ -32,6 +32,7 @@ export const COCCINELLA_SEPTEMPUNCTATA: Species = {
   // hibernation. They overwinter as adults, clustered under bark and in leaf
   // litter, rather than as eggs or pupae.
   activeMonths: [3, 4, 5, 6, 7, 8, 9, 10],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'elytra',
     antennae: 'clavate',

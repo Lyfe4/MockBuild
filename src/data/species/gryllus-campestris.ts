@@ -34,6 +34,7 @@ export const GRYLLUS_CAMPESTRIS: Species = {
   // Adults sing from late spring and are gone by high summer; the animal
   // overwinters as a nymph, so its season is short and early for its size.
   activeMonths: [5, 6, 7],
+  monthsHemisphere: 'northern',
   morphology: {
     // Leathery covers, one overlapping the other. The state this record added.
     wingCover: 'tegmina',

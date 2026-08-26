@@ -164,6 +164,28 @@ export const COLOUR_FAMILIES = [
 export type ColourFamily = (typeof COLOUR_FAMILIES)[number];
 
 /**
+ * Which hemisphere a record's `activeMonths` were observed in.
+ *
+ * Thornfield keeps a **southern** calendar, and for the first sixteen specimens
+ * every record's months came from the northern one — so the site said so, in
+ * words, on the calendar, the filter panel and every specimen sheet. It said it
+ * as a blanket claim about the collection, because at the time that was what it
+ * was.
+ *
+ * The two Australian scarabs ended that. A king Christmas beetle flying in
+ * November and December is flying in Thornfield's own spring and summer; there
+ * is no mismatch to warn a reader about, and a page warning of one anyway would
+ * be lying in the other direction. So the hemisphere moved onto the record,
+ * where it is a fact about *that animal's* months, and the copy reads it.
+ *
+ * It is not derivable. Nothing in a list of month numbers says which half of
+ * the world they were counted in.
+ */
+export const HEMISPHERES = ['northern', 'southern'] as const;
+
+export type Hemisphere = (typeof HEMISPHERES)[number];
+
+/**
  * The characters a key filters on.
  *
  * All six are closed unions so a filter panel can be generated from the type
@@ -207,6 +229,15 @@ export interface Species {
   readonly distribution: string;
   /** Months adults are on the wing, for the phenology calendar. */
   readonly activeMonths: readonly Month[];
+  /**
+   * Which hemisphere `activeMonths` was observed in. See `HEMISPHERES`.
+   *
+   * Required rather than defaulted to `northern`. A default would have let the
+   * two Australian records be added without it and come out claiming a
+   * mismatch with Thornfield's seasons that they have not got — which is
+   * exactly the failure the field exists to prevent, arriving silently.
+   */
+  readonly monthsHemisphere: Hemisphere;
   readonly morphology: Morphology;
   /** Two or three factual sentences. Our own words, not a quotation. */
   readonly notes: string;

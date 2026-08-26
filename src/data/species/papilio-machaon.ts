@@ -29,6 +29,7 @@ export const PAPILIO_MACHAON: Species = {
   // Two or three broods a year at low elevations, March to September. In the
   // north there is one, because the summer is too short for more.
   activeMonths: [3, 4, 5, 6, 7, 8, 9],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'scaled',
     antennae: 'clavate',

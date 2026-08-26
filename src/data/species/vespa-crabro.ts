@@ -31,6 +31,7 @@ export const VESPA_CRABRO: Species = {
   // first workers appear in early summer, and the nest dies with the first hard
   // frosts.
   activeMonths: [4, 5, 6, 7, 8, 9, 10],
+  monthsHemisphere: 'northern',
   morphology: {
     wingCover: 'membranous',
     antennae: 'filiform',

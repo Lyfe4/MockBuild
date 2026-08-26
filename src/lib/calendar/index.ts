@@ -3,6 +3,7 @@ export {
   CALENDAR_MONTHS,
   describeActiveMonths,
   firstActiveIndex,
+  hasHemisphere,
   isActiveIn,
   monthAbbreviation,
   monthName,
