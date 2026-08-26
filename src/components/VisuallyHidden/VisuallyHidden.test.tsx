@@ -29,9 +29,9 @@ describe('VisuallyHidden', () => {
   });
 
   it('appends a caller class rather than replacing its own', () => {
-    render(<VisuallyHidden className="extra">Herbarium</VisuallyHidden>);
+    render(<VisuallyHidden className="extra">Accession</VisuallyHidden>);
 
-    const element = screen.getByText('Herbarium');
+    const element = screen.getByText('Accession');
 
     expect(element).toHaveClass('extra');
     // The module class is hashed at build time, so assert on the count instead

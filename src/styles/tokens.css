@@ -47,15 +47,15 @@
   --ink-walnut-900: #2a1f1a;
   --ink-walnut-600: #6a544a;
   --ink-walnut-500: #6e4b2a;
-  --ink-herbarium-900: #1f2a21;
-  --ink-herbarium-600: #55604f;
+  --ink-verdigris-900: #1f2a21;
+  --ink-verdigris-600: #55604f;
   --ink-irongall-900: #1b242a;
   --ink-irongall-600: #56646b;
   --ink-irongall-500: #3f6472;
   --ink-charcoal-900: #23201a;
   --ink-charcoal-600: #5e574b;
 
-  /* Pressed-leaf and pigment accents. */
+  /* Pigment accents, named for the colour rather than for anything drawn in it. */
   --leaf-olive-600: #5a7042;
   --leaf-olive-700: #46592f;
   --leaf-ochre-600: #85590f;
@@ -352,15 +352,15 @@
   --color-bg: var(--paper-green-100);
   --color-surface: var(--paper-green-50);
   --color-surface-sunken: var(--paper-green-200);
-  --color-ink: var(--ink-herbarium-900);
-  --color-ink-muted: var(--ink-herbarium-600);
+  --color-ink: var(--ink-verdigris-900);
+  --color-ink-muted: var(--ink-verdigris-600);
   --color-accent: var(--leaf-olive-600);
   --color-accent-strong: var(--leaf-olive-700);
   --color-accent-wash: var(--wash-olive);
   --color-on-accent: var(--paper-green-50);
   --color-line: var(--line-green-200);
   --color-selection-bg: var(--wash-olive);
-  --color-selection-ink: var(--ink-herbarium-900);
+  --color-selection-ink: var(--ink-verdigris-900);
 
   --pigment-1: var(--pigment-spring-ochre);
   --pigment-deep-1: var(--pigment-spring-ochre-deep);

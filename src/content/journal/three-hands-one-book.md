@@ -6,12 +6,12 @@ speciesId: carabus-violaceus
 ---
 
 A quiet week in the reading room, so the ground beetle was finished. It is the
-third plate in the collection traced from Calwer's _Käferbuch_, after the stag
+third plate in the collection traced from Calwer’s _Käferbuch_, after the stag
 beetle and the seven-spot, and it was chosen for that reason rather than in
 spite of it.
 
 Sixteen drawings from sixteen sources look like sixteen projects. Three from one
-engraver's hand look like a collection. Hochdanz worked to a house manner —
+engraver’s hand look like a collection. Hochdanz worked to a house manner —
 where the outline thickens, how a leg joint is broken, how much of a puncture
 row is worth showing — and inheriting that manner three times over gives the
 contact sheet a consistency no style guide of ours would have produced.

@@ -1,9 +1,9 @@
 # Netlify redirects.
 #
 # SPA catch-all. react-router owns the URL, but the server sees a real request
-# for a real path on a hard load or a deep link — /lab, or /specimen/TBA-0042
-# later. Without this, Netlify looks for a file at that path, finds none, and
-# returns its 404 page instead of the app.
+# for a real path on a hard load or a deep link — /specimen/lucanus-cervus, or
+# /journal/five-legs. Without this, Netlify looks for a file at that path, finds
+# none, and returns its 404 page instead of the app.
 #
 # The 200 is the important part: it rewrites rather than redirects, so the
 # browser keeps the requested URL and react-router resolves the route from it.

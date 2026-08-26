@@ -72,6 +72,18 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: false,
+    /**
+     * Well above vitest's 5 s default, and not because any test is slow.
+     *
+     * The heavy render tests — the contact sheet at three sizes, the calendar's
+     * sixteen rows, the request form's `userEvent` typing — each take a few
+     * hundred milliseconds alone. Run as part of the whole suite they share
+     * cores with every other jsdom environment and cross five seconds on a
+     * machine under load, so the suite failed on the run and passed on the
+     * retry: the worst possible signal, since it teaches a reader to re-run a
+     * red build instead of reading it.
+     */
+    testTimeout: 20_000,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
     // Process real CSS Modules so tests assert on the same class names as the browser.

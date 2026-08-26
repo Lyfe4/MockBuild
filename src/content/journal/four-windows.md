@@ -7,7 +7,7 @@ speciesId: aeshna-cyanea
 
 Every drawing in this collection is opaque except one. The southern hawker has
 four wings, they overlap each other and the abdomen, and what is behind them is
-the whole point of the animal — so the hawker's wings are the only ink here that
+the whole point of the animal — so the hawker’s wings are the only ink here that
 is genuinely see-through.
 
 It took some arguing. A wash of the surface colour would have been simpler and

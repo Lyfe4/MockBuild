@@ -7,4 +7,4 @@ export {
   REFERENCE_SOURCES,
   referenceFileName,
 } from './references';
-export { catalogueNumberOf, findPlate, findSpecies, SPECIES } from './species';
+export { catalogueNumberOf, catalogueRange, findPlate, findSpecies, SPECIES } from './species';

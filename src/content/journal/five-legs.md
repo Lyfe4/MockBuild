@@ -23,5 +23,5 @@ check now names eight classes of mistake and all eight are of that kind: things
 that produce a plausible drawing rather than a broken one.
 
 The mandibles, meanwhile, are the reason this animal is accessioned first. They
-are the identification, they are the drawing's whole character, and they were
+are the identification, they are the drawing’s whole character, and they were
 right on the first pass.

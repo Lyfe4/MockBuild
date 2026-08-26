@@ -23,9 +23,9 @@
 #                            `build.modulePreload.polyfill` is off in
 #                            vite.config.ts so the build emits no inline script.
 #   style-src   'self'       CSS Modules compile to an external stylesheet, and
-#                            the plant illustrations use SVG presentation
-#                            attributes rather than inline styles, so nothing
-#                            here needs 'unsafe-inline'.
+#                            the species plates use SVG presentation attributes
+#                            rather than inline styles, so nothing here needs
+#                            'unsafe-inline'.
 #   img-src     'self' data: covers the small assets Vite inlines as data URIs.
 #   font-src    'self'       fonts are self-hosted; no font CDN is contacted.
 #   connect-src 'self'       the archive is static. Nothing phones home.
