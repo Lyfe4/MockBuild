@@ -76,19 +76,35 @@
     <meta name="twitter:card" content="summary_large_image" />
 
     <!--
-      Preload the two faces the first paint actually needs: Fraunces roman and
-      the mono. Both are self-hosted, so `crossorigin` is still required —
-      fonts are fetched in CORS mode regardless of origin, and without it the
-      browser downloads the file twice.
+      Preload the three faces the first paint actually needs: Fraunces roman,
+      Fraunces italic and the mono. All are self-hosted, so `crossorigin` is
+      still required — fonts are fetched in CORS mode regardless of origin, and
+      without it the browser downloads the file twice.
 
-      Italic and the Latin-extended subsets are deliberately not preloaded: the
-      `unicode-range` declarations in fonts.css let the browser decide, and
-      preloading everything would put 500 kB on the critical path to save a swap
-      on text that is below the fold.
+      The italic was deliberately left out of this list, on the grounds that it
+      was needed only for "text that is below the fold". That was wrong, and
+      Lighthouse said so: **every scientific name on the site is italic**,
+      including the binomial on the first row of the catalogue, so the italic is
+      wanted at the very top of the first screen. Left undeclared it was
+      discovered by the stylesheet instead, which made it a *chained* request —
+      HTML, then CSS, then a 154 kB font — and the longest critical chain on the
+      site by a wide margin. Preloaded, it downloads in parallel with the
+      stylesheet that asks for it.
+
+      The Latin-extended subsets stay out, and that reasoning does hold: their
+      `unicode-range` declarations mean a browser fetches them only if a name
+      needs a glyph from those blocks, and no name in the collection does.
     -->
     <link
       rel="preload"
       href="/fonts/fraunces-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/fraunces-italic-latin.woff2"
       as="font"
       type="font/woff2"
       crossorigin

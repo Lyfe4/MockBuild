@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { findPlate, SPECIES } from '@/data';
+import { SPECIES } from '@/data';
+import { findPlate } from '@/data/species/plates';
 
 import {
   findReferenceSource,

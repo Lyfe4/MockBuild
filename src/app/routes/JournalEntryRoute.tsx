@@ -2,13 +2,8 @@ import { Link, useParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
-import {
-  catalogueNumberOf,
-  findJournalEntry,
-  findPlate,
-  findSpecies,
-  journalNeighbours,
-} from '@/data';
+import { catalogueNumberOf, findJournalEntry, findSpecies, journalNeighbours } from '@/data';
+import { findPlate } from '@/data/species/plates';
 import { JournalProse } from '@/features/journal';
 import { useDocumentTitle } from '@/hooks';
 import { binomialOf } from '@/lib/catalogue';

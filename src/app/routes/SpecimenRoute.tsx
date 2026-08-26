@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
-import { catalogueNumberOf, findPlate, SPECIES } from '@/data';
+import { catalogueNumberOf, SPECIES } from '@/data';
+import { findPlate } from '@/data/species/plates';
 import { useSeason } from '@/features/theme';
 import { useDocumentTitle } from '@/hooks';
 import { activeRuns, monthName } from '@/lib/calendar';

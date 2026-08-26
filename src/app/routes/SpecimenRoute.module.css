@@ -9,6 +9,31 @@
   margin: 0;
 }
 
+/*
+ * No `aspect-ratio` on this frame, deliberately, and the reason is worth
+ * writing down because "reserve a ratio on every image box" is otherwise a
+ * sound habit.
+ *
+ * A plate is **inline SVG with a `viewBox`**, rendered in the same React commit
+ * as the frame around it. There is no image to fetch, so the browser resolves
+ * the intrinsic ratio during the first layout pass and the box is its final
+ * height before anything is painted — measured CLS on this route is 0.
+ *
+ * Declaring 4 / 5 here was tried and reverted. Every plate's view box is
+ * measured from its own bounds and they run from about 0.6 as wide as tall to
+ * about 1.2, so a fixed ratio letterboxes the portrait ones: the stag beetle,
+ * the tallest drawing in the collection, went from 332 px to 256 px in a
+ * 205 px column and gained slack down both sides. The svg already caps itself
+ * at 100% of a definite parent height and centres with
+ * `preserveAspectRatio="xMidYMid meet"`, so the frame is safe in a fixed box —
+ * it just should not be given one here, where the column is the constraint and
+ * the drawing should take all of it.
+ *
+ * The catalogue row is the opposite case and does declare 3 / 4: its plate sits
+ * in a fixed 4.5rem column beside text that must start on the same vertical for
+ * every row, so there the ratio is what stops the row height depending on which
+ * animal is in it.
+ */
 .plate > :first-child {
   inline-size: 100%;
   padding: var(--space-sm);

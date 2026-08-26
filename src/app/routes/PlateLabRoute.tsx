@@ -1,7 +1,8 @@
 import { useId } from 'react';
 
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
-import { findPlate, SPECIES } from '@/data';
+import { SPECIES } from '@/data';
+import { findPlate } from '@/data/species/plates';
 import { useSeason } from '@/features/theme';
 import { useDocumentTitle } from '@/hooks';
 import { binomialOf } from '@/lib/catalogue';

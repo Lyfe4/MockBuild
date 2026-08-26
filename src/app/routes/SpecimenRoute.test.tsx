@@ -2,7 +2,8 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { catalogueNumberOf, findPlate, SPECIES } from '@/data';
+import { catalogueNumberOf, SPECIES } from '@/data';
+import { findPlate } from '@/data/species/plates';
 import { ThemeProvider } from '@/features/theme';
 import { binomialOf, sortSpecies } from '@/lib/catalogue';
 

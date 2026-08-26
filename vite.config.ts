@@ -54,6 +54,60 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: true,
+    rolldownOptions: {
+      output: {
+        /**
+         * Three named groups, split by **lifetime** rather than by route.
+         *
+         * Route-level splitting on its own already got the biggest chunk under
+         * the 500 kB warning, but it left the shared remainder named after
+         * whichever module happened to be first into it — a 399 kB chunk called
+         * `hooks`, which is 399 kB of beetle. Naming the groups makes the build
+         * output legible and, more usefully, gives each one a cache lifetime of
+         * its own:
+         *
+         *   vendor   react, react-dom, react-router. Changes when a dependency
+         *            is upgraded, which is rarely.
+         *   plates   the eighteen generated `*.plate.ts` files. Changes when a
+         *            drawing is redrawn, which is often — but only ever a few
+         *            of them, and never together with the app code.
+         *   records  the species records and the reference provenance. Changes
+         *            when a specimen is accessioned.
+         *
+         * Without this, one edit to a component invalidates the beetles too.
+         *
+         * `plates` is deliberately *not* split per route, and it is worth
+         * saying why rather than leaving it to look like an oversight. The
+         * catalogue, the calendar and the key each draw every specimen in the
+         * collection, so five of the eight routes need all eighteen plates;
+         * splitting them per route would put the same data in five chunks and
+         * download it five times. One shared chunk fetched in parallel with the
+         * entry is the honest shape of that dependency.
+         */
+        advancedChunks: {
+          // `[\\/]` in every separator: module ids are normalised to forward
+          // slashes on posix and can arrive with backslashes on Windows, and a
+          // group whose test silently matches nothing produces a build that is
+          // merely worse rather than one that fails.
+          groups: [
+            {
+              name: 'vendor',
+              test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+            },
+            {
+              // Both the eighteen generated drawings *and* the `plates.ts`
+              // index that gathers them. Leaving the index out of this group
+              // put it in `records`, which every route imports — so `records`
+              // statically imported `plates` and the 258 kB came straight back
+              // onto the critical path with the split apparently in place.
+              name: 'plates',
+              test: /[\\/]src[\\/]data[\\/]species[\\/]([^\\/]+\.plate\.ts|plates\.ts)$/,
+            },
+            { name: 'records', test: /[\\/]src[\\/]data[\\/](species|references)[\\/]/ },
+          ],
+        },
+      },
+    },
     modulePreload: {
       /**
        * The polyfill is injected as an inline <script>, which the production CSP

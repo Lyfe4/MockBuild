@@ -22,15 +22,27 @@
  * Fraunces ships pre-subset by the foundry, using Google Fonts' own ranges. The
  * basic-latin faces cover everything this site actually types; the extended
  * ones are declared with their own `unicode-range` so a browser downloads them
- * only if a specimen name ever needs a glyph from that block. The mono is the
- * full face — no subsetter was available that could take a variable font apart
- * safely — but its `unicode-range` still keeps it out of the critical path for
- * documents that never use it.
+ * only if a specimen name ever needs a glyph from that block.
+ *
+ * All five files are then trimmed further, and `public/fonts/README.md` records
+ * exactly how and shows that the metrics below survived it. Two things came out:
+ * every glyph of JetBrains Mono outside the `unicode-range` declared for it here
+ * — about 1,200 of 1,743, which no `unicode-range` could ever reach — and the
+ * `SOFT` axis, which nothing in this stylesheet sets to anything but its own
+ * default. `WONK` went from the italics too, the wordmark being the only thing
+ * that uses it and the wordmark being roman. 383 kB of preloaded font became
+ * 196 kB, and the largest contentful paint fell by eight tenths of a second.
  *
  * ── Loading ───────────────────────────────────────────────────────────────
  * `font-display: swap` renders the fallback immediately and swaps when the
- * webfont arrives, so text is never invisible. The two primary faces are
- * preloaded from `index.html`.
+ * webfont arrives, so text is never invisible. The three faces the first screen
+ * needs — roman, italic and the mono — are preloaded from `index.html`.
+ *
+ * `optional` rather than `swap` would take the fonts off the critical path
+ * altogether, and it is worth about the last three points of the Lighthouse
+ * performance score. It is deliberately not used: `optional` gives a first-time
+ * visitor the *fallback* for the whole of that visit, and on a site whose
+ * typography is most of its design that trades the thing itself for a number.
  *
  * The metric-override faces at the bottom are what keep the swap from shifting
  * the layout. Their numbers were **measured in the browser** against the real

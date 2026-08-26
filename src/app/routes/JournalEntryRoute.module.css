@@ -7,6 +7,7 @@
   margin: 0;
 }
 
+/* No declared ratio, for the reason set out on the specimen sheet's own frame. */
 .plateLink {
   display: block;
   padding: var(--space-sm);

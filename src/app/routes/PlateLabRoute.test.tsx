@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { LUCANUS_CERVUS, LUCANUS_CERVUS_PLATE, SPECIES } from '@/data/species';
+import { LUCANUS_CERVUS, SPECIES } from '@/data/species';
+import { LUCANUS_CERVUS_PLATE } from '@/data/species/plates';
 import { renderWithProviders } from '@/test/renderWithProviders';
 
 import { PlateLabRoute } from './PlateLabRoute';

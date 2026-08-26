@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { LUCANUS_CERVUS, LUCANUS_CERVUS_PLATE } from '@/data/species';
+import { LUCANUS_CERVUS } from '@/data/species';
+import { LUCANUS_CERVUS_PLATE } from '@/data/species/plates';
 import { describePlate, SPECIES_PIGMENTS, type SpeciesPlate } from '@/lib/plate';
 import type { Species } from '@/types';
 

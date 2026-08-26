@@ -3,7 +3,8 @@ import { Link, useSearchParams } from 'react-router';
 
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
 import { VisuallyHidden } from '@/components/VisuallyHidden';
-import { findPlate, SPECIES } from '@/data';
+import { SPECIES } from '@/data';
+import { findPlate } from '@/data/species/plates';
 import { useSeason } from '@/features/theme';
 import { useDocumentTitle } from '@/hooks';
 import {
