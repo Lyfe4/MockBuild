@@ -3,9 +3,10 @@ import { Link, useSearchParams } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
 import { catalogueNumberOf, INSTITUTION, SPECIES } from '@/data';
-import { useDocumentTitle } from '@/hooks';
+import { useRouteMeta } from '@/features/meta';
 import { binomialOf } from '@/lib/catalogue';
 import { cx } from '@/lib/classNames';
+import { routeMeta } from '@/lib/meta';
 import {
   EMPTY_REQUEST,
   firstInvalidField,
@@ -132,7 +133,15 @@ function Field({ field, ids, errors, children }: FieldProps) {
 }
 
 export function RequestRoute() {
-  useDocumentTitle('Request material');
+  useRouteMeta(
+    routeMeta({
+      title: 'Request material',
+      description:
+        'A mock request form for the reading room. Nothing is sent anywhere: the archive is ' +
+        'fictional, there is no endpoint, and no field leaves the page.',
+      path: '/request',
+    }),
+  );
 
   const [params] = useSearchParams();
   const formId = useId();

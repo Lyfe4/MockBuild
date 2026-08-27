@@ -7,13 +7,27 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
-    "types": ["node"],
+    // `vite/client` alongside Node's: the builders are plain Node, but their
+    // tests run under Vitest, which is Vite — and `seo.test.ts` imports
+    // `src/data/journal`, which is built on `import.meta.glob`.
+    "types": ["node", "vite/client"],
 
     "noEmit": true,
     "isolatedModules": true,
     // The plate builder runs under Node's own type stripping, which resolves
     // the specifier as written — so its imports carry the `.ts` extension.
     "allowImportingTsExtensions": true,
+    // Mirrors `paths` in tsconfig.app.json and the `resolve.alias` in
+    // vite.config.ts — keep the three in step.
+    //
+    // The builders themselves never use the alias: Node resolves specifiers as
+    // written and would not know what `@/` means. Their *tests* do, because
+    // those run under Vitest, where the alias is live — `seo.test.ts` imports
+    // `SPECIES` and `JOURNAL_ENTRIES` to check the sitemap against the real
+    // data, which is the whole reason that test exists.
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
 

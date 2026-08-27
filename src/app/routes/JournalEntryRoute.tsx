@@ -5,10 +5,11 @@ import { SpeciesIllustration } from '@/components/SpeciesIllustration';
 import { catalogueNumberOf, findJournalEntry, findSpecies, journalNeighbours } from '@/data';
 import { findPlate } from '@/data/species/plates';
 import { JournalProse } from '@/features/journal';
-import { useDocumentTitle } from '@/hooks';
+import { useRouteMeta } from '@/features/meta';
 import { binomialOf } from '@/lib/catalogue';
 import { cx } from '@/lib/classNames';
 import { formatEntryDate } from '@/lib/journal';
+import { clampDescription, routeMeta } from '@/lib/meta';
 
 import styles from './JournalEntryRoute.module.css';
 import { NotFoundRoute } from './NotFoundRoute';
@@ -29,7 +30,23 @@ export function JournalEntryRoute() {
   const { slug } = useParams<'slug'>();
   const entry = slug === undefined ? undefined : findJournalEntry(slug);
 
-  useDocumentTitle(entry === undefined ? 'Not found' : entry.title);
+  // `ogType: 'article'` here and nowhere else: a journal entry is a dated piece
+  // of writing by a named hand, which is what the type means, and the rest of
+  // the site is reference material.
+  useRouteMeta(
+    entry === undefined
+      ? routeMeta({
+          title: 'Not found',
+          description: 'No journal entry is filed under that name.',
+          path: '/404',
+        })
+      : routeMeta({
+          title: entry.title,
+          description: clampDescription(entry.lede),
+          path: `/journal/${entry.slug}`,
+          ogType: 'article',
+        }),
+  );
 
   // A slug that names no entry is a 404, not an empty page. A journal that
   // silently renders nothing for a dead link is a journal that hides its own

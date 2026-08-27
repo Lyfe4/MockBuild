@@ -24,7 +24,10 @@
     "plate:verify": "node scripts/plate-builder/build.ts --verify",
     "sources:build": "node scripts/sources-builder/build.ts",
     "sources:verify": "node scripts/sources-builder/build.ts --verify",
-    "check": "npm run lint && npm run typecheck && npm run plate:verify && npm run sources:verify && npm run test && npm run build",
+    "og:build": "node scripts/og-builder/build.ts",
+    "seo:build": "node scripts/seo-builder/build.ts",
+    "seo:verify": "node scripts/seo-builder/build.ts --verify",
+    "check": "npm run lint && npm run typecheck && npm run plate:verify && npm run sources:verify && npm run seo:verify && npm run test && npm run build",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -44,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@resvg/resvg-js": "^2.6.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
@@ -66,6 +70,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.11",
+    "wawoff2": "^2.0.1"
   }
 }

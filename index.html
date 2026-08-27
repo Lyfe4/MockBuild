@@ -52,10 +52,24 @@
     <meta name="color-scheme" content="light" />
 
     <!--
-      Open Graph / Twitter. PLACEHOLDERS — replace before this goes anywhere public:
-        · og:url must be the real canonical origin.
-        · og:image must be an absolute URL to a 1200x630 PNG or JPEG.
-      Both are intentionally left as example.com so a stale value is obvious.
+      Open Graph, and the **site-level defaults**.
+      
+      These describe the home page and are what a scraper that runs no
+      JavaScript sees on every URL. `src/features/meta/useRouteMeta.ts` rewrites
+      the title, description, canonical, og:title, og:description, og:url and
+      og:type as each route mounts — in place, by selector, rather than by
+      appending, so there is never a second copy of any of them for a consumer
+      to read first.
+      
+      The origin below is repeated from `src/data/site.ts`, which is the single
+      source of truth for it and the only place to change it. It cannot be
+      injected into this file without a build plugin, and a build plugin that
+      rewrote the head would be a second mechanism doing what the first one
+      already does everywhere else. `src/test/securityHeaders.test.ts` asserts
+      the two agree.
+      
+      It used to say `example.com`, behind a comment asking whoever deployed the
+      site to remember. Nobody failed a build for forgetting.
     -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Thornfield Entomological Archive" />
@@ -65,13 +79,13 @@
       content="A working entomological collection. Pinned specimens, accession records and hand-authored plates of real insect species."
     />
     <meta property="og:locale" content="en_AU" />
-    <meta property="og:url" content="https://example.com/" />
-    <meta property="og:image" content="https://example.com/og-image.png" />
+    <meta property="og:url" content="https://thornfield-archive.netlify.app/" />
+    <meta property="og:image" content="https://thornfield-archive.netlify.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="An engraved plate of a male stag beetle in dorsal view on aged archival card, with a handwritten accession label."
+      content="An engraved plate of a male stag beetle in dorsal view beside the wordmark of the Thornfield Entomological Archive, on archival paper."
     />
     <meta name="twitter:card" content="summary_large_image" />
 
@@ -117,7 +131,7 @@
       crossorigin
     />
 
-    <link rel="canonical" href="https://example.com/" />
+    <link rel="canonical" href="https://thornfield-archive.netlify.app/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>

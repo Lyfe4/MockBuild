@@ -1,10 +1,11 @@
 import { Link } from 'react-router';
 
 import { JOURNAL_ENTRIES } from '@/data';
+import { useRouteMeta } from '@/features/meta';
 import { useSeason } from '@/features/theme';
-import { useDocumentTitle } from '@/hooks';
 import { cx } from '@/lib/classNames';
 import { formatEntryDate } from '@/lib/journal';
+import { routeMeta } from '@/lib/meta';
 
 import styles from './JournalRoute.module.css';
 
@@ -28,7 +29,15 @@ import styles from './JournalRoute.module.css';
 export function JournalRoute() {
   const { season } = useSeason();
 
-  useDocumentTitle('Field journal');
+  useRouteMeta(
+    routeMeta({
+      title: 'Field journal',
+      description:
+        'Notes from the drawing table: what a plate would not show, which mistake a check ' +
+        'caught, and which animal cost the most argument.',
+      path: '/journal',
+    }),
+  );
 
   return (
     <div className={styles.root}>

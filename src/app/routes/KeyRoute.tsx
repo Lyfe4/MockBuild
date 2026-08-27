@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router';
 
 import { SPECIES } from '@/data';
 import { SpecimenRow } from '@/features/catalogue';
-import { useDocumentTitle } from '@/hooks';
+import { useRouteMeta } from '@/features/meta';
 import { binomialOf } from '@/lib/catalogue';
 import {
   advance,
@@ -13,6 +13,7 @@ import {
   KEY_PARAM,
   type KeyAnswer,
 } from '@/lib/key';
+import { routeMeta } from '@/lib/meta';
 
 import styles from './KeyRoute.module.css';
 
@@ -70,14 +71,26 @@ export function KeyRoute() {
   const remaining = node.species.length;
   const only = remaining === 1 ? node.species[0] : undefined;
 
-  useDocumentTitle(
-    !started
-      ? 'Identify'
-      : node.kind === 'question'
-        ? `Identify · question ${String(steps.length + 1)}`
-        : only === undefined
-          ? `Identify · ${String(remaining)} specimens`
-          : `Identify · ${binomialOf(only)}`,
+  // The canonical is always `/key`, never `/key?k=…`. Every state of the key
+  // lives at the same path with different answers in the query string, and each
+  // is a step through one document rather than a page of its own — so a crawler
+  // is told there is one page here, which there is. The *title* still tracks the
+  // state, because that is what a screen reader announces and what a browser tab
+  // has to distinguish.
+  useRouteMeta(
+    routeMeta({
+      title: !started
+        ? 'Identify'
+        : node.kind === 'question'
+          ? `Identify · question ${String(steps.length + 1)}`
+          : only === undefined
+            ? `Identify · ${String(remaining)} specimens`
+            : `Identify · ${binomialOf(only)}`,
+      description:
+        'A branching identification key built from the collection itself. Six characters, ' +
+        'three or four questions, and every specimen keys out on its own.',
+      path: '/key',
+    }),
   );
 
   /**

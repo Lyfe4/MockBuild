@@ -3,8 +3,9 @@ import { Link } from 'react-router';
 
 import { Ledger } from '@/components/Ledger';
 import { INSTITUTION, REFERENCE_SOURCES, SPECIES } from '@/data';
-import { useDocumentTitle } from '@/hooks';
+import { useRouteMeta } from '@/features/meta';
 import { binomialOf, ordersOf } from '@/lib/catalogue';
+import { routeMeta } from '@/lib/meta';
 
 import styles from './AboutRoute.module.css';
 
@@ -66,7 +67,15 @@ function Fact({ term, children }: FactProps) {
 }
 
 export function AboutRoute() {
-  useDocumentTitle('About the collection');
+  useRouteMeta(
+    routeMeta({
+      title: 'About the collection',
+      description:
+        'What is real here and what is not: the institution is invented, the species, the ' +
+        'records and the traced references are not. Every source is credited in full.',
+      path: '/about',
+    }),
+  );
 
   const orders = ordersOf(SPECIES);
   const specimens = SPECIES.length;

@@ -4,7 +4,8 @@ import { useSearchParams } from 'react-router';
 import { Ledger } from '@/components/Ledger';
 import { catalogueNumberOf, SPECIES } from '@/data';
 import { FilterDisclosure, FilterPanel, SpecimenRow } from '@/features/catalogue';
-import { useDocumentTitle, useMediaQuery } from '@/hooks';
+import { JsonLd, useRouteMeta } from '@/features/meta';
+import { useMediaQuery } from '@/hooks';
 import {
   clearFilters,
   familiesOf,
@@ -18,6 +19,7 @@ import {
   type CatalogueQuery,
   type SortKey,
 } from '@/lib/catalogue';
+import { catalogueDataset, clampDescription, routeMeta } from '@/lib/meta';
 
 import styles from './CatalogueRoute.module.css';
 
@@ -49,7 +51,17 @@ export function CatalogueRoute() {
   const [searchParams, setSearchParams] = useSearchParams();
   const hasMargin = useMediaQuery(HAS_MARGIN);
 
-  useDocumentTitle('Catalogue');
+  useRouteMeta(
+    routeMeta({
+      title: 'Catalogue',
+      description: clampDescription(
+        `Every specimen in the collection: ${String(SPECIES.length)} insect species across six ` +
+          'orders, each with an accession record and a hand-drawn plate. Filter by order, ' +
+          'colour, markings, size and season.',
+      ),
+      path: '/catalogue',
+    }),
+  );
 
   const query = useMemo(
     () => parseCatalogueQuery(searchParams, { orders: ORDERS, families: ALL_FAMILIES }),
@@ -165,6 +177,20 @@ export function CatalogueRoute() {
           Showing {results.length} of {SPECIES.length} species.
         </p>
       )}
+
+      {/*
+        The catalogue described to a machine, as a `Dataset` — which is what it
+        honestly is, and the reason there is no `Organization` node anywhere on
+        this site. See `src/lib/meta/schema.ts`: a `Museum` with a town and a
+        founding year in it would be a machine-readable claim that Thornfield
+        exists, made in the one place a reader never looks and a crawler always
+        does. The disclosure rides in the dataset's own description instead.
+
+        Built from the unfiltered collection rather than from `results`: the
+        dataset is what the archive holds, not what this visitor has narrowed it
+        to, and a filtered link should not describe a smaller catalogue.
+      */}
+      <JsonLd data={catalogueDataset(SPECIES)} />
     </Ledger>
   );
 }

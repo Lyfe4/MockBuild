@@ -5,11 +5,12 @@ import { Ledger } from '@/components/Ledger';
 import { SpeciesIllustration } from '@/components/SpeciesIllustration';
 import { catalogueNumberOf, SPECIES } from '@/data';
 import { findPlate } from '@/data/species/plates';
+import { JsonLd, useRouteMeta } from '@/features/meta';
 import { useSeason } from '@/features/theme';
-import { useDocumentTitle } from '@/hooks';
 import { activeRuns, monthName } from '@/lib/calendar';
 import { binomialOf, sortSpecies } from '@/lib/catalogue';
 import { cx } from '@/lib/classNames';
+import { clampDescription, routeMeta, specimenPath, speciesTaxon } from '@/lib/meta';
 import { seasonOfMonth } from '@/lib/season';
 import { MONTHS, type Month, type Species } from '@/types';
 
@@ -127,7 +128,28 @@ export function SpecimenRoute() {
   const index = ORDERED.findIndex((candidate) => candidate.id === id);
   const species: Species | undefined = ORDERED[index];
 
-  useDocumentTitle(species === undefined ? 'Not found' : binomialOf(species));
+  // The title and the description carry **both** names, because the two
+  // audiences search for different ones: a reader who knows the animal types
+  // "stag beetle" and a reader who has keyed it out types "Lucanus cervus".
+  // A result showing only one of them is invisible to half of them.
+  useRouteMeta(
+    species === undefined
+      ? routeMeta({
+          title: 'Not found',
+          description: 'Nothing is catalogued under that reference.',
+          path: '/404',
+        })
+      : routeMeta({
+          title: `${binomialOf(species)} — ${species.commonName}`,
+          // The record's own notes, cut at a word boundary. Written prose about
+          // this animal specifically beats a template every time, and it is
+          // already sourced.
+          description: clampDescription(
+            `${species.commonName}, ${species.taxonomy.family}. ${species.notes}`,
+          ),
+          path: specimenPath(species),
+        }),
+  );
 
   if (species === undefined) return <NotFoundRoute />;
 
@@ -286,6 +308,15 @@ export function SpecimenRoute() {
             </Link>
           )}
         </nav>
+
+        {/*
+          The animal as a `Taxon`, which is the only thing on this page that is
+          a fact about the world rather than about the archive. No accession
+          number and no plate: the number is Thornfield's, and Thornfield is
+          invented; the plate is this archive's drawing rather than a photograph
+          of a specimen, and an `image` on a taxon reads as the latter.
+        */}
+        <JsonLd data={speciesTaxon(species)} />
       </article>
     </Ledger>
   );

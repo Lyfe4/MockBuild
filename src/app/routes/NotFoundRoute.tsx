@@ -1,7 +1,8 @@
 import { Link } from 'react-router';
 
 import { catalogueRange } from '@/data';
-import { useDocumentTitle } from '@/hooks';
+import { useRouteMeta } from '@/features/meta';
+import { routeMeta } from '@/lib/meta';
 
 import styles from './NotFoundRoute.module.css';
 
@@ -16,7 +17,13 @@ import styles from './NotFoundRoute.module.css';
  * address bar where it can be read and corrected.
  */
 export function NotFoundRoute() {
-  useDocumentTitle('Not found');
+  useRouteMeta(
+    routeMeta({
+      title: 'Not found',
+      description: 'Nothing is catalogued under that reference.',
+      path: '/404',
+    }),
+  );
 
   // Read from the index rather than written into the sentence. This page had a
   // range typed into it that named a prefix the archive stopped using and two

@@ -5,8 +5,8 @@ import { SpeciesIllustration } from '@/components/SpeciesIllustration';
 import { VisuallyHidden } from '@/components/VisuallyHidden';
 import { SPECIES } from '@/data';
 import { findPlate } from '@/data/species/plates';
+import { useRouteMeta } from '@/features/meta';
 import { useSeason } from '@/features/theme';
-import { useDocumentTitle } from '@/hooks';
 import {
   CALENDAR_MONTHS,
   CALENDAR_ORDER_LABELS,
@@ -24,6 +24,7 @@ import {
   type CalendarOrder,
 } from '@/lib/calendar';
 import { binomialOf } from '@/lib/catalogue';
+import { routeMeta } from '@/lib/meta';
 import { seasonOfMonth } from '@/lib/season';
 import type { Month } from '@/types';
 
@@ -86,7 +87,15 @@ export function CalendarRoute() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { season } = useSeason();
 
-  useDocumentTitle('Calendar');
+  useRouteMeta(
+    routeMeta({
+      title: 'Calendar',
+      description:
+        'A month-by-species phenology chart: when the adults of each specimen in the ' +
+        'collection are on the wing, read against Thornfield’s southern year.',
+      path: '/calendar',
+    }),
+  );
 
   const order = parseCalendarOrder(searchParams.get(CALENDAR_ORDER_PARAM));
   const rows = useMemo(() => calendarRows(SPECIES, order), [order]);
