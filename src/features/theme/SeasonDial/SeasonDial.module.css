@@ -13,12 +13,19 @@
  * control lays out at its drawn size and receives taps at its felt one.
  */
 
-/* The name and the drawing, on one line, as a single labelled control. */
+/**
+ * The name and the drawing, on one line, as a single labelled control.
+ *
+ * `--space-sm` rather than `--space-xs`, and the four extra pixels are for the
+ * glyph rather than for the word: the mark orbits *outside* the circle, so at
+ * spring and at winter it hangs into the gap on the word's side. Eight pixels
+ * left it two and a half clear of the W; twelve is air.
+ */
 .root {
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 /**
@@ -274,70 +281,133 @@
 }
 
 /**
- * The glyph well: a box at the centre of the dial holding all four drawings,
- * stacked.
+ * The orbit: the small box that carries the glyph round the circle.
  *
- * `--glyph-size` is a shade under half the dial, which is the size at which the
- * mark reads without closing up the quadrants around it. Bigger and the four
- * colours become a ring; smaller and the sun's rays stop resolving at 48px.
+ * This is the old index tick's mechanism, unchanged, with a drawing on it
+ * instead of a 5px rule. The box is placed directly above the dial's centre and
+ * turned about a `transform-origin` down at that centre — **not** a full-size
+ * box with the mark drawn at its top, which is simpler and was wrong for a
+ * reason that only shows up at the edge of a page: a rotated box overflows by
+ * its diagonal, and an 88px square turned 45 degrees is 124px wide, which put
+ * four pixels of horizontal scroll onto a 768px window.
+ *
+ * The same arithmetic decides `--glyph-size`, and it is why the glyph is 18px
+ * rather than the 22 it was when it sat in the middle. What the browser counts
+ * as overflow is the **turned box**, and halfway through a swing from summer to
+ * autumn that box is straight out to one side, reaching
+ * `--dial-radius + --glyph-size` — 42px — from the dial's centre. On a 320px
+ * screen, the narrowest the archive supports, there are 44.5px of viewport
+ * between that centre and the edge. Two and a half of margin. A 22px glyph
+ * would want 46 and would not have them.
+ *
+ * Measured, mid-swing, at 320: `documentElement.scrollWidth` does read one
+ * pixel over for a couple of frames. It is the same Chrome artefact the
+ * calendar's scroller produces — `window.scrollX` will not move off zero, no
+ * element past the viewport has an unclipped ancestor, and `body.scrollWidth`
+ * stays at 320. The page cannot be scrolled sideways; the number can be read
+ * that way, which is why the sweep asks whether it scrolls rather than what
+ * that property says.
+ *
+ * Going from winter back to spring turns the long way round, through autumn and
+ * summer. That is left alone, and it is most of what the movement is for:
+ * shortest-path rotation would need the accumulated angle carried in JavaScript
+ * state, and a dial running backwards through the year to reach spring is a
+ * fair description of what the reader just asked for.
  */
-.centre {
-  --glyph-size: 1.375rem;
+.orbit {
+  --glyph-size: 1.125rem;
+  /* Centre of the glyph box, measured from the centre of the dial. */
+  --glyph-orbit: calc(var(--dial-radius) + var(--glyph-size) / 2);
 
   position: absolute;
-  inset-block-start: calc(50% - var(--glyph-size) / 2);
+  inset-block-start: calc(50% - var(--glyph-orbit) - var(--glyph-size) / 2);
   inset-inline-start: calc(50% - var(--glyph-size) / 2);
   inline-size: var(--glyph-size);
   block-size: var(--glyph-size);
+  /* Straight down the box's middle and out through the dial's centre. */
+  transform-origin: 50% calc(var(--glyph-orbit) + var(--glyph-size) / 2);
+  rotate: var(--orbit-turn);
   /*
-   * The centre of the dial is the corner where four 44px labels meet, and it is
-   * as much a tap target as anywhere else on the control. The glyph must not
-   * take a press that belongs to a season.
+   * The centre of the dial is the corner where four 44px labels meet, and the
+   * orbit crosses three of them on its way round. It must not take a press that
+   * belongs to a season.
    */
   pointer-events: none;
+  transition: rotate var(--duration-palette) var(--ease-in-out);
 }
 
 /**
- * One season's drawing.
+ * One season's drawing, stacked with the other three on the orbit.
  *
- * All four are laid on top of each other and only the active one is opaque, so
- * a season change is a **cross-fade**: at the midpoint the leaving glyph and
- * the arriving one are each half inked, and the centre of the dial never goes
- * blank the way a swap would make it.
+ * Only the active one is opaque, so a season change is a **cross-fade**: at the
+ * midpoint the leaving glyph and the arriving one are each half inked, both
+ * riding the same swinging box, and the mark never blinks out and back.
  *
- * `--duration-palette`, like everything else that moves when the season does,
- * which buys two things and costs nothing. It is 0ms until `ThemeProvider`
- * marks the document ready, so the first glyph is simply *there* on the first
- * paint rather than fading in on every load — and it derives from
- * `--duration-slow`, which the reduced-motion block in `tokens.css` zeroes, so
- * a reader who has asked for less motion gets the swap with no code here
- * knowing about it.
+ * `rotate` is the orbit's turn, negated — the counter-rotation that keeps the
+ * drawing upright while its carrier goes round. Same token and same easing as
+ * the orbit's own, deliberately: two rotations that are meant to cancel have to
+ * be interpolated on the same curve, or the glyph tips one way at the start of
+ * the swing and back at the end.
  *
- * Stroked, never filled: `stroke-linecap: round` and `stroke-linejoin: round`
- * because at 22px a mitred join on the sprout's leaf tip is a spike, and
- * `vector-effect` is deliberately *not* used — the stroke is meant to scale
- * with the drawing if the dial is ever set larger.
+ * `--duration-palette` for both, like everything else that moves when the
+ * season does. It is 0ms until `ThemeProvider` marks the document ready, so the
+ * first glyph is simply *there* on the first paint rather than swinging into
+ * place on every load; and it derives from `--duration-slow`, which the
+ * reduced-motion block in `tokens.css` zeroes — so a reader who has asked for
+ * less motion gets the change with no code here knowing about it.
+ *
+ * Stroked, never filled. `stroke-linecap` and `stroke-linejoin` are round
+ * because at 18px a mitred join on the sprout's leaf tip is a spike.
  */
 .glyph {
   position: absolute;
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
+  /* Out from under the reset's `svg { max-width: 100% }`, as `.quadrant` is. */
   max-inline-size: none;
   fill: none;
   stroke: var(--color-ink);
-  stroke-width: 1.6;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
+  rotate: calc(var(--orbit-turn) * -1);
   opacity: 0;
-  transition: opacity var(--duration-palette) var(--ease-standard);
+  transition:
+    rotate var(--duration-palette) var(--ease-in-out),
+    opacity var(--duration-palette) var(--ease-standard);
 }
 
 /*
- * Four rules rather than one, because CSS cannot ask whether two attributes on
- * two elements agree. Undressed — no `data-active` at all — no rule matches and
- * the centre stays empty, which is the state the prerendered file ships in.
+ * Where the mark sits, in the quarter turns the year runs in: clockwise from
+ * the top left, the same order and the same four angles the tick used.
+ * `--orbit-turn` is read twice — once by the carrier and once, negated, by the
+ * drawing — which is the whole reason it is a custom property rather than eight
+ * hand-written angles that have to stay each other's opposite.
+ *
+ * Undressed, with no `data-active`, the fallback below leaves the orbit at
+ * twelve o'clock and every glyph transparent, so nothing is drawn anywhere.
  */
+.dial {
+  --orbit-turn: 0deg;
+}
+
+.dial[data-active='spring'] {
+  --orbit-turn: -45deg;
+}
+
+.dial[data-active='summer'] {
+  --orbit-turn: 45deg;
+}
+
+.dial[data-active='autumn'] {
+  --orbit-turn: 135deg;
+}
+
+.dial[data-active='winter'] {
+  --orbit-turn: 225deg;
+}
+
 .dial[data-active='spring'] .glyph[data-glyph='spring'],
 .dial[data-active='summer'] .glyph[data-glyph='summer'],
 .dial[data-active='autumn'] .glyph[data-glyph='autumn'],

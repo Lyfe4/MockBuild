@@ -30,6 +30,13 @@ export interface SeasonGlyph {
 export const GLYPH_VIEW_BOX = '0 0 24 24';
 
 /**
+ * How much of that box each glyph's longest dimension spans: 19.2 of 24, four
+ * fifths. See the note on filling the box equally, below — this is the number
+ * that keeps the four at one distance from the rim as they orbit it.
+ */
+export const GLYPH_FILL = 19.2;
+
+/**
  * The four seasonal glyphs, in the engraving language the plates are drawn in:
  * **one ink weight, no fills**, and no shape that depends on a fill to be read.
  * A closed path here is an outline, not a silhouette.
@@ -64,19 +71,41 @@ export const GLYPH_VIEW_BOX = '0 0 24 24';
  * not importing a northern year. Thornfield is in Armidale, 1,000 m up in the
  * New England Tablelands, which is one of the few towns in Australia that
  * genuinely sees snow most winters. It is a local mark, not a borrowed one.
+ *
+ * ## They are centred in the box, and they fill it equally
+ *
+ * Both because of where the dial puts them. The mark rides a box that swings
+ * around the outside of the circle, so the box's centre is the point it orbits
+ * on and the box's edge is what sets its distance from the rim.
+ *
+ * Centred, because a glyph sitting a unit and a half low in its own box — which
+ * the sprout and the leaf both were, being drawn from the ground up — would
+ * orbit about a point that is not its middle and wobble as it went.
+ *
+ * Equally filled, because four marks on one orbit have to sit at one distance.
+ * Drawn at whatever size each shape wanted, the sun filled 80 per cent of its
+ * box and the leaf 59, and the leaf then read as floating a third of its own
+ * width further out — the same orbit, four apparent radii. So each is scaled
+ * about the centre until its **longest** dimension spans `GLYPH_FILL`, which is
+ * where the sun already was. The sprout stays narrower than it is tall, because
+ * that is what a sprout is; what is equalised is the extent, not the shape.
+ *
+ * Scaling about the centre leaves the stroke width alone, so one ink weight
+ * still means one ink weight. `seasonGlyphs.test.ts` holds all four to both
+ * rules.
  */
 export const SEASON_GLYPHS: Record<Season, SeasonGlyph> = {
   spring: {
     viewBox: GLYPH_VIEW_BOX,
     description: 'A sprout: an upright stem with a leaf opening to each side.',
     paths: [
-      // The stem, rising from the foot of the box to just above the middle.
-      'M12 21 L12 9',
-      // Left leaf: a lens between (12, 15.4) and (6.2, 9.2), belly down.
-      'M12 15.4 C8.8 15.4 6.2 12.6 6.2 9.2 C9.4 9.2 12 12 12 15.4 Z',
+      // The stem, rising from low in the box to just above the middle.
+      'M12 21.6 L12 5.82',
+      // Left leaf: a lens between (12, 14.24) and (4.37, 6.08), belly down.
+      'M12 14.24 C7.79 14.24 4.37 10.55 4.37 6.08 C8.58 6.08 12 9.76 12 14.24 Z',
       // Right leaf, higher up the stem so the two do not read as a single
       // horizontal bar — which is what happens when they are opposite.
-      'M12 12.6 C15.2 12.6 17.8 9.8 17.8 6.4 C14.6 6.4 12 9.2 12 12.6 Z',
+      'M12 10.55 C16.21 10.55 19.63 6.87 19.63 2.4 C15.42 2.4 12 6.08 12 10.55 Z',
     ],
   },
   summer: {
@@ -103,23 +132,23 @@ export const SEASON_GLYPHS: Record<Season, SeasonGlyph> = {
     viewBox: GLYPH_VIEW_BOX,
     description: 'A fallen leaf: one lens on the diagonal, with a stalk and a midrib.',
     paths: [
-      // The blade, from the stalk end at (7.4, 16.6) to the tip at (18.4, 5.6).
-      'M7.4 16.6 C7.4 10.5 12.3 5.6 18.4 5.6 C18.4 11.7 13.5 16.6 7.4 16.6 Z',
+      // The blade, from the stalk end at (6.73, 17.27) to the tip at (21.6, 2.4).
+      'M6.73 17.27 C6.73 9.03 13.35 2.4 21.6 2.4 C21.6 10.65 14.97 17.27 6.73 17.27 Z',
       // The midrib, which is also the axis the two curves are mirrored about.
-      'M7.4 16.6 L18.4 5.6',
+      'M6.73 17.27 L21.6 2.4',
       // The stalk, carrying the same line on past the blade.
-      'M7.4 16.6 L4.2 19.8',
+      'M6.73 17.27 L2.4 21.6',
     ],
   },
   winter: {
     viewBox: GLYPH_VIEW_BOX,
     description: 'A snowflake: three axes crossed at the centre, six arms.',
     paths: [
-      'M12 2.6 L12 21.4',
-      // The other two axes at 60 degrees: 9.4 * cos(30) = 8.14,
-      // 9.4 * sin(30) = 4.7.
-      'M3.86 7.3 L20.14 16.7',
-      'M3.86 16.7 L20.14 7.3',
+      'M12 2.4 L12 21.6',
+      // The other two axes at 60 degrees: 9.6 * cos(30) = 8.31,
+      // 9.6 * sin(30) = 4.8.
+      'M3.69 7.2 L20.31 16.8',
+      'M3.69 16.8 L20.31 7.2',
     ],
   },
 };

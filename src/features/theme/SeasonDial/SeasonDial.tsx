@@ -62,12 +62,14 @@ export interface SeasonDialProps {
  * A single ink hairline now runs round the whole circle, which is the job that
  * outline was doing badly: giving the object an edge.
  *
- * At the centre, where the four meet, sits a **glyph for the active season** —
- * a sprout, a sun, a fallen leaf, a snowflake — drawn in the plates' own
- * language of one ink weight and no fills. It does not point at anything; it
- * says what the dial is set to, in the third register the control has after
- * the colour and the word. `seasonGlyphs.ts` is where the four are authored and
- * why they are those four.
+What marks it *out* is a **glyph for the active season** — a sprout, a sun, a
+ * fallen leaf, a snowflake — drawn in the plates' own language of one ink weight
+ * and no fills, sitting just outside the rim on the diagonal, opposite the
+ * quadrant it belongs to. It is where the old tick used to be and it moves the
+ * way the old tick moved: on a season change it swings round the circle to the
+ * new quadrant while the drawing cross-fades into the next one. The glyph
+ * counter-rotates as it goes, so it arrives upright rather than upside down.
+ * `seasonGlyphs.ts` is where the four are authored and why they are those four.
  *
  * ## The name beside it
  *
@@ -95,8 +97,10 @@ export interface SeasonDialProps {
  * `season` is `null` in the prerendered HTML, because a file written at build
  * time cannot know which season this reader gets — see `ThemeContext`. The dial
  * draws that state rather than guessing at one: no radio checked, no name, four
- * quadrants all at the same muted strength and **no glyph** at the centre,
- * which is the truthful picture of a control nobody has answered yet.
+ * quadrants all at the same muted strength and **no glyph** anywhere on the
+ * rim, which is the truthful picture of a control nobody has answered yet. A
+ * glyph drawn anyway would have to sit somewhere, and every somewhere on this
+ * control means a season.
  *
  * The `<p>` itself is always rendered, empty rather than absent, for two
  * reasons. A live region has to exist before its content changes or the change
@@ -220,20 +224,32 @@ export function SeasonDial({ className }: SeasonDialProps) {
         </svg>
 
         {/*
-          The seasonal glyph, at the centre where the four quadrants meet.
+          The seasonal glyph, on the old needle's orbit: outside the rim, on the
+          diagonal, opposite the quadrant whose season is active — and it swings
+          there when the season changes.
 
-          All four are rendered and three of them are transparent, because that
+          Two elements and two rotations. `.orbit` is a small box that turns
+          about a `transform-origin` down at the dial's centre, which is what
+          carries the mark round; each glyph inside it turns the *same angle
+          back* about its own centre, so a sun that has travelled to the bottom
+          of the circle is still the right way up. Both read `--orbit-turn` and
+          both transition on `--duration-palette`, so they are in lockstep and
+          the mark never tumbles.
+
+          All four glyphs are rendered and three of them are transparent, which
           is what makes the change a **cross-fade** rather than a swap: at the
-          midpoint both the leaving glyph and the arriving one are half there.
-          One element whose path data changed could not do it without a morph,
-          and these four shapes have nothing in common to morph through.
+          midpoint the leaving drawing and the arriving one are each half inked,
+          both on the same swinging box, so one mark appears to travel and turn
+          into the next. One element whose path data changed could not do that
+          without a morph, and these four shapes have nothing in common to morph
+          through.
 
           Nothing here is conditional on the season, including the undressed
           case: with no `data-active` on the fieldset, no rule raises any of the
-          four, and the centre of the dial is simply empty — which is the same
-          thing the unchecked radios and the empty name are saying.
+          four and none of them is drawn — the same thing the unchecked radios
+          and the empty name are saying.
         */}
-        <span className={styles.centre} aria-hidden="true">
+        <span className={styles.orbit} aria-hidden="true">
           {SEASONS.map((option) => {
             const glyph = SEASON_GLYPHS[option];
 

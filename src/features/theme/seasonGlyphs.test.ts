@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { SEASONS } from '@/types';
 
-import { GLYPH_VIEW_BOX, SEASON_GLYPHS } from './seasonGlyphs';
+import { GLYPH_FILL, GLYPH_VIEW_BOX, SEASON_GLYPHS } from './seasonGlyphs';
 
 /**
  * The glyphs are path data, so this is the only place they can be checked at
@@ -17,7 +17,7 @@ import { GLYPH_VIEW_BOX, SEASON_GLYPHS } from './seasonGlyphs';
  */
 
 /** The stroke the dial draws these at, in view-box units. */
-const STROKE_WIDTH = 1.6;
+const STROKE_WIDTH = 1.9;
 
 interface Segment {
   readonly command: string;
@@ -47,6 +47,34 @@ function pointsOf(d: string): readonly (readonly [number, number])[] {
 
 const everyPath = (): readonly { season: string; d: string }[] =>
   SEASONS.flatMap((season) => SEASON_GLYPHS[season].paths.map((d) => ({ season, d })));
+
+interface Bounds {
+  readonly width: number;
+  readonly height: number;
+  readonly centre: readonly [number, number];
+}
+
+/**
+ * The extent of a glyph's points.
+ *
+ * Control points included, and deliberately: a Bézier stays inside its hull, so
+ * this is never smaller than the curve it describes. For an orbiting mark the
+ * conservative answer is the useful one — it is the box, not the ink, that has
+ * to clear the rim.
+ */
+function boundsOf(season: (typeof SEASONS)[number]): Bounds {
+  const points = SEASON_GLYPHS[season].paths.flatMap((d) => pointsOf(d));
+  const xs = points.map(([x]) => x);
+  const ys = points.map(([, y]) => y);
+  const [left, right] = [Math.min(...xs), Math.max(...xs)];
+  const [top, bottom] = [Math.min(...ys), Math.max(...ys)];
+
+  return {
+    width: right - left,
+    height: bottom - top,
+    centre: [(left + right) / 2, (top + bottom) / 2],
+  };
+}
 
 describe('the seasonal glyphs', () => {
   it('has one for each season and nothing else', () => {
@@ -130,6 +158,38 @@ describe('the seasonal glyphs', () => {
     for (const description of descriptions) expect(description.length).toBeGreaterThan(20);
 
     expect(new Set(descriptions).size).toBe(SEASONS.length);
+  });
+
+  it('centres every glyph on its box, because the box is what orbits', () => {
+    /*
+      The dial swings this box around the outside of the circle, so the box's
+      centre is the point the mark turns about. A sprout drawn from the ground
+      up sits low in its box and orbits about a point that is not its middle:
+      it wobbles as it goes, which is the sort of thing that looks like a
+      rendering bug rather than like a drawing being off-centre.
+    */
+    for (const season of SEASONS) {
+      const { centre } = boundsOf(season);
+
+      expect(centre[0], `${season} x`).toBeCloseTo(12, 1);
+      expect(centre[1], `${season} y`).toBeCloseTo(12, 1);
+    }
+  });
+
+  it('fills the box equally, so four marks on one orbit sit at one distance', () => {
+    /*
+      Not "all the same shape" — the sprout is narrower than it is tall, as a
+      sprout should be. What has to match is the **longest** dimension, because
+      that is what decides how far the drawing reaches toward the rim. Left to
+      themselves the sun filled four fifths of its box and the leaf three
+      fifths, and on the orbit the leaf read as floating a third of its own
+      width further out than the others.
+    */
+    for (const season of SEASONS) {
+      const { width, height } = boundsOf(season);
+
+      expect(Math.max(width, height), season).toBeCloseTo(GLYPH_FILL, 1);
+    }
   });
 
   it('centres the summer disc on the box, which is what the rays are drawn around', () => {

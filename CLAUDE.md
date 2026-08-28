@@ -184,23 +184,54 @@ circle cannot be mistaken for a list of pages.
   instead of doubling it. An SVG rather than a CSS `border-radius`, because a
   bordered box would have had to agree with the wedges' geometry by arithmetic
   and was half a pixel out at the one size that matters.
-- **A seasonal glyph sits at the centre**, where the four quadrants meet: a
-  sprout, a sun, a fallen leaf, a snowflake, drawn in the plates' own language
-  of one ink weight and no fills. It is decorative and `aria-hidden`; the names
-  stay on the radios, because a reader hearing both would get the same fact in
-  two vocabularies. `src/features/theme/seasonGlyphs.ts` is where the four are
-  authored **as data** — a view box and a list of path strings each — so they
-  can be measured by a test and used by anything else that ever needs to say
-  "autumn" in a drawing.
+- **A seasonal glyph rides the old tick's orbit**: outside the rim, on the
+  diagonal, opposite the quadrant whose season is active — a sprout, a sun, a
+  fallen leaf, a snowflake, drawn in the plates' own language of one ink weight
+  and no fills. On a season change it **swings round the circle** to the new
+  quadrant, which is the movement the tick had and the reason the tick's
+  mechanism is kept: a small box turned about a `transform-origin` down at the
+  dial's centre, never a full-size box with a mark at its top, because a rotated
+  box overflows by its diagonal and an 88px square turned 45 degrees is 124px
+  wide. It is decorative and `aria-hidden`; the names stay on the radios,
+  because a reader hearing both would get the same fact in two vocabularies.
+- **`--orbit-turn` is read twice: once by the carrier, once negated by the
+  drawing.** The glyph counter-rotates as it travels, so it arrives upright
+  rather than upside down — measured at every sample of a swing, the two angles
+  sum to zero. Both read the same token and the same easing, which is not
+  tidiness: two rotations meant to cancel have to be interpolated on the same
+  curve, or the mark tips one way at the start of the swing and back at the end.
+  One custom property rather than eight hand-written angles that would have to
+  stay each other's opposite.
+- **The glyph is 18px because of what a turned box overflows.** Halfway through
+  a swing the box is straight out to one side, reaching
+  `--dial-radius + --glyph-size` — 42px — from the centre, against 44.5px of
+  viewport at 320. That is also why the name sits `--space-sm` from the dial
+  rather than `--space-xs`: at spring and winter the mark hangs into the gap on
+  the word's side.
 - **All four glyphs are rendered, and three are transparent.** That is what
   makes a season change a **cross-fade** rather than a swap: at the midpoint the
-  leaving drawing and the arriving one are each half inked, and the centre never
-  goes blank. One element whose `d` changed could not do it without a morph, and
-  these four shapes have nothing in common to morph through. The opacity
-  transition is `--duration-palette`, which buys two things for free — 0ms until
-  `ThemeProvider` marks the document ready, so the first glyph is simply _there_
-  on the first paint; and it derives from `--duration-slow`, which the
-  reduced-motion block in `tokens.css` zeroes.
+  leaving drawing and the arriving one are each half inked, both riding the same
+  swinging box, so one mark appears to travel and turn into the next. One
+  element whose `d` changed could not do it without a morph, and these four
+  shapes have nothing in common to morph through. Both the rotation and the
+  opacity transition on `--duration-palette`, which buys two things for free —
+  0ms until `ThemeProvider` marks the document ready, so the first glyph is
+  simply _there_ on the first paint rather than swinging into place on every
+  load; and it derives from `--duration-slow`, which the reduced-motion block in
+  `tokens.css` zeroes.
+- **Winter back to spring turns the long way round**, through autumn and summer.
+  Shortest-path rotation would need the accumulated angle carried in JavaScript
+  state, and a dial running backwards through the year to reach spring is a fair
+  description of what the reader just asked for.
+- **`src/features/theme/seasonGlyphs.ts`** is where the four are authored **as
+  data** — a view box and a list of path strings each — so they can be measured
+  by a test and used by anything else that ever needs to say "autumn" in a
+  drawing. Two rules exist because of the orbit: each glyph is **centred** in
+  its box, since the box's centre is the point it turns about and a sprout drawn
+  from the ground up would wobble; and all four **fill** the box to the same
+  extent, `GLYPH_FILL`, since four marks on one orbit have to sit at one
+  distance. Left alone, the sun filled four fifths of its box and the leaf
+  three, and the leaf read as floating further out.
 - **The glyph vocabulary is four absolute commands** — `M`, `L`, `C`, `Z`, no
   `A`, no lowercase — and that is a testability decision, not a stylistic one.
   In that subset every number after a command is half of an `x y` pair, so
