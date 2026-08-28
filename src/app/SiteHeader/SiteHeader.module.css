@@ -27,10 +27,24 @@
   grid-row: 1;
 }
 
-/*
- * One line, at every width: the navigation and the seasonal dial. On a phone
- * that is the menu button at one end and the dial at the other — a header bar
- * rather than a full-width strip of anything.
+/**
+ * One line, at every width: the navigation and the seasonal dial.
+ *
+ * On a phone that is the menu button at one end and the dial at the other,
+ * which for one release was a button and, three hundred pixels away, a small
+ * circle — two objects of very unequal weight with nothing between them, so the
+ * row read as a menu with something left over rather than as a header bar.
+ *
+ * Three fixes were available. Centring the wordmark on this row would have cost
+ * the identity its own line and set 35px display type in a third of the width,
+ * which is the exact breakage the stacking rule above exists to avoid. Pulling
+ * the dial inward off `content-end` would have broken its alignment with the
+ * ledger's entry column for the sake of one breakpoint. What is done instead is
+ * to give the right-hand end something to be: the season's **name** now sits
+ * beside the dial at every width, so `space-between` has a labelled control at
+ * one end and a labelled button at the other, of comparable mass and in the same
+ * tracked mono. It is the cheapest of the three and the only one that also
+ * fixes a legibility problem — see `SeasonDial.module.css`.
  */
 .controls {
   display: flex;

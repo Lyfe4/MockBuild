@@ -1,6 +1,7 @@
 /**
  * The seasonal dial: a circle quartered into the four seasons, each inked in
- * its own colour, with a needle at the season the archive is dressed in.
+ * its own colour, with an index mark across the rim of the season the archive
+ * is dressed in and that season's name set beside it.
  *
  * Two sizes are at work and it is worth keeping them apart while reading this
  * file. `--dial-size` is the drawn circle — 48px across, small enough to sit
@@ -8,16 +9,45 @@
  * `--dial-hit` is what is touchable — 88px, four 44px squares that tile without
  * overlapping, so every quadrant is a full-sized target and no point on the
  * control is ambiguous between two seasons. The difference between the two is
- * `--dial-bleed`, and the root gives it straight back as a negative margin: the
+ * `--dial-bleed`, and `.dial` gives it straight back as a negative margin: the
  * control lays out at its drawn size and receives taps at its felt one.
  */
 
+/* The name and the drawing, on one line, as a single labelled control. */
 .root {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/**
+ * The season's name.
+ *
+ * The same small tracked mono as the establishment line and the navigation
+ * links, and deliberately `--color-ink-muted` rather than `--color-ink`: it is
+ * a readout of the control beside it, not a seventh word in the strip above it.
+ * Muted is what keeps one more mono uppercase word from re-creating the exact
+ * problem the dial was built to solve.
+ *
+ * `nowrap` because the flex line is narrow on a phone and "AUTUMN" broken over
+ * two lines beside a 48px circle would be worse than no legend at all.
+ */
+.name {
+  color: var(--color-ink-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.dial {
   --dial-size: 3rem;
   /*
    * Half the box, because the view box is cropped to the circle — see
-   * `VIEW_BOX` in the component. Named rather than inlined so the needle is
-   * placed off the rim it points at.
+   * `VIEW_BOX` in the component. Named rather than inlined so the index mark is
+   * placed across the rim it marks.
    */
   --dial-radius: calc(var(--dial-size) / 2);
   --dial-hit: 5.5rem;
@@ -162,11 +192,20 @@
   fill: color-mix(in srgb, var(--season-colour) 48%, var(--color-surface));
 }
 
-/* The chosen season: full pigment, cut round with an ink line. */
+/**
+ * The chosen season: full pigment, cut round with an ink line **at the same
+ * weight as the other three**.
+ *
+ * It used to be stroked at 3 against their 2, which at 48px is a line half
+ * again as heavy as anything else on the page — the site draws in hairlines
+ * everywhere else, and a control that answers a question about colour was
+ * shouting it in outline. The fill is already the difference between a quadrant
+ * mixed a quarter into the paper and one at full strength; that is emphasis
+ * enough, and the ink stroke is left to say only which one it is.
+ */
 .input:checked + .label .wedge {
   fill: var(--season-colour);
   stroke: var(--color-ink);
-  stroke-width: 3;
 }
 
 /**
@@ -193,57 +232,76 @@
 }
 
 /**
- * The needle: a tick just outside the rim, turned to point at the chosen
- * quadrant.
+ * The index mark: a tick that **crosses** the rim of the chosen quadrant.
  *
- * The tick itself is the element, and it turns about a `transform-origin` down
- * at the dial's centre. The obvious alternative — an element filling the whole
- * hit box with the tick drawn at its top — turns about its own middle with no
- * arithmetic at all, and was wrong for a reason that only shows up at the edge
- * of a page: **a rotated box overflows by its diagonal**. An 88px square turned
- * 45 degrees is 124px wide, so the dial pushed four pixels of horizontal scroll
- * onto a 768px window while appearing to sit comfortably inside the gutter.
+ * It used to float `--needle-gap` clear of the circle, and at 48px a 5px tick
+ * with 4px of paper between it and the drawing does not read as a needle. It
+ * reads as a speck — nothing on the page is that small and detached, so the eye
+ * files it as a stray mark rather than as a pointer, and the one thing it was
+ * there to do, tie the dial to a season, is the one thing it failed at.
+ *
+ * The alternative considered was notching the rim of the active quadrant. It is
+ * the more elegant idea and it loses on arithmetic: the drawn radius is 24px, so
+ * a notch deep enough to see is two or three pixels of an arc a hair over a
+ * pixel wide, and at that size it is indistinguishable from an antialiasing
+ * artefact. It would also cost the thing the drawing is built on — one wedge
+ * turned four times — because a notched quadrant is a different path from a
+ * plain one, so there would be two shapes to keep in agreement, or a mask, to
+ * buy a mark nobody can see. Crossing the rim keeps one rotating element, and
+ * an index mark straddling a scale is a form every gauge already uses.
+ *
+ * `--mark-inside` and `--mark-outside` are how far it reaches either side of the
+ * rim; the element is their sum tall, hung so its outer end is `--mark-outside`
+ * beyond the circle, and it turns about a `transform-origin` down at the dial's
+ * centre. The obvious alternative — an element filling the whole hit box with
+ * the tick drawn at its top — turns about its own middle with no arithmetic at
+ * all, and was wrong for a reason that only shows up at the edge of a page:
+ * **a rotated box overflows by its diagonal**. An 88px square turned 45 degrees
+ * is 124px wide, so the dial pushed four pixels of horizontal scroll onto a
+ * 768px window while appearing to sit comfortably inside the gutter. This
+ * element's furthest corner is 27px from the centre of an 88px box, so it
+ * cannot reach the edge at any angle.
  *
  * It shares `--duration-palette` with the seasonal cross-fade rather than
- * declaring a duration of its own, which buys two things: the needle turns at
+ * declaring a duration of its own, which buys two things: the mark turns at
  * exactly the pace the colours change, and the token is 0ms until
- * `ThemeProvider` marks the document ready — so the needle is simply *there* on
- * the first paint instead of spinning into place on every page load. Reduced
- * motion zeroes it along with everything else.
+ * `ThemeProvider` marks the document ready — so it is simply *there* on the
+ * first paint instead of sweeping into place on every page load. Reduced motion
+ * zeroes it along with everything else.
  *
  * Going from winter back to spring turns the long way round, through autumn and
  * summer. That is left alone: shortest-path rotation would need the accumulated
  * angle carried in JavaScript state, and a dial running backwards through the
  * year to reach spring is a fair description of what the reader just asked for.
  */
-.needle {
-  --needle-gap: 0.25rem;
-  --needle-length: 0.3125rem;
+.mark {
+  --mark-inside: 0.25rem;
+  --mark-outside: 0.1875rem;
 
   position: absolute;
-  /* Centred on the vertical axis, `--needle-gap` of paper clear of the rim. */
-  inset-block-start: calc(50% - var(--dial-radius) - var(--needle-gap) - var(--needle-length));
+  /* Centred on the vertical axis, outer end clear of the rim by its overhang. */
+  inset-block-start: calc(50% - var(--dial-radius) - var(--mark-outside));
   inset-inline-start: calc(50% - 1px);
   inline-size: 2px;
-  block-size: var(--needle-length);
-  transform-origin: 1px calc(var(--needle-length) + var(--needle-gap) + var(--dial-radius));
+  block-size: calc(var(--mark-inside) + var(--mark-outside));
+  transform-origin: 1px calc(var(--dial-radius) + var(--mark-outside));
   background-color: var(--color-ink);
   pointer-events: none;
   transition: rotate var(--duration-palette) var(--ease-in-out);
 }
 
-.root[data-active='spring'] .needle {
+.dial[data-active='spring'] .mark {
   rotate: -45deg;
 }
 
-.root[data-active='summer'] .needle {
+.dial[data-active='summer'] .mark {
   rotate: 45deg;
 }
 
-.root[data-active='autumn'] .needle {
+.dial[data-active='autumn'] .mark {
   rotate: 135deg;
 }
 
-.root[data-active='winter'] .needle {
+.dial[data-active='winter'] .mark {
   rotate: 225deg;
 }

@@ -43,7 +43,9 @@ export function SiteHeader() {
           The navigation and the dial on one line, the dial last, so its
           quadrants sit on `content-end` and the whole block reads as one
           control strip rather than two rows of words. On a phone the same line
-          is the menu button at one end and the dial at the other.
+          is the menu button at one end and, at the other, the season's name
+          with the dial after it — see `.controls` for why the name is what
+          makes that a header bar rather than a button and a stray circle.
         */}
         <div className={styles.controls}>
           <SiteNav />

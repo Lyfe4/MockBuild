@@ -125,14 +125,14 @@ describe('SeasonDial', () => {
     expect(radio('Spring')).toBeChecked();
   });
 
-  it('points the needle at the chosen season', async () => {
+  it('points the index mark at the chosen season', async () => {
     const user = userEvent.setup();
 
     renderDial();
 
     const group = screen.getByRole('group', { name: 'Season' });
 
-    // The needle's angle is CSS, keyed off this attribute. What is testable is
+    // The mark's angle is CSS, keyed off this attribute. What is testable is
     // that the attribute follows the selection — the rotation itself is four
     // rules in the stylesheet and one of them cannot be wrong on its own.
     expect(group).toHaveAttribute('data-active', 'autumn');
@@ -140,6 +140,73 @@ describe('SeasonDial', () => {
     await user.click(radio('Spring'));
 
     expect(group).toHaveAttribute('data-active', 'spring');
+  });
+
+  it('names the season in sight, since the quadrants say which is which to nobody', () => {
+    renderDial();
+
+    // Queried by role rather than by text: a screen reader is told this is a
+    // status, and that is the half of the behaviour a class name cannot carry.
+    expect(screen.getByRole('status')).toHaveTextContent('Autumn');
+  });
+
+  it('renames it on every change, including one made with the keyboard', async () => {
+    const user = userEvent.setup();
+
+    renderDial();
+
+    await user.click(radio('Summer'));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Summer');
+
+    // The click left focus on summer's radio, so the arrow key walks on from
+    // there — no `tab()`, which would step *out* of the group and press an
+    // arrow key at the document body.
+    await user.keyboard('{ArrowRight}');
+
+    expect(screen.getByRole('status')).toHaveTextContent('Autumn');
+  });
+
+  it('announces the change politely rather than interrupting', () => {
+    renderDial();
+
+    /*
+      `role="status"` is an implicit `aria-live="polite"`, and politeness is the
+      point: the radio has already said "Summer, selected" by the time this is
+      read, so an assertive region would cut its own group off mid-sentence.
+    */
+    const status = screen.getByRole('status');
+
+    expect(status).not.toHaveAttribute('aria-live', 'assertive');
+    expect(status.textContent).toBe('Autumn');
+  });
+
+  it('sets the name in one word, so it cannot wrap beside a 48px circle', () => {
+    renderDial();
+
+    // The four names are the whole vocabulary of this element. A two-word
+    // label would need the flex line to be wider than a phone has to give.
+    for (const name of ['Spring', 'Summer', 'Autumn', 'Winter']) {
+      expect(name.split(' ')).toHaveLength(1);
+    }
+
+    expect(screen.getByRole('status').textContent.split(' ')).toHaveLength(1);
+  });
+
+  it('keeps the dial last, so its rim is still the block right edge', () => {
+    renderDial();
+
+    const status = screen.getByRole('status');
+    const group = screen.getByRole('group', { name: 'Season' });
+
+    /*
+      `SiteHeader` hangs this block on `content-end` and `layout.test.tsx`
+      measures it there, so what ends the block has to be the drawing rather
+      than the word — the dial's rim is the thing that lines up with the
+      ledger's entry column. DOCUMENT_POSITION_FOLLOWING: the group comes after
+      the status in document order.
+    */
+    expect(status.compareDocumentPosition(group) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('remembers the choice for the next visit', async () => {

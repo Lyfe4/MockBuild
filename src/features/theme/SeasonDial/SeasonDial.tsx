@@ -40,7 +40,8 @@ export interface SeasonDialProps {
 }
 
 /**
- * The dial that dresses the archive for a season.
+ * The dial that dresses the archive for a season, and the name of the season it
+ * is turned to.
  *
  * A compass rose rather than a row of buttons. The switcher this replaces was a
  * strip of four text labels sitting directly under the navigation, in the same
@@ -48,6 +49,27 @@ export interface SeasonDialProps {
  * navigation, and a reader had to try one to find out it was not. A circle
  * divided into four, each quadrant inked in that season's own colour, cannot be
  * mistaken for a list of pages.
+ *
+ * ## The name beside it
+ *
+ * A quartered circle is unmistakably not navigation, which was the point, and
+ * unmistakably not self-explanatory, which was the cost: nothing on the drawing
+ * says which quadrant is which, and a reader who has not clicked one has no way
+ * to find out. So the active season's name is set beside it, in the same small
+ * tracked mono as the establishment line and the navigation — one word, which
+ * is the least that can be said and still be a legend.
+ *
+ * It is `role="status"`, so the new season is announced politely on a change.
+ * That is a second announcement after the radio's own "Winter, selected", and
+ * it is wanted: the radio says *what was chosen*, the status says *what the
+ * archive is now dressed in*. They are the same fact today, and the status is
+ * the one that would still be true if the season were ever changed by something
+ * other than this control.
+ *
+ * The word is shown at **every** width rather than hidden on a phone. It is
+ * what balances the mobile header — see `SiteHeader.module.css` — and at
+ * `--font-size-2xs` the longest of the four sets in about fifty pixels, which
+ * even a 320px screen has to spare between the menu button and the dial.
  *
  * ## It is still a radio group
  *
@@ -95,57 +117,72 @@ export function SeasonDial({ className }: SeasonDialProps) {
   };
 
   return (
-    /*
-      `data-active` is the season the archive is dressed in, and it is what
-      aims the needle. `data-season` on each option is which season that
-      quadrant *is*. Two attributes because they are two different facts, and
-      both are attributes rather than styles because the CSP forbids the second.
-    */
-    <fieldset className={cx(styles.root, className)} data-active={season}>
-      <VisuallyHidden as="legend">Season</VisuallyHidden>
-
-      <div className={styles.options}>
-        {SEASONS.map((option) => (
-          <div key={option} className={styles.option} data-season={option}>
-            <input
-              className={styles.input}
-              type="radio"
-              name="season"
-              id={`season-${option}`}
-              value={option}
-              checked={season === option}
-              onChange={() => {
-                choose(option);
-              }}
-            />
-            <label className={styles.label} htmlFor={`season-${option}`}>
-              <svg
-                className={styles.quadrant}
-                viewBox={VIEW_BOX}
-                aria-hidden="true"
-                focusable="false"
-              >
-                {/*
-                  The same wedge twice. The first is stroked heavily and is
-                  transparent until the radio takes keyboard focus, at which
-                  point it shows as a halo hugging that quadrant — a focus ring
-                  on the shape itself rather than on the square it lives in.
-                */}
-                <path className={styles.focusRing} d={WEDGE} />
-                <path className={styles.wedge} d={WEDGE} />
-              </svg>
-              <VisuallyHidden>{SEASON_LABELS[option]}</VisuallyHidden>
-            </label>
-          </div>
-        ))}
-      </div>
+    <div className={cx(styles.root, className)}>
+      {/*
+        The name first, the dial last. The order earns its keep at both ends of
+        the layout: on a phone it gathers the two into one right-hand cluster
+        facing the menu button, and at every width it leaves the dial's own rim
+        as this block's right edge — which is the edge `SiteHeader` hangs on
+        `content-end` and what `layout.test.tsx` measures.
+      */}
+      <p className={styles.name} role="status">
+        {SEASON_LABELS[season]}
+      </p>
 
       {/*
-        The needle. Decorative — the checked radio is what states the season —
-        and a sibling of the labels rather than a child of one, so it can turn
-        across all four without ever being in the way of a tap.
+        `data-active` is the season the archive is dressed in, and it is what
+        aims the index mark. `data-season` on each option is which season that
+        quadrant *is*. Two attributes because they are two different facts, and
+        both are attributes rather than styles because the CSP forbids the
+        second.
       */}
-      <span className={styles.needle} aria-hidden="true" />
-    </fieldset>
+      <fieldset className={styles.dial} data-active={season}>
+        <VisuallyHidden as="legend">Season</VisuallyHidden>
+
+        <div className={styles.options}>
+          {SEASONS.map((option) => (
+            <div key={option} className={styles.option} data-season={option}>
+              <input
+                className={styles.input}
+                type="radio"
+                name="season"
+                id={`season-${option}`}
+                value={option}
+                checked={season === option}
+                onChange={() => {
+                  choose(option);
+                }}
+              />
+              <label className={styles.label} htmlFor={`season-${option}`}>
+                <svg
+                  className={styles.quadrant}
+                  viewBox={VIEW_BOX}
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  {/*
+                    The same wedge twice. The first is stroked heavily and is
+                    transparent until the radio takes keyboard focus, at which
+                    point it shows as a halo hugging that quadrant — a focus
+                    ring on the shape itself rather than on the square it lives
+                    in.
+                  */}
+                  <path className={styles.focusRing} d={WEDGE} />
+                  <path className={styles.wedge} d={WEDGE} />
+                </svg>
+                <VisuallyHidden>{SEASON_LABELS[option]}</VisuallyHidden>
+              </label>
+            </div>
+          ))}
+        </div>
+
+        {/*
+          The index mark. Decorative — the checked radio is what states the
+          season — and a sibling of the labels rather than a child of one, so it
+          can turn across all four without ever being in the way of a tap.
+        */}
+        <span className={styles.mark} aria-hidden="true" />
+      </fieldset>
+    </div>
   );
 }
