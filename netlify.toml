@@ -1,0 +1,57 @@
+# Netlify build configuration.
+#
+# The site is fully static: no functions, no edge handlers, no environment
+# variables, no build plugins. Everything below is either the build command or a
+# version pin, and the two things that actually configure the *served* site —
+# the security headers and the SPA catch-all — are deliberately **not** here.
+# They live in `public/_headers` and `public/_redirects`, which Vite copies
+# verbatim into the publish root.
+#
+# That split is on purpose. Netlify will read redirect and header rules from
+# either place, and having both is how a site ends up with two sets of security
+# headers where one silently wins. `src/test/securityHeaders.test.ts` parses the
+# real `_headers` file and holds it against the `<meta>` copy in `index.html`;
+# it would not see rules declared here, so no rules are declared here.
+
+[build]
+  # `npm run build` is `tsc -b && vite build`, so a type error fails the deploy
+  # rather than shipping. The three verifiers and the test suite are not run
+  # here on purpose: CI runs them on the pull request, which is where a red
+  # build is worth something. A deploy that failed for a stale generated file
+  # after review had already passed would be finding it in the wrong place.
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Matches `.nvmrc` and the `engines.node` range in package.json. Netlify reads
+  # `.nvmrc` on its own, but only for the default image and only if it parses;
+  # pinning it here as well means the version is stated where somebody reading
+  # the deploy configuration will see it.
+  NODE_VERSION = "24"
+  # Reproducible installs. Netlify defaults to `npm install` when it cannot tell
+  # what the project wants; this makes it `npm ci` against the committed
+  # lockfile, which is what CI does too.
+  NPM_FLAGS = "--prefer-offline --no-audit"
+
+[[headers]]
+  # The one header rule that belongs here rather than in `_headers`, because it
+  # is about *caching* rather than about security, and because it depends on a
+  # fact only the build knows: everything under /assets/ carries a content hash
+  # in its filename, so it can never go stale and never needs revalidating.
+  #
+  # The HTML is deliberately not cached this way. It is the file that points at
+  # the hashed assets, so a stale copy pins a visitor to an old build.
+  for = "/assets/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  # The fonts are hashed by content in their own way — the file names are
+  # stable, but a change to one is a change to a vendored binary that comes with
+  # a new deploy anyway. A year is too long for a name that does not change; a
+  # week is long enough to matter and short enough to fix a mistake.
+  for = "/fonts/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

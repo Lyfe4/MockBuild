@@ -50,14 +50,20 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      # The generated files: the plates built from their landmarks, and
-      # references/SOURCES.md built from src/data/references/sources.ts. Both
-      # compare bytes, and both catch the same mistake — a generated file edited
-      # by hand, after which the source of truth is fiction. `npm run check`
-      # runs them locally; nothing ran them here until the credits list started
-      # being rendered from the same records as SOURCES.md.
+      # The generated files: the plates built from their landmarks,
+      # references/SOURCES.md built from src/data/references/sources.ts, and
+      # robots.txt and sitemap.xml built from src/data/site.ts and the data.
+      # All three compare bytes, and all three catch the same mistake — a
+      # generated file edited by hand, after which the source of truth is
+      # fiction. `npm run check` runs them locally; nothing ran them here until
+      # the credits list started being rendered from the same records as
+      # SOURCES.md.
+      #
+      # The sitemap is the one where it matters most, because it is the only
+      # generated file on the site that no human ever opens: a specimen missing
+      # from it is invisible, and nothing looks broken.
       - name: Verify generated files
-        run: npm run plate:verify && npm run sources:verify
+        run: npm run plate:verify && npm run sources:verify && npm run seo:verify
 
       - name: Test
         run: npm run test
