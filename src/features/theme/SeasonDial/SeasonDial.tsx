@@ -4,6 +4,7 @@ import { VisuallyHidden } from '@/components/VisuallyHidden';
 import { cx } from '@/lib/classNames';
 import { SEASONS, type Season } from '@/types';
 
+import { SEASON_GLYPHS } from '../seasonGlyphs';
 import { useSeason } from '../useSeason';
 import styles from './SeasonDial.module.css';
 
@@ -50,6 +51,24 @@ export interface SeasonDialProps {
  * divided into four, each quadrant inked in that season's own colour, cannot be
  * mistaken for a list of pages.
  *
+ * ## What says which season is active
+ *
+ * **The fill, and only the fill.** The chosen quadrant is at full pigment and
+ * the other three are mixed a quarter into the paper, which is a large enough
+ * step to be unmistakable on its own — and the two things that used to help it
+ * along have both gone. The heavier ink outline went because a site drawn in
+ * hairlines had one control shouting in outline; the tick that pointed at the
+ * quadrant went because a mark that small and that detached reads as a speck.
+ * A single ink hairline now runs round the whole circle, which is the job that
+ * outline was doing badly: giving the object an edge.
+ *
+ * At the centre, where the four meet, sits a **glyph for the active season** —
+ * a sprout, a sun, a fallen leaf, a snowflake — drawn in the plates' own
+ * language of one ink weight and no fills. It does not point at anything; it
+ * says what the dial is set to, in the third register the control has after
+ * the colour and the word. `seasonGlyphs.ts` is where the four are authored and
+ * why they are those four.
+ *
  * ## The name beside it
  *
  * A quartered circle is unmistakably not navigation, which was the point, and
@@ -75,10 +94,9 @@ export interface SeasonDialProps {
  *
  * `season` is `null` in the prerendered HTML, because a file written at build
  * time cannot know which season this reader gets — see `ThemeContext`. The dial
- * draws that state rather than guessing at one: no radio checked, no name, and
- * **no index mark**, which is the truthful picture of a control nobody has
- * answered yet. Rendering the mark anyway would leave it pointing at 12
- * o'clock, between spring and summer, at a season that is not one.
+ * draws that state rather than guessing at one: no radio checked, no name, four
+ * quadrants all at the same muted strength and **no glyph** at the centre,
+ * which is the truthful picture of a control nobody has answered yet.
  *
  * The `<p>` itself is always rendered, empty rather than absent, for two
  * reasons. A live region has to exist before its content changes or the change
@@ -145,10 +163,11 @@ export function SeasonDial({ className }: SeasonDialProps) {
 
       {/*
         `data-active` is the season the archive is dressed in, and it is what
-        aims the index mark. `data-season` on each option is which season that
-        quadrant *is*. Two attributes because they are two different facts, and
-        both are attributes rather than styles because the CSP forbids the
-        second.
+        chooses the glyph. `data-season` on each option is which season that
+        quadrant *is*, and `data-glyph` is which season a drawing *shows* — a
+        third name rather than a second `data-season` because the tests count
+        the quadrants by attribute, and eight of them is not four. All three are
+        attributes rather than styles because the CSP forbids the second.
       */}
       <fieldset className={styles.dial} data-active={season ?? undefined}>
         <VisuallyHidden as="legend">Season</VisuallyHidden>
@@ -191,11 +210,48 @@ export function SeasonDial({ className }: SeasonDialProps) {
         </div>
 
         {/*
-          The index mark. Decorative — the checked radio is what states the
-          season — and a sibling of the labels rather than a child of one, so it
-          can turn across all four without ever being in the way of a tap.
+          The rim, drawn once, on the same arc the four wedges already stroke —
+          so it covers their outer edge rather than doubling it. It is the only
+          ink line on the dial, and it is what the active quadrant's heavy
+          outline used to be doing badly: giving the circle an edge.
         */}
-        {season !== null && <span className={styles.mark} aria-hidden="true" />}
+        <svg className={styles.rim} viewBox={VIEW_BOX} aria-hidden="true" focusable="false">
+          <circle cx="50" cy="50" r="45" />
+        </svg>
+
+        {/*
+          The seasonal glyph, at the centre where the four quadrants meet.
+
+          All four are rendered and three of them are transparent, because that
+          is what makes the change a **cross-fade** rather than a swap: at the
+          midpoint both the leaving glyph and the arriving one are half there.
+          One element whose path data changed could not do it without a morph,
+          and these four shapes have nothing in common to morph through.
+
+          Nothing here is conditional on the season, including the undressed
+          case: with no `data-active` on the fieldset, no rule raises any of the
+          four, and the centre of the dial is simply empty — which is the same
+          thing the unchecked radios and the empty name are saying.
+        */}
+        <span className={styles.centre} aria-hidden="true">
+          {SEASONS.map((option) => {
+            const glyph = SEASON_GLYPHS[option];
+
+            return (
+              <svg
+                key={option}
+                className={styles.glyph}
+                data-glyph={option}
+                viewBox={glyph.viewBox}
+                focusable="false"
+              >
+                {glyph.paths.map((d) => (
+                  <path key={d} d={d} />
+                ))}
+              </svg>
+            );
+          })}
+        </span>
       </fieldset>
     </div>
   );

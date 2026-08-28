@@ -81,13 +81,18 @@ describe('renderRoute', () => {
     const { html } = await render('/catalogue');
 
     /*
-      No season is resolved during a build, so the dial has nothing checked and
-      no name beside it, and the neutral palette in `tokens.css` is what paints
-      until the page hydrates. `ThemeProvider` and `useReaderSeason` argue it in
-      full.
+      No season is resolved during a build, so the dial has nothing checked, no
+      name beside it and no `data-active` on the group — which is what leaves
+      the centre of the dial empty, since every glyph rule is keyed off that
+      attribute. The neutral palette in `tokens.css` is what paints until the
+      page hydrates. `ThemeProvider` and `useReaderSeason` argue it in full.
     */
     expect(html).not.toContain('checked=""');
+    expect(html).not.toContain('data-active');
     expect(html).toContain('role="status"');
+    // All four glyphs ship, all four transparent: the stylesheet raises one
+    // once there is a season to raise, and that is what makes it a cross-fade.
+    expect(html.match(/data-glyph="/g)).toHaveLength(4);
   });
 
   it('holds back the lazy plate boundary, so hydration has nothing to recover', async () => {

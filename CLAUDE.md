@@ -173,17 +173,44 @@ circle cannot be mistaken for a list of pages.
   is `--color-ink` rather than `--color-focus-ring`, because the focus token is
   the _active_ palette's accent and is therefore close to one of the four
   colours it would have to be legible against.
-- **The needle is a 5px tick that rotates about the dial's centre**, not a
-  full-size box with a tick drawn at its top. The second is simpler and was
-  wrong: **a rotated box overflows by its diagonal**, so an 88px square turned 45
-  degrees is 124px wide and put four pixels of horizontal scroll onto a 768px
-  window. It transitions on `--duration-palette`, which ties it to the seasonal
-  cross-fade and is 0ms until `ThemeProvider` marks the document ready — so the
-  needle is simply there on the first paint rather than spinning into place on
-  every load. Reduced motion zeroes it with everything else.
+- **The fill is the only thing that says which season is active.** The chosen
+  quadrant is at full pigment and the other three are mixed a quarter into the
+  paper, and nothing else marks it. Two things used to help and both have gone:
+  a heavier ink outline on the active wedge, which made one control shout in
+  outline on a site drawn entirely in hairlines; and a tick pointing at it from
+  the rim, which at that size read as a speck rather than as a needle. What
+  replaced them is `.rim` — **one ink circle, drawn once**, on exactly the arc
+  the four wedges already stroke and after them, so it covers their outer edge
+  instead of doubling it. An SVG rather than a CSS `border-radius`, because a
+  bordered box would have had to agree with the wedges' geometry by arithmetic
+  and was half a pixel out at the one size that matters.
+- **A seasonal glyph sits at the centre**, where the four quadrants meet: a
+  sprout, a sun, a fallen leaf, a snowflake, drawn in the plates' own language
+  of one ink weight and no fills. It is decorative and `aria-hidden`; the names
+  stay on the radios, because a reader hearing both would get the same fact in
+  two vocabularies. `src/features/theme/seasonGlyphs.ts` is where the four are
+  authored **as data** — a view box and a list of path strings each — so they
+  can be measured by a test and used by anything else that ever needs to say
+  "autumn" in a drawing.
+- **All four glyphs are rendered, and three are transparent.** That is what
+  makes a season change a **cross-fade** rather than a swap: at the midpoint the
+  leaving drawing and the arriving one are each half inked, and the centre never
+  goes blank. One element whose `d` changed could not do it without a morph, and
+  these four shapes have nothing in common to morph through. The opacity
+  transition is `--duration-palette`, which buys two things for free — 0ms until
+  `ThemeProvider` marks the document ready, so the first glyph is simply _there_
+  on the first paint; and it derives from `--duration-slow`, which the
+  reduced-motion block in `tokens.css` zeroes.
+- **The glyph vocabulary is four absolute commands** — `M`, `L`, `C`, `Z`, no
+  `A`, no lowercase — and that is a testability decision, not a stylistic one.
+  In that subset every number after a command is half of an `x y` pair, so
+  `seasonGlyphs.test.ts` can measure all four against their view box without a
+  path parser. The summer sun is therefore a circle written as four cubic
+  Béziers, which is what an arc would have compiled to anyway.
 - **`max-inline-size: none` on the wedge SVG** is load-bearing: the reset's
   `svg { max-width: 100% }` clamped a 48px drawing to its 44px label, and every
-  wedge then met the others two pixels past the centre instead of on it.
+  wedge then met the others two pixels past the centre instead of on it. `.rim`
+  and `.glyph` restate it for the same reason.
 
 ## Plate architecture
 

@@ -1,7 +1,7 @@
 /**
  * The seasonal dial: a circle quartered into the four seasons, each inked in
- * its own colour, with an index mark across the rim of the season the archive
- * is dressed in and that season's name set beside it.
+ * its own colour, the active one at full strength, a glyph for it at the centre
+ * and its name set beside it.
  *
  * Two sizes are at work and it is worth keeping them apart while reading this
  * file. `--dial-size` is the drawn circle — 48px across, small enough to sit
@@ -61,8 +61,8 @@
   --dial-size: 3rem;
   /*
    * Half the box, because the view box is cropped to the circle — see
-   * `VIEW_BOX` in the component. Named rather than inlined so the index mark is
-   * placed across the rim it marks.
+   * `VIEW_BOX` in the component. Named rather than inlined so `.rim` and
+   * `.centre` can both be placed from the circle rather than from the hit box.
    */
   --dial-radius: calc(var(--dial-size) / 2);
   --dial-hit: 5.5rem;
@@ -208,19 +208,18 @@
 }
 
 /**
- * The chosen season: full pigment, cut round with an ink line **at the same
- * weight as the other three**.
+ * The chosen season: **full pigment, and nothing else**.
  *
- * It used to be stroked at 3 against their 2, which at 48px is a line half
- * again as heavy as anything else on the page — the site draws in hairlines
- * everywhere else, and a control that answers a question about colour was
- * shouting it in outline. The fill is already the difference between a quadrant
- * mixed a quarter into the paper and one at full strength; that is emphasis
- * enough, and the ink stroke is left to say only which one it is.
+ * It used to be outlined in ink as well — first at 3 against the others' 2,
+ * then at 2 — and neither was right. A quadrant mixed a quarter into the paper
+ * beside one at full strength is already an unmissable step; an outline on top
+ * of it was a second answer to a question the fill had finished answering, and
+ * on a site drawn in hairlines it was the one control raising its voice. The
+ * hairline the wedge keeps is `--color-line`, the same rule everything else on
+ * the page is divided by, and `.rim` gives the circle its edge in ink once.
  */
 .input:checked + .label .wedge {
   fill: var(--season-colour);
-  stroke: var(--color-ink);
 }
 
 /**
@@ -247,76 +246,101 @@
 }
 
 /**
- * The index mark: a tick that **crosses** the rim of the chosen quadrant.
+ * The rim.
  *
- * It used to float `--needle-gap` clear of the circle, and at 48px a 5px tick
- * with 4px of paper between it and the drawing does not read as a needle. It
- * reads as a speck — nothing on the page is that small and detached, so the eye
- * files it as a stray mark rather than as a pointer, and the one thing it was
- * there to do, tie the dial to a season, is the one thing it failed at.
+ * One circle on exactly the arc the four wedges already stroke, in ink rather
+ * than in `--color-line`, drawn after them so it covers their outer edge
+ * instead of sitting beside it. Same radius, same stroke width, same view box —
+ * which is why it is an SVG and not a CSS `border-radius`: a bordered box would
+ * have had to agree with the wedges' geometry by arithmetic, and would have
+ * been half a pixel out at the one size that matters.
  *
- * The alternative considered was notching the rim of the active quadrant. It is
- * the more elegant idea and it loses on arithmetic: the drawn radius is 24px, so
- * a notch deep enough to see is two or three pixels of an arc a hair over a
- * pixel wide, and at that size it is indistinguishable from an antialiasing
- * artefact. It would also cost the thing the drawing is built on — one wedge
- * turned four times — because a notched quadrant is a different path from a
- * plain one, so there would be two shapes to keep in agreement, or a mask, to
- * buy a mark nobody can see. Crossing the rim keeps one rotating element, and
- * an index mark straddling a scale is a form every gauge already uses.
- *
- * `--mark-inside` and `--mark-outside` are how far it reaches either side of the
- * rim; the element is their sum tall, hung so its outer end is `--mark-outside`
- * beyond the circle, and it turns about a `transform-origin` down at the dial's
- * centre. The obvious alternative — an element filling the whole hit box with
- * the tick drawn at its top — turns about its own middle with no arithmetic at
- * all, and was wrong for a reason that only shows up at the edge of a page:
- * **a rotated box overflows by its diagonal**. An 88px square turned 45 degrees
- * is 124px wide, so the dial pushed four pixels of horizontal scroll onto a
- * 768px window while appearing to sit comfortably inside the gutter. This
- * element's furthest corner is 27px from the centre of an 88px box, so it
- * cannot reach the edge at any angle.
- *
- * It shares `--duration-palette` with the seasonal cross-fade rather than
- * declaring a duration of its own, which buys two things: the mark turns at
- * exactly the pace the colours change, and the token is 0ms until
- * `ThemeProvider` marks the document ready — so it is simply *there* on the
- * first paint instead of sweeping into place on every page load. Reduced motion
- * zeroes it along with everything else.
- *
- * Going from winter back to spring turns the long way round, through autumn and
- * summer. That is left alone: shortest-path rotation would need the accumulated
- * angle carried in JavaScript state, and a dial running backwards through the
- * year to reach spring is a fair description of what the reader just asked for.
+ * This is what the active quadrant's heavy outline was really for. The circle
+ * needs an edge against the paper; it did not need a different edge in one
+ * quarter.
  */
-.mark {
-  --mark-inside: 0.25rem;
-  --mark-outside: 0.1875rem;
+.rim {
+  position: absolute;
+  inset-block-start: calc(50% - var(--dial-radius));
+  inset-inline-start: calc(50% - var(--dial-radius));
+  inline-size: var(--dial-size);
+  block-size: var(--dial-size);
+  /* Out from under the reset's `svg { max-width: 100% }`, as `.quadrant` is. */
+  max-inline-size: none;
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+/**
+ * The glyph well: a box at the centre of the dial holding all four drawings,
+ * stacked.
+ *
+ * `--glyph-size` is a shade under half the dial, which is the size at which the
+ * mark reads without closing up the quadrants around it. Bigger and the four
+ * colours become a ring; smaller and the sun's rays stop resolving at 48px.
+ */
+.centre {
+  --glyph-size: 1.375rem;
 
   position: absolute;
-  /* Centred on the vertical axis, outer end clear of the rim by its overhang. */
-  inset-block-start: calc(50% - var(--dial-radius) - var(--mark-outside));
-  inset-inline-start: calc(50% - 1px);
-  inline-size: 2px;
-  block-size: calc(var(--mark-inside) + var(--mark-outside));
-  transform-origin: 1px calc(var(--dial-radius) + var(--mark-outside));
-  background-color: var(--color-ink);
+  inset-block-start: calc(50% - var(--glyph-size) / 2);
+  inset-inline-start: calc(50% - var(--glyph-size) / 2);
+  inline-size: var(--glyph-size);
+  block-size: var(--glyph-size);
+  /*
+   * The centre of the dial is the corner where four 44px labels meet, and it is
+   * as much a tap target as anywhere else on the control. The glyph must not
+   * take a press that belongs to a season.
+   */
   pointer-events: none;
-  transition: rotate var(--duration-palette) var(--ease-in-out);
 }
 
-.dial[data-active='spring'] .mark {
-  rotate: -45deg;
+/**
+ * One season's drawing.
+ *
+ * All four are laid on top of each other and only the active one is opaque, so
+ * a season change is a **cross-fade**: at the midpoint the leaving glyph and
+ * the arriving one are each half inked, and the centre of the dial never goes
+ * blank the way a swap would make it.
+ *
+ * `--duration-palette`, like everything else that moves when the season does,
+ * which buys two things and costs nothing. It is 0ms until `ThemeProvider`
+ * marks the document ready, so the first glyph is simply *there* on the first
+ * paint rather than fading in on every load — and it derives from
+ * `--duration-slow`, which the reduced-motion block in `tokens.css` zeroes, so
+ * a reader who has asked for less motion gets the swap with no code here
+ * knowing about it.
+ *
+ * Stroked, never filled: `stroke-linecap: round` and `stroke-linejoin: round`
+ * because at 22px a mitred join on the sprout's leaf tip is a spike, and
+ * `vector-effect` is deliberately *not* used — the stroke is meant to scale
+ * with the drawing if the dial is ever set larger.
+ */
+.glyph {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity var(--duration-palette) var(--ease-standard);
 }
 
-.dial[data-active='summer'] .mark {
-  rotate: 45deg;
-}
-
-.dial[data-active='autumn'] .mark {
-  rotate: 135deg;
-}
-
-.dial[data-active='winter'] .mark {
-  rotate: 225deg;
+/*
+ * Four rules rather than one, because CSS cannot ask whether two attributes on
+ * two elements agree. Undressed — no `data-active` at all — no rule matches and
+ * the centre stays empty, which is the state the prerendered file ships in.
+ */
+.dial[data-active='spring'] .glyph[data-glyph='spring'],
+.dial[data-active='summer'] .glyph[data-glyph='summer'],
+.dial[data-active='autumn'] .glyph[data-glyph='autumn'],
+.dial[data-active='winter'] .glyph[data-glyph='winter'] {
+  opacity: 1;
 }

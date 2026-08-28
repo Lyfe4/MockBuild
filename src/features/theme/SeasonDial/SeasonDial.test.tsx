@@ -125,21 +125,96 @@ describe('SeasonDial', () => {
     expect(radio('Spring')).toBeChecked();
   });
 
-  it('points the index mark at the chosen season', async () => {
+  it('names the active season on the group, which is what raises its glyph', async () => {
     const user = userEvent.setup();
 
     renderDial();
 
     const group = screen.getByRole('group', { name: 'Season' });
 
-    // The mark's angle is CSS, keyed off this attribute. What is testable is
-    // that the attribute follows the selection — the rotation itself is four
-    // rules in the stylesheet and one of them cannot be wrong on its own.
+    // Which glyph is opaque is CSS, keyed off this attribute against each
+    // drawing's own `data-glyph`. What is testable here is that the attribute
+    // follows the selection; the four rules that read it cannot be wrong one at
+    // a time.
     expect(group).toHaveAttribute('data-active', 'autumn');
 
     await user.click(radio('Spring'));
 
     expect(group).toHaveAttribute('data-active', 'spring');
+  });
+
+  it('draws all four glyphs at once, which is what lets the change cross-fade', () => {
+    renderDial();
+
+    const group = screen.getByRole('group', { name: 'Season' });
+    const glyphs = group.querySelectorAll('[data-glyph]');
+
+    /*
+      Not one glyph swapped for another: all four are laid on top of each other
+      and the stylesheet raises one. That is the whole mechanism of the
+      cross-fade — at the midpoint the leaving drawing and the arriving one are
+      each half inked — and it is why this count is four rather than one.
+    */
+    expect(glyphs).toHaveLength(4);
+    expect([...glyphs].map((glyph) => glyph.getAttribute('data-glyph'))).toStrictEqual([
+      ...SEASONS,
+    ]);
+  });
+
+  it('renders every glyph from the shared data rather than from four components', async () => {
+    renderDial();
+
+    const { SEASON_GLYPHS } = await import('../seasonGlyphs');
+
+    for (const season of SEASONS) {
+      const glyph = document.querySelector(`[data-glyph="${season}"]`);
+
+      expect(glyph, season).not.toBeNull();
+      expect(glyph?.getAttribute('viewBox'), season).toBe(SEASON_GLYPHS[season].viewBox);
+      // One <path> per authored path, in order, so a glyph gaining a stroke
+      // needs no change here to be drawn.
+      expect(glyph?.querySelectorAll('path'), season).toHaveLength(
+        SEASON_GLYPHS[season].paths.length,
+      );
+    }
+  });
+
+  it('keeps the glyphs and the rim out of the accessibility tree', () => {
+    renderDial();
+
+    const group = screen.getByRole('group', { name: 'Season' });
+
+    // Decorative, both of them: the radios carry the names, and a screen reader
+    // that announced "sprout" as well would be reading the same fact twice in
+    // two vocabularies.
+    for (const glyph of group.querySelectorAll('[data-glyph]')) {
+      expect(glyph.closest('[aria-hidden="true"]')).not.toBeNull();
+    }
+
+    // Still exactly four names, from the four radios and nowhere else. An SVG
+    // that had escaped its `aria-hidden` wrapper would show up here as a
+    // graphics role with no accessible name.
+    expect(screen.getAllByRole('radio')).toHaveLength(4);
+    expect(screen.queryAllByRole('img')).toHaveLength(0);
+    expect(screen.queryAllByRole('graphics-document')).toHaveLength(0);
+  });
+
+  it('gives the circle one ink rim rather than one quadrant a heavy outline', () => {
+    renderDial();
+
+    const group = screen.getByRole('group', { name: 'Season' });
+    const rim = group.querySelector('circle');
+
+    /*
+      Drawn once, on the arc the four wedges already stroke, so it covers their
+      outer edge instead of doubling it — which is why it carries the same
+      radius as `WEDGE`. The active quadrant has no outline of its own any more;
+      its fill is the whole of the emphasis.
+    */
+    expect(rim).not.toBeNull();
+    expect(rim?.getAttribute('r')).toBe('45');
+    expect(rim?.getAttribute('cx')).toBe('50');
+    expect(rim?.getAttribute('cy')).toBe('50');
   });
 
   it('names the season in sight, since the quadrants say which is which to nobody', () => {
