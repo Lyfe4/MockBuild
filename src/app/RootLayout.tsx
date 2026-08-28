@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { Outlet, useLocation, useNavigation } from 'react-router';
 
+import { cx } from '@/lib/classNames';
+import pageGrid from '@/styles/pageGrid.module.css';
+
 import styles from './RootLayout.module.css';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
@@ -76,7 +79,7 @@ export function RootLayout() {
       <SiteHeader />
 
       <main id="main" className={styles.main} tabIndex={-1}>
-        <div className={styles.container}>
+        <div className={cx(pageGrid.page, styles.container)}>
           <Outlet />
         </div>
       </main>

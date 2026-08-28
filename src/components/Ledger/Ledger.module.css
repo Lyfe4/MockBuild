@@ -1,6 +1,19 @@
 /**
  * Ledger layout: narrow margin column, wide body.
  *
+ * The two columns are not this component's own — they are `margin-start /
+ * margin-end` and `body-start / body-end` on the page grid, reached through
+ * `grid-template-columns: subgrid`. That is what makes the filter panel start
+ * on the same pixel as the masthead's wordmark and the entry column end on the
+ * same pixel as the navigation, without either of those components knowing this
+ * one exists. A grid of its own would have had to be told the same measure, the
+ * same gutter and the same column gap, and would have drifted the first time
+ * one of the three changed.
+ *
+ * The consequence is a requirement: a `Ledger` must be a child of an element
+ * carrying `page` from `styles/pageGrid.module.css`. Every route renders one
+ * root element straight into `RootLayout`'s container, so that holds.
+ *
  * Mobile is a single column with the margin above, which is also the DOM order.
  * The desktop rule adds the second column and the hairline that divides them.
  */
@@ -21,19 +34,36 @@
 @media (min-width: 60rem) {
   /*
    * Two columns only when there is a margin to put in the first one. Without
-   * the guard a page that passes none would drop its body into the 15rem
-   * column and read at a third of the width.
+   * the guard a page that passes none would drop its body into the margin
+   * column and read at a quarter of the width.
    */
   .withMargin {
-    /* Narrow enough to read as a margin, wide enough for a filter label. */
-    grid-template-columns: 15rem minmax(0, 1fr);
-    gap: var(--space-2xl);
+    grid-template-columns: subgrid;
+    /*
+     * A subgrid takes the parent's *tracks*, not the parent's gutters: it keeps
+     * its own, and this one's is `--space-xl` from the rule above. Left alone,
+     * the margin and the body sit on the parent's outer lines and every line
+     * between them is five pixels adrift of the colophon's. Restating the
+     * token is what makes the two grids the same grid rather than merely the
+     * same width.
+     *
+     * One row, so the row gap is nothing.
+     */
+    row-gap: 0;
+    column-gap: var(--layout-column-gap);
   }
 
-  .margin {
+  .withMargin > .margin {
+    grid-column: margin-start / margin-end;
+    grid-row: 1;
     align-self: start;
     padding-inline-end: var(--space-lg);
     border-inline-end: 1px solid var(--color-line);
+  }
+
+  .withMargin > .body {
+    grid-column: body-start / body-end;
+    grid-row: 1;
   }
 
   /*
@@ -47,7 +77,7 @@
    * window, the scrollbar gutter is held open and the thumb is inked in a
    * seasonal token, so the column visibly scrolls instead of quietly ending.
    */
-  .marginSticky {
+  .withMargin > .marginSticky {
     position: sticky;
     inset-block-start: var(--space-xl);
     max-block-size: calc(100vh - var(--space-2xl) * 2);

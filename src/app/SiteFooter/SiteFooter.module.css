@@ -1,6 +1,11 @@
 /**
  * Colophon. Three ruled columns, mono throughout — the back of the catalogue
  * card rather than a marketing footer.
+ *
+ * `.inner` carries `page` from `styles/pageGrid.module.css`. The first column
+ * starts on `content-start`, which is the masthead's wordmark and the
+ * catalogue's filter margin; the third ends on `content-end`, which is where
+ * the navigation ends.
  */
 
 .root {
@@ -9,22 +14,15 @@
 }
 
 .inner {
-  inline-size: 100%;
-  max-inline-size: var(--layout-max-width);
+  row-gap: var(--space-xl);
   padding-block: var(--space-2xl);
-  padding-inline: var(--layout-gutter);
-  margin-inline: auto;
-}
-
-.columns {
-  display: grid;
-  gap: var(--space-xl);
 }
 
 .column {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
+  grid-column: content-start / content-end;
 }
 
 .heading {
@@ -69,8 +67,8 @@
 }
 
 .disclaimer {
+  grid-column: content-start / content-end;
   max-inline-size: var(--measure);
-  margin-block-start: var(--space-xl);
   padding-block-start: var(--space-md);
   color: var(--color-ink-muted);
   font-size: var(--font-size-sm);
@@ -85,8 +83,14 @@
     min-block-size: auto;
   }
 
-  .columns {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-2xl);
+  /*
+   * Four columns each, which is the other reason the page grid has twelve: a
+   * three-equal-column colophon and a three-against-nine ledger both land on
+   * whole lines of the same grid. The first heading is under the wordmark and
+   * the last column ends where the navigation does; the two inner divisions
+   * are the colophon's own and fall between the ledger's.
+   */
+  .column {
+    grid-column: span 4;
   }
 }

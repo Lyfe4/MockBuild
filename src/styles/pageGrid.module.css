@@ -1,0 +1,70 @@
+/**
+ * The page grid — one grid, three instances, every edge on the same lines.
+ *
+ * The masthead, the main column and the colophon each take `.page`. Because the
+ * three share a max width, a gutter, a column gap and a track list, their
+ * twelve column lines land on the same pixels, and anything placed on a named
+ * line in one of them aligns with anything placed on that line in the others.
+ * That is the whole mechanism: alignment is not maintained by three components
+ * agreeing to use the same padding, it is a consequence of them being the same
+ * grid.
+ *
+ * ## The lines
+ *
+ * Four names, and they are the contract every consumer writes against:
+ *
+ *   content-start / content-end   the full measure, gutters excluded
+ *   margin-start  / margin-end    the ledger's margin: filters, plate, notes
+ *   body-start    / body-end      the ledger's entry column
+ *
+ * Below 48rem there is one column and all six names sit on its two edges, so a
+ * component placed on `margin-start / margin-end` is full-bleed inside the
+ * gutters without needing to know it. That is what keeps the collapse
+ * mobile-first: the narrow layout is the default and the twelve columns are the
+ * enhancement, not the other way round.
+ *
+ * ## Why twelve
+ *
+ * Because two structures have to live on the same lines. The ledger wants a
+ * narrow margin against a wide body — three and nine — and the colophon wants
+ * three equal columns — four, four and four. Twelve is the smallest count that
+ * gives both without either landing between lines. The margin column is
+ * therefore a quarter of the measure rather than a fixed 15rem, so it grows
+ * with the page instead of leaving the body to absorb every extra pixel.
+ *
+ * ## Placing children
+ *
+ * Nothing is placed here. A `.page > *` default would collide on specificity
+ * with the rules in the consuming module — same weight, and CSS Module import
+ * order decides the winner, which is not a thing to build alignment on. Each
+ * consumer states where its own children go; `RootLayout.module.css` sets the
+ * one default that is genuinely shared, for the route content.
+ */
+
+.page {
+  display: grid;
+  inline-size: 100%;
+  max-inline-size: var(--layout-max-width);
+  padding-inline: var(--layout-gutter);
+  margin-inline: auto;
+  column-gap: var(--layout-column-gap);
+
+  /*
+   * One column, and every name on it. `minmax(0, 1fr)` rather than `1fr`
+   * throughout: a track's automatic minimum is its content's minimum, and a
+   * bare `1fr` lets one wide table stretch the column past the viewport — the
+   * same failure `RootLayout`'s `main` had to zero out.
+   */
+  grid-template-columns:
+    [content-start margin-start body-start] minmax(0, 1fr)
+    [margin-end body-end content-end];
+}
+
+@media (min-width: 48rem) {
+  .page {
+    grid-template-columns:
+      [content-start margin-start] repeat(3, minmax(0, 1fr))
+      [margin-end body-start] repeat(9, minmax(0, 1fr))
+      [body-end content-end];
+  }
+}

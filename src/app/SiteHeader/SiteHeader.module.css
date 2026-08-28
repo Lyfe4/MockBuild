@@ -1,5 +1,8 @@
 /**
  * Masthead. A ruled block: hairline underneath, no bar, no shadow.
+ *
+ * `.inner` carries `page` from `styles/pageGrid.module.css`; everything here
+ * adds is where the two blocks sit on it.
  */
 
 .root {
@@ -7,20 +10,30 @@
 }
 
 .inner {
+  row-gap: var(--space-md);
+  align-items: start;
+  padding-block: var(--space-lg);
+}
+
+/*
+ * Stacked until the masthead is genuinely wide, and that is a typographic
+ * decision rather than a spatial one. Side by side at 768 the wordmark had
+ * 195px to set 35px display type in, and broke "Thornfield Entomological
+ * Archive" over three lines next to a one-line navigation. Full width it sets
+ * on one line at the same size.
+ */
+.identity {
+  grid-column: content-start / content-end;
+  grid-row: 1;
+}
+
+.controls {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  inline-size: 100%;
-  max-inline-size: var(--layout-max-width);
-  padding-block: var(--space-lg);
-  padding-inline: var(--layout-gutter);
-  margin-inline: auto;
-}
-
-.identity {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3xs);
+  grid-column: content-start / content-end;
+  grid-row: 2;
+  justify-self: start;
 }
 
 .wordmarkLink {
@@ -67,18 +80,8 @@
   text-transform: uppercase;
 }
 
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
 @media (min-width: 48rem) {
   .inner {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-xl);
     padding-block: var(--space-xl);
   }
 
@@ -86,8 +89,42 @@
     font-size: var(--font-size-2xl);
   }
 
+  /*
+   * Still its own row, now hung on the right-hand edge. `justify-self: end`
+   * shrinks the block to its content and puts that content's right edge on
+   * `content-end` — the same line the ledger's entry column ends on.
+   */
   .controls {
     align-items: flex-end;
-    gap: var(--space-md);
+    justify-self: end;
+  }
+}
+
+/*
+ * Side by side at 64rem, which is where the identity can hold five of the
+ * twelve columns and still set the name at display size, and where the seven
+ * left over are wider than the navigation needs.
+ */
+@media (min-width: 64rem) {
+  .identity {
+    grid-column: content-start / span 5;
+  }
+
+  .controls {
+    grid-column: span 7 / content-end;
+    grid-row: 1;
+    /* Foot of the block against the foot of the wordmark's own. */
+    align-self: end;
+  }
+}
+
+/* Wide enough for the name on one line: give the identity a sixth column. */
+@media (min-width: 90rem) {
+  .identity {
+    grid-column: content-start / span 6;
+  }
+
+  .controls {
+    grid-column: span 6 / content-end;
   }
 }

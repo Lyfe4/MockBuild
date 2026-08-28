@@ -134,7 +134,19 @@ export function FilterPanel({ query, orders, families, onChange }: FilterPanelPr
   >;
 
   return (
-    <div className={styles.root}>
+    /*
+      A search landmark, not an anonymous div. Everything inside it narrows the
+      list and none of it is content, and naming the landmark is what lets a
+      screen reader jump to the whole panel rather than to a box labelled
+      "Search" with eight unannounced facets under it.
+
+      `role` on a div rather than the `<search>` element: the element is the
+      newer spelling of the same landmark, and jsdom does not know it — every
+      test that renders the catalogue would print a warning about an
+      unrecognised tag. The role is understood everywhere and says the same
+      thing.
+    */
+    <div className={styles.root} role="search" aria-label="Filter the catalogue">
       <div className={styles.field}>
         <label className={styles.legend} htmlFor={searchId}>
           Search

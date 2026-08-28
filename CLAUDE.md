@@ -65,6 +65,74 @@ These are not preferences. Breaking one breaks the build, the CSP, or a season.
 - **Conventional commits**: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`,
   `chore:`.
 
+## The page grid
+
+`src/styles/pageGrid.module.css` is one grid taken by three elements — the
+masthead's inner block, `RootLayout`'s main column and the colophon's inner
+block. They share a max width, a gutter, a column gap and a track list, so their
+twelve column lines land on the same pixels and alignment is a **consequence**
+rather than an agreement three components keep separately.
+
+Six line names are the contract: `content-start`/`content-end`,
+`margin-start`/`margin-end`, `body-start`/`body-end`.
+
+- **Twelve columns, because two structures have to share them.** The ledger
+  wants a narrow margin against a wide body — three and nine — and the colophon
+  wants three equal columns — four, four and four. Twelve is the smallest count
+  that gives both on whole lines. The ledger's margin is therefore a quarter of
+  the measure and grows with the page, where the old fixed `15rem` left every
+  extra pixel to the body.
+- **Below 48rem there is one column and all six names sit on its two edges**, so
+  a component placed on `margin-start / margin-end` is full-bleed inside the
+  gutters without knowing it. That is what keeps the collapse mobile-first: the
+  narrow arrangement is the default and the twelve columns are the enhancement.
+- **`Ledger` is a `subgrid`, not a grid of its own.** Its margin and body are
+  literally columns of the page grid, which is why the filter panel starts on
+  the same pixel as the wordmark and the entry column ends on the same pixel as
+  the navigation. The consequence is a requirement — a `Ledger` must be a child
+  of an element carrying `page` — and every route renders one root element
+  straight into the main column, so it holds. **A subgrid keeps its own
+  gutters**, not the parent's, so `.withMargin` restates
+  `--layout-column-gap`; without it every line between the outer two is five
+  pixels adrift of the colophon's.
+- **Nothing is placed in `pageGrid.module.css`.** A `.page > *` default would tie
+  on specificity with the consuming module's own rule and be settled by CSS
+  Module import order, which is not a thing to build alignment on. Each consumer
+  places its own children; `RootLayout.module.css` states the one shared default,
+  `.container > *`, for route content.
+- **The masthead stacks until 64rem.** Side by side at 768 the wordmark had
+  195px to set 35px display type in and broke over three lines; full width it
+  sets on one. Above 64rem the identity takes five columns and the controls the
+  other seven, hung on `content-end`.
+
+### What fills the entry column
+
+The brief for a wide ledger is not to leave a dead zone to the right of the
+entry column, and the answer is per page:
+
+- **Catalogue: a third column.** A specimen row is a register line, so a wider
+  line holds more of the register — plate, name, then the record (accession,
+  order, family, size) hung on the right-hand edge. Not two columns of rows: an
+  earlier attempt at that could not have worked, because the rule was
+  `@container (min-width: 44rem)` inside `.results`' _own_ container and an
+  element cannot query itself. It matched nothing at any width.
+- **Calendar and key: a stated measure.** The chart caps at `72rem` because the
+  cells stop being legible past it, and the key caps at `--measure` because a
+  question is read, not scanned. Both are deliberate, and both are narrower than
+  the content column on purpose.
+- **Specimen, about, request, journal entry: the ledger's own two columns**,
+  which is what the margin is for.
+
+`src/app/layout.test.tsx` is what stops this drifting, and `src/test/layoutGeometry.ts`
+is how. jsdom has no layout engine and `getComputedStyle` ignores `@media`, so the
+geometry is **computed from the shipped stylesheets** — the CSSOM keeps rules,
+media conditions, custom properties and the track list with its line names
+verbatim, and `Element.matches` answers which rules apply. The harness models
+one narrow subset of CSS and **throws on anything else**, which is the important
+half: a layout it cannot model is one it would otherwise measure confidently and
+wrongly. Its numbers were checked against Chrome at 1425px and agree to the
+pixel.
+
 ## Plate architecture
 
 `src/lib/plate` is **pure data out** — no React, no DOM. A plate is path data

@@ -66,13 +66,32 @@ export function SpecimenRow({ species }: SpecimenRowProps) {
         <span className={styles.entry}>
           <span className={styles.scientific}>{binomialOf(species)}</span>
           <span className={styles.common}>{species.commonName}</span>
-          <span className={styles.meta}>
-            <span className={styles.accession}>{catalogueNumberOf(species)}</span>
-            <span aria-hidden="true"> · </span>
-            {species.taxonomy.order}
-            <span aria-hidden="true"> · </span>
-            {species.taxonomy.family}
-            <span aria-hidden="true"> · </span>
+        </span>
+        {/*
+          The record, as its own cell rather than a fourth line under the name.
+          In a narrow column it sits below the entry and reads as one line of
+          metadata, exactly as it always has; in a wide one it moves out to the
+          right-hand edge and the separators are dropped, so the row becomes
+          three columns instead of two-thirds of a column and a lot of paper.
+
+          Each field is its own span so the wide arrangement can stack them
+          without re-deciding what a field is, and the separators are elements
+          rather than bare text so they can be taken away when it does.
+        */}
+        <span className={styles.record}>
+          <span className={styles.accession}>{catalogueNumberOf(species)}</span>
+          <span className={styles.separator} aria-hidden="true">
+            {' · '}
+          </span>
+          <span>{species.taxonomy.order}</span>
+          <span className={styles.separator} aria-hidden="true">
+            {' · '}
+          </span>
+          <span>{species.taxonomy.family}</span>
+          <span className={styles.separator} aria-hidden="true">
+            {' · '}
+          </span>
+          <span>
             {species.sizeMm.min}&ndash;{species.sizeMm.max} mm {species.sizeBasis}
           </span>
         </span>

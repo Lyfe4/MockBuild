@@ -33,14 +33,26 @@
 }
 
 /*
- * The single content measure, shared with the header and footer so their edges
- * line up. `--layout-gutter` is fluid, so this needs no breakpoints.
+ * The route content, on the page grid. `styles/pageGrid.module.css` supplies
+ * the twelve columns and the measure; this adds only what is true of the main
+ * column specifically.
  */
 .container {
-  inline-size: 100%;
-  max-inline-size: var(--layout-max-width);
-  padding-inline: var(--layout-gutter);
-  margin-inline: auto;
+  align-content: start;
+}
+
+/*
+ * Every route renders a single root element, and it belongs in the content
+ * column. Stated once here rather than in ten route stylesheets, and stated as
+ * `.container > *` so it outranks a route's own `.root` rule on specificity
+ * instead of on import order.
+ *
+ * `Ledger` overrides nothing: it wants exactly this span, and subgrids its own
+ * two columns out of it.
+ */
+.container > * {
+  grid-column: content-start / content-end;
+  min-inline-size: 0;
 }
 
 /* Following the skip link should not draw a ring around the whole page. */

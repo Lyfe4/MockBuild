@@ -234,8 +234,22 @@
 
   --measure: 68ch;
   --measure-narrow: 46ch;
-  --layout-max-width: 76rem;
-  --layout-gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+
+  /**
+   * The page grid. `src/styles/pageGrid.module.css` builds it; the header, the
+   * main column and the footer all take that one class, so every edge on the
+   * page lands on the same twelve lines.
+   *
+   * The max width is the measure of the whole composition rather than of a
+   * paragraph: wide enough that a ledger row does not run out of things to
+   * hold, narrow enough that the eye can still find the left margin from the
+   * right one. The gutter grows with the viewport — a 20px margin that reads as
+   * generous on a phone reads as an accident at 1900 — and the column gap grows
+   * with it so the grid keeps its proportions rather than only its width.
+   */
+  --layout-max-width: 96rem;
+  --layout-gutter: clamp(1.25rem, 0.7rem + 3vw, 4rem);
+  --layout-column-gap: clamp(1rem, 0.6rem + 1.2vw, 1.75rem);
 
   --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;

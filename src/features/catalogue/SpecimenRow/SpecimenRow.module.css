@@ -3,6 +3,13 @@
  *
  * No card, no shadow, no radius: the separation is a hairline and the space
  * around it, which is how a specimen sheet or a ledger separates entries.
+ *
+ * Two columns in a narrow entry column, three in a wide one. The third is the
+ * record — accession number, order, family, size — hung on the right-hand edge,
+ * and it is the answer to what a wide ledger should do with the room: a
+ * register line holds more of the register, rather than being cut in half or
+ * left with an empty half. The switch is a container query against the results
+ * list, so it follows the entry column's width and not the window's.
  */
 
 .root {
@@ -27,6 +34,7 @@
  */
 .plate {
   display: block;
+  grid-row: 1 / span 2;
   inline-size: 4.5rem;
   aspect-ratio: 3 / 4;
   padding: var(--space-2xs);
@@ -38,6 +46,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3xs);
+  grid-column: 2;
+  grid-row: 1;
   min-inline-size: 0;
 }
 
@@ -56,7 +66,9 @@
   font-variation-settings: 'opsz' var(--font-optical-text);
 }
 
-.meta {
+.record {
+  grid-column: 2;
+  grid-row: 2;
   margin-block-start: var(--space-2xs);
   color: var(--color-ink-muted);
   font-family: var(--font-family-mono);
@@ -98,5 +110,49 @@
 
   .plate {
     inline-size: 5.5rem;
+  }
+}
+
+/*
+ * The wide arrangement.
+ *
+ * 38rem is where the entry column still has a comfortable measure once the
+ * record has taken its 12: below it the record goes back under the name, which
+ * is what a narrow register line does. The threshold is reached at roughly the
+ * width the ledger grows its margin column at, so on the catalogue the two
+ * changes happen together rather than one row-shape apart.
+ *
+ * The record column is capped rather than fractional, so every extra pixel goes
+ * to the entry: the binomial keeps growing its measure while the metadata stays
+ * the size metadata should be. Twelve rems holds the longest of them —
+ * `25–75 MM BODY LENGTH` — on one line.
+ */
+@container catalogue-entries (min-width: 38rem) {
+  .link {
+    grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 12rem);
+  }
+
+  .plate {
+    grid-row: 1;
+  }
+
+  .record {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-3xs);
+    grid-column: 3;
+    grid-row: 1;
+    margin-block-start: 0;
+    text-align: end;
+  }
+
+  /*
+   * Stacked, so the middot that separated them on one line would be a bullet at
+   * the end of each. They are `aria-hidden` decorations either way; here they
+   * are simply not drawn.
+   */
+  .separator {
+    display: none;
   }
 }

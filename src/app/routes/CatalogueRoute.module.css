@@ -1,10 +1,19 @@
 /**
  * The catalogue page.
  *
- * Mobile-first single column of ruled rows; the two-column arrangement is added
- * with a container query on the results list, so it responds to the width of
- * the body column rather than of the viewport — which is the width that
- * actually decides whether two entries fit side by side.
+ * One column of ruled rows, at every width, running the full measure of the
+ * ledger's entry column. The rows do not split into two: a specimen row is a
+ * register line — plate, name, record — and the answer to a wide column is to
+ * let the line hold more, not to saw it in half. `SpecimenRow` does that, and
+ * it asks `.results` how wide it is through the container query below rather
+ * than asking the viewport, because the entry column's width is what actually
+ * decides whether a third column fits.
+ *
+ * An earlier version of this file tried to make it two columns and could not
+ * have: the rule was `@container (min-width: 44rem) { .results { columns: 2 } }`
+ * inside `.results`' own container, and an element cannot query itself. It
+ * matched nothing, at any width, and the page looked exactly as it does now
+ * while appearing to say otherwise.
  */
 
 .header {
@@ -80,7 +89,12 @@
 }
 
 .results {
-  container-type: inline-size;
+  /*
+   * Named, so `SpecimenRow` says which container it means. An unnamed query
+   * resolves to the nearest ancestor container, which is correct today and
+   * silently changes the day anything between them gains containment.
+   */
+  container: catalogue-entries / inline-size;
   padding: 0;
   margin: 0;
   /* The first row's rule is the one under the header; do not double it. */
@@ -134,22 +148,5 @@
 @media (min-width: 48rem) {
   .sortSelect {
     min-block-size: 2.25rem;
-  }
-}
-
-/*
- * Two columns once the *list* is wide enough, not the window. CSS columns
- * rather than grid: rows have different heights, and columns let them pack
- * without the ragged gaps a grid row would leave.
- */
-@container (min-width: 44rem) {
-  .results {
-    columns: 2;
-    column-gap: var(--space-2xl);
-  }
-
-  .results > * {
-    /* Stop a row being split across the column boundary mid-entry. */
-    break-inside: avoid;
   }
 }
