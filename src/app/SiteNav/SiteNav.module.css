@@ -83,7 +83,13 @@
 
   .list {
     flex-direction: row;
-    gap: var(--space-lg);
+    /*
+     * `--space-md`, not `--space-lg`. The seasonal dial shares this line now,
+     * and six items at the wider gap left the strip 40px longer than the seven
+     * columns it is hung in at 64rem — where it would have overflowed back
+     * across the wordmark rather than wrapping.
+     */
+    gap: var(--space-md);
   }
 
   .link {

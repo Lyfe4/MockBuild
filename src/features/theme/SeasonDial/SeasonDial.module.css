@@ -1,0 +1,249 @@
+/**
+ * The seasonal dial: a circle quartered into the four seasons, each inked in
+ * its own colour, with a needle at the season the archive is dressed in.
+ *
+ * Two sizes are at work and it is worth keeping them apart while reading this
+ * file. `--dial-size` is the drawn circle — 48px across, small enough to sit
+ * beside the navigation without competing with it.
+ * `--dial-hit` is what is touchable — 88px, four 44px squares that tile without
+ * overlapping, so every quadrant is a full-sized target and no point on the
+ * control is ambiguous between two seasons. The difference between the two is
+ * `--dial-bleed`, and the root gives it straight back as a negative margin: the
+ * control lays out at its drawn size and receives taps at its felt one.
+ */
+
+.root {
+  --dial-size: 3rem;
+  /*
+   * Half the box, because the view box is cropped to the circle — see
+   * `VIEW_BOX` in the component. Named rather than inlined so the needle is
+   * placed off the rim it points at.
+   */
+  --dial-radius: calc(var(--dial-size) / 2);
+  --dial-hit: 5.5rem;
+  --dial-bleed: calc((var(--dial-hit) - var(--dial-size)) / 2);
+
+  position: relative;
+  flex: none;
+  inline-size: var(--dial-hit);
+  block-size: var(--dial-hit);
+  margin: calc(var(--dial-bleed) * -1);
+  padding: 0;
+  border: 0;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  block-size: 100%;
+}
+
+/*
+ * The year runs clockwise from the top left. Row-major order would put autumn
+ * bottom-left and winter bottom-right, which is the year running backwards
+ * along its second half, so the two are placed rather than flowed.
+ */
+.option {
+  position: relative;
+}
+
+.option[data-season='spring'] {
+  --season-colour: var(--color-season-spring);
+  --quadrant-turn: 0deg;
+
+  grid-area: 1 / 1;
+}
+
+.option[data-season='summer'] {
+  --season-colour: var(--color-season-summer);
+  --quadrant-turn: 90deg;
+
+  grid-area: 1 / 2;
+}
+
+.option[data-season='autumn'] {
+  --season-colour: var(--color-season-autumn);
+  --quadrant-turn: 180deg;
+
+  grid-area: 2 / 2;
+}
+
+.option[data-season='winter'] {
+  --season-colour: var(--color-season-winter);
+  --quadrant-turn: 270deg;
+
+  grid-area: 2 / 1;
+}
+
+/*
+ * Hidden from sight, not from the browser. `display: none` or `visibility:
+ * hidden` would take the radio out of the tab order and cost the arrow-key
+ * behaviour that is the whole reason for using radios.
+ */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The 44px target. What it paints is a 22px quarter-circle, in one corner. */
+.label {
+  display: block;
+  block-size: 100%;
+  cursor: pointer;
+}
+
+/**
+ * One quadrant's drawing.
+ *
+ * The whole dial box, anchored so its centre lands on the inner corner of this
+ * label — which is the centre of the control, where all four labels meet.
+ * Three quarters of it therefore hang over the neighbours, and `pointer-events:
+ * none` is what keeps that from stealing their taps: the box is transparent to
+ * hit testing, so a press lands on whichever label is actually under it.
+ */
+.quadrant {
+  position: absolute;
+  inline-size: var(--dial-size);
+  block-size: var(--dial-size);
+  /*
+   * Out from under the reset's `svg { max-width: 100% }`, which is a sane
+   * default for a drawing inside its column and wrong for one deliberately
+   * larger than the box it is anchored to: it clamped the dial to the 44px
+   * label, and every wedge then met the others two pixels past the centre
+   * instead of on it.
+   */
+  max-inline-size: none;
+  rotate: var(--quadrant-turn);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.option[data-season='spring'] .quadrant {
+  inset-block-end: calc(var(--dial-size) / -2);
+  inset-inline-end: calc(var(--dial-size) / -2);
+}
+
+.option[data-season='summer'] .quadrant {
+  inset-block-end: calc(var(--dial-size) / -2);
+  inset-inline-start: calc(var(--dial-size) / -2);
+}
+
+.option[data-season='autumn'] .quadrant {
+  inset-block-start: calc(var(--dial-size) / -2);
+  inset-inline-start: calc(var(--dial-size) / -2);
+}
+
+.option[data-season='winter'] .quadrant {
+  inset-block-start: calc(var(--dial-size) / -2);
+  inset-inline-end: calc(var(--dial-size) / -2);
+}
+
+/*
+ * Unselected: the season's colour mixed into the paper rather than laid on it,
+ * so four quadrants read as one object and the chosen one is the only thing at
+ * full strength. The hairline between them is the same rule the rest of the
+ * site draws with.
+ */
+.wedge {
+  fill: color-mix(in srgb, var(--season-colour) 24%, var(--color-surface));
+  stroke: var(--color-line);
+  stroke-width: 2;
+  transition:
+    fill var(--duration-fast) var(--ease-standard),
+    stroke var(--duration-fast) var(--ease-standard);
+}
+
+.label:hover .wedge {
+  fill: color-mix(in srgb, var(--season-colour) 48%, var(--color-surface));
+}
+
+/* The chosen season: full pigment, cut round with an ink line. */
+.input:checked + .label .wedge {
+  fill: var(--season-colour);
+  stroke: var(--color-ink);
+  stroke-width: 3;
+}
+
+/**
+ * The focus halo.
+ *
+ * Drawn underneath the wedge on the same path, so half of its stroke shows
+ * around the quadrant's own edge — a ring on the shape rather than on the 44px
+ * square it is painted in, which would be twice the size of the thing it is
+ * pointing at.
+ *
+ * `--color-ink` rather than `--color-focus-ring`: the ring has to be legible
+ * against whichever of the four season colours it lands on, and the focus token
+ * is the *active* palette's accent — which is, by definition, close to one of
+ * them. Ink is the only colour on the page that contrasts with all four.
+ */
+.focusRing {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 9;
+}
+
+.input:focus-visible + .label .focusRing {
+  stroke: var(--color-ink);
+}
+
+/**
+ * The needle: a tick just outside the rim, turned to point at the chosen
+ * quadrant.
+ *
+ * The tick itself is the element, and it turns about a `transform-origin` down
+ * at the dial's centre. The obvious alternative — an element filling the whole
+ * hit box with the tick drawn at its top — turns about its own middle with no
+ * arithmetic at all, and was wrong for a reason that only shows up at the edge
+ * of a page: **a rotated box overflows by its diagonal**. An 88px square turned
+ * 45 degrees is 124px wide, so the dial pushed four pixels of horizontal scroll
+ * onto a 768px window while appearing to sit comfortably inside the gutter.
+ *
+ * It shares `--duration-palette` with the seasonal cross-fade rather than
+ * declaring a duration of its own, which buys two things: the needle turns at
+ * exactly the pace the colours change, and the token is 0ms until
+ * `ThemeProvider` marks the document ready — so the needle is simply *there* on
+ * the first paint instead of spinning into place on every page load. Reduced
+ * motion zeroes it along with everything else.
+ *
+ * Going from winter back to spring turns the long way round, through autumn and
+ * summer. That is left alone: shortest-path rotation would need the accumulated
+ * angle carried in JavaScript state, and a dial running backwards through the
+ * year to reach spring is a fair description of what the reader just asked for.
+ */
+.needle {
+  --needle-gap: 0.25rem;
+  --needle-length: 0.3125rem;
+
+  position: absolute;
+  /* Centred on the vertical axis, `--needle-gap` of paper clear of the rim. */
+  inset-block-start: calc(50% - var(--dial-radius) - var(--needle-gap) - var(--needle-length));
+  inset-inline-start: calc(50% - 1px);
+  inline-size: 2px;
+  block-size: var(--needle-length);
+  transform-origin: 1px calc(var(--needle-length) + var(--needle-gap) + var(--dial-radius));
+  background-color: var(--color-ink);
+  pointer-events: none;
+  transition: rotate var(--duration-palette) var(--ease-in-out);
+}
+
+.root[data-active='spring'] .needle {
+  rotate: -45deg;
+}
+
+.root[data-active='summer'] .needle {
+  rotate: 45deg;
+}
+
+.root[data-active='autumn'] .needle {
+  rotate: 135deg;
+}
+
+.root[data-active='winter'] .needle {
+  rotate: 225deg;
+}

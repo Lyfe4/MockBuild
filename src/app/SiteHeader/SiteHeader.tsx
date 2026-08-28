@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 
 import { INSTITUTION } from '@/data';
-import { SeasonSwitcher } from '@/features/theme';
+import { SeasonDial } from '@/features/theme';
 import { cx } from '@/lib/classNames';
 import pageGrid from '@/styles/pageGrid.module.css';
 
@@ -22,8 +22,8 @@ import styles from './SiteHeader.module.css';
  * It is laid out on the page grid — the same one the main column and the
  * colophon take — so the wordmark starts on `content-start`, which is also
  * where the catalogue's filter margin and its first specimen row start, and the
- * navigation ends on `content-end`, which is where the entry column ends. None
- * of those three components knows about the others; they are on the same lines
+ * control strip ends on `content-end`, which is where the entry column ends.
+ * None of those components knows about the others; they are on the same lines
  * because they are on the same grid.
  */
 export function SiteHeader() {
@@ -39,9 +39,15 @@ export function SiteHeader() {
           </p>
         </div>
 
+        {/*
+          The navigation and the dial on one line, the dial last, so its
+          quadrants sit on `content-end` and the whole block reads as one
+          control strip rather than two rows of words. On a phone the same line
+          is the menu button at one end and the dial at the other.
+        */}
         <div className={styles.controls}>
-          <SiteNav className={styles.nav} />
-          <SeasonSwitcher className={styles.season} />
+          <SiteNav />
+          <SeasonDial />
         </div>
       </div>
     </header>

@@ -133,6 +133,57 @@ half: a layout it cannot model is one it would otherwise measure confidently and
 wrongly. Its numbers were checked against Chrome at 1425px and agree to the
 pixel.
 
+## The seasonal dial
+
+`src/features/theme/SeasonDial` is the control that dresses the archive for a
+season, and it replaced a segmented strip of four text labels that sat directly
+under the navigation. The problem was not that the strip was ugly — it was that
+six mono uppercase words above four mono uppercase words read as **two rows of
+navigation**, and a reader had to click one to find out it was not. A quartered
+circle cannot be mistaken for a list of pages.
+
+- **Still a `fieldset` of four real radios.** One tab stop, arrow keys, and
+  `aria-checked` all come from the elements themselves; the inputs are visually
+  hidden but never `display: none`, and each label carries its season's name for
+  a screen reader. Nothing here is a div pretending to be a control, and there
+  is no second copy of the checked state for React to keep in step — which is
+  why the test queries `getByRole('radio', { checked: true })` rather than an
+  `aria-checked` attribute a native radio does not have.
+- **The hit area is twice the drawing.** The dial is 48px across, so a quadrant
+  of it is 24px — half of what a finger needs. So the control is a **2 × 2 grid
+  of 44px transparent squares**, 88px in all, with the drawing centred on the
+  point where the four meet: each wedge is absolutely positioned into the inner
+  corner of its own square and overflows it with `pointer-events: none`. The
+  squares **tile rather than overlap**, so no point on the control belongs to two
+  seasons — which is what a symmetric `inset: -11px` on each quadrant would have
+  given, and why that is not what this does. The 20px of air it adds on each side
+  is taken back with a negative margin.
+- **One wedge, turned four times.** The path is written once and rotated a
+  quarter turn per season, so the year runs clockwise from the top left and the
+  four are the same shape by construction. Placement is explicit rather than
+  row-major, which would run the year backwards along its second half.
+- **`--color-season-*` are the one set of colour tokens not restated per
+  season.** Every other semantic colour answers "what does ink look like _now_";
+  these answer "what colour is autumn", and the dial paints all four at once.
+  Restating them per palette would give four quadrants of one hue.
+- **The focus ring is on the shape, not the square.** A second copy of the path
+  is stroked at 9 and drawn underneath, transparent until `:focus-visible` — so
+  the halo hugs the quadrant rather than boxing the 44px target it lives in. It
+  is `--color-ink` rather than `--color-focus-ring`, because the focus token is
+  the _active_ palette's accent and is therefore close to one of the four
+  colours it would have to be legible against.
+- **The needle is a 5px tick that rotates about the dial's centre**, not a
+  full-size box with a tick drawn at its top. The second is simpler and was
+  wrong: **a rotated box overflows by its diagonal**, so an 88px square turned 45
+  degrees is 124px wide and put four pixels of horizontal scroll onto a 768px
+  window. It transitions on `--duration-palette`, which ties it to the seasonal
+  cross-fade and is 0ms until `ThemeProvider` marks the document ready — so the
+  needle is simply there on the first paint rather than spinning into place on
+  every load. Reduced motion zeroes it with everything else.
+- **`max-inline-size: none` on the wedge SVG** is load-bearing: the reset's
+  `svg { max-width: 100% }` clamped a 48px drawing to its 44px label, and every
+  wedge then met the others two pixels past the centre instead of on it.
+
 ## Plate architecture
 
 `src/lib/plate` is **pure data out** — no React, no DOM. A plate is path data

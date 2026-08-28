@@ -305,6 +305,24 @@
   --color-selection-ink: var(--ink-charcoal-900);
 
   /**
+   * The four seasons' signature colours — each one's own `--color-accent`,
+   * named so that all four can be shown at once.
+   *
+   * Declared here and **not restated per season**, which is the one place in
+   * this file that is deliberate rather than an oversight. Every other semantic
+   * colour answers "what does ink look like *now*"; these answer "what colour
+   * is autumn", and the answer does not change because the page is dressed for
+   * winter. The seasonal dial paints all four simultaneously and would be
+   * unreadable — four quadrants of one hue — if they moved with the palette.
+   * Inheritance does the rest: the `[data-season]` blocks below override the
+   * tokens they name and leave these alone.
+   */
+  --color-season-spring: var(--leaf-olive-600);
+  --color-season-summer: var(--leaf-ochre-600);
+  --color-season-autumn: var(--leaf-russet-600);
+  --color-season-winter: var(--ink-irongall-500);
+
+  /**
    * Specimen pigments, 1..6, in a fixed order: ochre, russet, olive, slate,
    * umber, bone. The generator picks an index per specimen and the renderer
    * maps it through a `data-pigment` attribute, so no illustration ever needs

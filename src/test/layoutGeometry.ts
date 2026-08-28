@@ -714,9 +714,20 @@ export function measurePageGrid(grid: HTMLElement, viewportWidth: number): PageG
 
         if (placement === undefined) throw new Error('a child of a grid was not placed');
 
+        /*
+          A grid item fills its area unless it is told to shrink to its content,
+          and this file cannot measure content — there is no text layout here.
+          So the edge that alignment pins is reported and the other is reported
+          as NaN, which fails any comparison it is put into rather than quietly
+          answering with the area's edge. `justify-self: end` on the masthead's
+          control strip is exactly this case: its right edge is `content-end`
+          and its left is wherever six words of mono happen to start.
+        */
+        const justify = styleOf(node).get('justify-self') ?? 'stretch';
+
         box = {
-          left: startAt(placement.start),
-          right: endAt(placement.end),
+          left: justify === 'end' || justify === 'center' ? Number.NaN : startAt(placement.start),
+          right: justify === 'start' || justify === 'center' ? Number.NaN : endAt(placement.end),
         };
       } else {
         // An ordinary block: it fills its parent's content box, less margins.

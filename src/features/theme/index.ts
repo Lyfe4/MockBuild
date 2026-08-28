@@ -1,4 +1,4 @@
-export { SeasonSwitcher } from './SeasonSwitcher';
+export { SeasonDial } from './SeasonDial';
 export { ThemeProvider } from './ThemeProvider';
 export { useSeason } from './useSeason';
 export { isSeason, readStoredSeason, seasonFromLocation, storeSeason } from './seasonStorage';

@@ -27,13 +27,18 @@
   grid-row: 1;
 }
 
+/*
+ * One line, at every width: the navigation and the seasonal dial. On a phone
+ * that is the menu button at one end and the dial at the other — a header bar
+ * rather than a full-width strip of anything.
+ */
 .controls {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-md);
   grid-column: content-start / content-end;
   grid-row: 2;
-  justify-self: start;
 }
 
 .wordmarkLink {
@@ -91,11 +96,11 @@
 
   /*
    * Still its own row, now hung on the right-hand edge. `justify-self: end`
-   * shrinks the block to its content and puts that content's right edge on
-   * `content-end` — the same line the ledger's entry column ends on.
+   * shrinks the block to its content and puts that content's right edge — the
+   * dial's — on `content-end`, the same line the ledger's entry column ends on.
    */
   .controls {
-    align-items: flex-end;
+    gap: var(--space-lg);
     justify-self: end;
   }
 }
@@ -119,7 +124,7 @@
 }
 
 /* Wide enough for the name on one line: give the identity a sixth column. */
-@media (min-width: 90rem) {
+@media (min-width: 80rem) {
   .identity {
     grid-column: content-start / span 6;
   }

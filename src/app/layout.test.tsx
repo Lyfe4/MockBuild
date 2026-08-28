@@ -162,13 +162,24 @@ describe('the page grid', () => {
       expect(main.edgesOf(firstRow!).left).toBe(main.column('body').left);
     });
 
-    it('ends the navigation where the entry column ends', () => {
+    it('ends the masthead controls where the entry column ends', () => {
       const { header, main, mainElement } = renderShell(width);
 
       const right = main.column('content').right;
-      const nav = screen.getByRole('navigation', { name: 'Primary' });
 
-      expect(header.edgesOf(nav).right).toBe(right);
+      /*
+        The control strip, not the navigation itself. The two used to be the
+        same element and the assertion used to name the nav; the seasonal dial
+        now shares the line and is the last thing on it, so `content-end` is
+        the dial's right edge and the nav sits a gutter inside it. What has to
+        stay true is that the strip ends on the line the entry column ends on.
+      */
+      const nav = screen.getByRole('navigation', { name: 'Primary' });
+      const controls = nav.parentElement;
+
+      expect(controls).not.toBeNull();
+      expect(controls).toContainElement(screen.getByRole('group', { name: 'Season' }));
+      expect(header.edgesOf(controls!).right).toBe(right);
 
       const list = mainElement.querySelector('ul[class*="results"]');
 
