@@ -1,14 +1,39 @@
 # Netlify redirects.
 #
-# SPA catch-all. react-router owns the URL, but the server sees a real request
-# for a real path on a hard load or a deep link — /specimen/lucanus-cervus, or
-# /journal/five-legs. Without this, Netlify looks for a file at that path, finds
-# none, and returns its 404 page instead of the app.
+# ## What changed when the routes became files
 #
-# The 200 is the important part: it rewrites rather than redirects, so the
-# browser keeps the requested URL and react-router resolves the route from it.
-# A 301/302 here would bounce every deep link to the home page.
+# This used to be an SPA catch-all — `/*  /index.html  200` — because the app
+# was one empty document and react-router resolved everything from the URL. A
+# hard load of /specimen/lucanus-cervus found no file, so the rule rewrote it to
+# the shell and let the client work it out.
+#
+# Every route is now prerendered to its own file (`npm run prerender`), so the
+# rewrite is no longer what serves a deep link — the file is. Netlify applies a
+# redirect rule only when nothing on disk matches the request, unless the rule
+# is *forced* with a `!`; this one is not, so `/calendar` is answered by
+# `dist/calendar/index.html` and never reaches the line below.
+#
+# ## Why it points at 404.html and not index.html
+#
+# Because prerendering gave the shell contents. `/index.html` is no longer an
+# empty div: it is the catalogue, fully rendered. Rewriting an unknown URL to it
+# would show a visitor the catalogue for as long as it took the JavaScript to
+# arrive, and then replace it with the not-found page — a flash of the wrong
+# page that the old empty shell could not produce.
+#
+# `/404.html` is the same not-found page, prerendered. What the visitor sees
+# statically is what the app renders once it hydrates, because react-router
+# matches the URL that was actually asked for and lands on the same splat route.
+# And the status is now true: an address the archive does not hold answers 404
+# rather than 200, which is what it always meant.
+#
+# The safety net that has gone with it is real and worth stating: a route that
+# exists in the router but is missing from `scripts/site-paths.ts` used to be
+# served by the client anyway, and now 404s. That list is derived from the same
+# directories the sitemap is built from, and `scripts/prerender/prerender.test.ts`
+# holds it against the live route tree — which is a louder guarantee than the
+# one it replaces.
 #
 # Last rule, and deliberately last: Netlify applies the first match, so any
 # future proxy or redirect must go above this line.
-/*  /index.html  200
+/*  /404.html  404

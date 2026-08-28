@@ -18,7 +18,10 @@ import tseslint from 'typescript-eslint';
  */
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**', '**/*.tsbuildinfo'],
+    // `dist-ssr/` alongside `dist/`: it is the server bundle `npm run prerender`
+    // renders from, compiled output like everything else here and no more
+    // lintable than the client build.
+    ignores: ['dist/**', 'dist-ssr/**', 'coverage/**', 'node_modules/**', '**/*.tsbuildinfo'],
   },
 
   js.configs.recommended,

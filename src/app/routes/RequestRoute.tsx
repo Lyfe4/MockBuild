@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router';
 import { Ledger } from '@/components/Ledger';
 import { catalogueNumberOf, INSTITUTION, SPECIES } from '@/data';
 import { useRouteMeta } from '@/features/meta';
+import { useToday } from '@/hooks';
 import { binomialOf } from '@/lib/catalogue';
 import { cx } from '@/lib/classNames';
 import { routeMeta } from '@/lib/meta';
@@ -148,13 +149,19 @@ export function RequestRoute() {
   const formRef = useRef<HTMLFormElement>(null);
 
   /**
-   * Today, fixed for the life of the mount.
+   * Today, and `null` until the page is being read rather than built.
    *
-   * Read once in a `useState` initialiser rather than at every render: a
-   * `min` attribute that changed under a reader at midnight would invalidate
-   * the date they had already chosen.
+   * Not a `useState` initialiser calling `new Date()`, as it was: this route is
+   * prerendered at build time, so an initialiser would put the *build* date
+   * into the shipped `min` attribute and a reader would meet a form floored at
+   * whenever the site was last deployed. `useToday` has the rest of it.
+   *
+   * `min` is simply absent for the render that is hydrating, which is the right
+   * way round: the attribute is a hint to a date picker, and the schema is what
+   * actually decides.
    */
-  const [today] = useState(() => todayLocal(new Date()));
+  const today = useToday();
+  const todayIso = today === null ? null : todayLocal(today);
 
   const preselected = params.get('species') ?? '';
   const [values, setValues] = useState<RequestValues>({
@@ -201,7 +208,12 @@ export function RequestRoute() {
       return;
     }
 
-    const found = validateRequest(values, { today, species: SPECIES_IDS });
+    // `todayIso` cannot be null here — a submit needs a mount, and the effect
+    // has run by then — but the floor is stated rather than asserted away.
+    const found = validateRequest(values, {
+      today: todayIso ?? todayLocal(new Date()),
+      species: SPECIES_IDS,
+    });
 
     setErrors(found);
 
@@ -378,7 +390,7 @@ export function RequestRoute() {
                   // attribute stops a date picker offering last week; the schema
                   // is what actually decides, because an attribute is a
                   // suggestion to anything that is not a date picker.
-                  min={today}
+                  min={todayIso ?? undefined}
                   value={values.visitDate}
                   onChange={(event) => {
                     update('visitDate', event.target.value);

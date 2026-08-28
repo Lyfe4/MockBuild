@@ -32,8 +32,23 @@
  *
  * `nowrap` because the flex line is narrow on a phone and "AUTUMN" broken over
  * two lines beside a 48px circle would be worse than no legend at all.
+ *
+ * The width is **reserved**, not measured, and that is what keeps the dial
+ * still. In the prerendered HTML this element is empty — no season is resolved
+ * until the document is being read rather than built — so an intrinsically
+ * sized box would be zero wide and the dial would slide fifty pixels left, then
+ * back, one frame after the page arrived. That is layout shift, on the header,
+ * on every load.
+ *
+ * A fixed reservation is only honest because all four season names are exactly
+ * six letters, so this is the width of the word whichever word it turns out to
+ * be. `ch` is the advance of the mono face and `--letter-spacing-wider` is
+ * added after every character including the last, so six of each is the whole
+ * measure. A fifth season, or a name of another length, would have to revisit
+ * this.
  */
 .name {
+  min-inline-size: calc(6ch + 6 * var(--letter-spacing-wider));
   color: var(--color-ink-muted);
   font-family: var(--font-family-mono);
   font-size: var(--font-size-2xs);

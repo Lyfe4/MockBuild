@@ -130,7 +130,8 @@ export function PlateLabRoute() {
       <h1 tabIndex={-1}>Plate lab</h1>
 
       <p className={styles.intro}>
-        Every hand-authored plate in the collection, at three sizes, in the current season ({season}
+        Every hand-authored plate in the collection, at three sizes, in the current season (
+        {season ?? 'none — undressed'}
         ), with the alt text each is given and the reference each was traced from. {
           plates.length
         }{' '}

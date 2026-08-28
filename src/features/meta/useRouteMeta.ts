@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { SITE, siteUrl } from '@/data/site';
 import type { RouteMeta } from '@/lib/meta';
 
+import { collectRouteMeta } from './serverMeta';
+
 /**
  * Writes one route's metadata into the document head.
  *
@@ -56,6 +58,14 @@ function meta(nameOrProperty: string, content: string, kind: 'name' | 'property'
 
 export function useRouteMeta(route: RouteMeta): void {
   const { title, description, canonical, ogType } = route;
+
+  /*
+    Prerendering. There is no document and no effect will run, so the route
+    records what it would have written and `scripts/prerender` puts it into the
+    file instead. `serverMeta.ts` argues the case; the guard means this is dead
+    in every browser and in every test.
+  */
+  if (typeof document === 'undefined') collectRouteMeta(route);
 
   useEffect(() => {
     // The title is what a screen reader announces after a navigation, as well

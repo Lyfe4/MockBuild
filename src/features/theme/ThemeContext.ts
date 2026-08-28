@@ -3,8 +3,21 @@ import { createContext } from 'react';
 import type { Season } from '@/types';
 
 export interface ThemeContextValue {
-  /** The season currently applied to `<html data-season>`. */
-  readonly season: Season;
+  /**
+   * The season currently applied to `<html data-season>`, or `null` when the
+   * archive is **undressed** — no season resolved, the neutral default palette
+   * in `styles/tokens.css` painting.
+   *
+   * Undressed is a real state rather than a hole in the type, and it is the one
+   * the prerendered HTML ships in. Which season a reader gets depends on their
+   * link, their storage and their clock, none of which a file written at build
+   * time can know; so the static document commits to none of them and
+   * `ThemeProvider` resolves the season in a layout effect, before the first
+   * paint after hydration. Anything that draws from the season has to say what
+   * it looks like with no season, and for almost everything the answer is "the
+   * neutral one" — which the tokens file already had a name for.
+   */
+  readonly season: Season | null;
   /** Switch seasons. The DOM attribute follows on the next commit. */
   readonly setSeason: (season: Season) => void;
 }

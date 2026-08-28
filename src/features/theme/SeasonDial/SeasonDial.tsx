@@ -71,6 +71,20 @@ export interface SeasonDialProps {
  * `--font-size-2xs` the longest of the four sets in about fifty pixels, which
  * even a 320px screen has to spare between the menu button and the dial.
  *
+ * ## Undressed
+ *
+ * `season` is `null` in the prerendered HTML, because a file written at build
+ * time cannot know which season this reader gets — see `ThemeContext`. The dial
+ * draws that state rather than guessing at one: no radio checked, no name, and
+ * **no index mark**, which is the truthful picture of a control nobody has
+ * answered yet. Rendering the mark anyway would leave it pointing at 12
+ * o'clock, between spring and summer, at a season that is not one.
+ *
+ * The `<p>` itself is always rendered, empty rather than absent, for two
+ * reasons. A live region has to exist before its content changes or the change
+ * is not announced; and the stylesheet reserves its width, so the dial does not
+ * slide sideways when the word arrives a moment after the page does.
+ *
  * ## It is still a radio group
  *
  * A `fieldset` of four real radios, exactly as before and for the same reason:
@@ -126,7 +140,7 @@ export function SeasonDial({ className }: SeasonDialProps) {
         `content-end` and what `layout.test.tsx` measures.
       */}
       <p className={styles.name} role="status">
-        {SEASON_LABELS[season]}
+        {season === null ? '' : SEASON_LABELS[season]}
       </p>
 
       {/*
@@ -136,7 +150,7 @@ export function SeasonDial({ className }: SeasonDialProps) {
         both are attributes rather than styles because the CSP forbids the
         second.
       */}
-      <fieldset className={styles.dial} data-active={season}>
+      <fieldset className={styles.dial} data-active={season ?? undefined}>
         <VisuallyHidden as="legend">Season</VisuallyHidden>
 
         <div className={styles.options}>
@@ -181,7 +195,7 @@ export function SeasonDial({ className }: SeasonDialProps) {
           season — and a sibling of the labels rather than a child of one, so it
           can turn across all four without ever being in the way of a tap.
         */}
-        <span className={styles.mark} aria-hidden="true" />
+        {season !== null && <span className={styles.mark} aria-hidden="true" />}
       </fieldset>
     </div>
   );

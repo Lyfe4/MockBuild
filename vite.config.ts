@@ -43,7 +43,27 @@ function relaxCspForDev(): Plugin {
   };
 }
 
-export default defineConfig({
+/**
+ * Two builds come out of this file.
+ *
+ * `vite build` is the client bundle that ships. `vite build --ssr` compiles
+ * `src/entry-server.tsx` into `dist-ssr/`, which `scripts/prerender` imports in
+ * Node to render every route to static HTML — see `npm run prerender`. Nothing
+ * in `dist-ssr/` is served or deployed; it is a build artefact, gitignored
+ * alongside `dist`.
+ *
+ * The two share everything that decides what the markup *is*, and that is not
+ * optional: `css.modules.generateScopedName` in particular has to produce the
+ * same class names in both, or the prerendered HTML would carry class names
+ * that appear in no stylesheet. It is deterministic — file path and content —
+ * so it does, and `scripts/prerender` checks a sample of the names it emitted
+ * against the CSS the client build wrote rather than taking that on trust.
+ *
+ * What the SSR build drops is everything about *delivery*: no source maps, no
+ * chunk grouping. Those are cache-lifetime decisions for a browser, and this
+ * bundle is read once, from disk, by a script.
+ */
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), relaxCspForDev()],
   resolve: {
     alias: {
@@ -53,9 +73,32 @@ export default defineConfig({
   },
   build: {
     target: 'es2022',
-    sourcemap: true,
+    // Source maps are for a browser's devtools. The SSR bundle is read by a
+    // script that never stops in a debugger, and mapping it costs a third of
+    // the build.
+    sourcemap: !isSsrBuild,
+    outDir: isSsrBuild ? 'dist-ssr' : 'dist',
     rolldownOptions: {
       output: {
+        /**
+         * The SSR bundle is **one file**, dynamic imports and all.
+         *
+         * `scripts/prerender` renders each route from a fresh copy of this
+         * bundle — a cache-busting query on the import specifier — so that no
+         * module state survives from one page to the next. Node only
+         * re-evaluates the specifier it was given, though: static imports of
+         * sibling chunks resolve to URLs it has already cached, so a chunked
+         * build gives a *half*-fresh graph, in which the re-evaluated entry
+         * holds a new `ThemeContext` and the cached route chunks are still
+         * reading the old one. Every lazy route then renders outside the
+         * provider it can see, and `useSeason` throws.
+         *
+         * `codeSplitting: false` removes the seam — dynamic imports are inlined
+         * and the whole application lands in one module.
+         * `scripts/prerender/build.ts` has the rest of the argument, including
+         * what the freshness is for.
+         */
+        ...(isSsrBuild ? { codeSplitting: false } : {}),
         /**
          * Three named groups, split by **lifetime** rather than by route.
          *
@@ -83,29 +126,41 @@ export default defineConfig({
          * splitting them per route would put the same data in five chunks and
          * download it five times. One shared chunk fetched in parallel with the
          * entry is the honest shape of that dependency.
+         *
+         * Client only. Every word above is about what a *browser* re-downloads,
+         * and the SSR bundle has no cache and exactly one reader; grouping it
+         * would only make the file `scripts/prerender` imports harder to find.
+         *
+         * Spread rather than a ternary with `undefined`, because
+         * `exactOptionalPropertyTypes` is on: the key is *omitted* for the SSR
+         * build rather than present and undefined.
          */
-        advancedChunks: {
-          // `[\\/]` in every separator: module ids are normalised to forward
-          // slashes on posix and can arrive with backslashes on Windows, and a
-          // group whose test silently matches nothing produces a build that is
-          // merely worse rather than one that fails.
-          groups: [
-            {
-              name: 'vendor',
-              test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
-            },
-            {
-              // Both the eighteen generated drawings *and* the `plates.ts`
-              // index that gathers them. Leaving the index out of this group
-              // put it in `records`, which every route imports — so `records`
-              // statically imported `plates` and the 258 kB came straight back
-              // onto the critical path with the split apparently in place.
-              name: 'plates',
-              test: /[\\/]src[\\/]data[\\/]species[\\/]([^\\/]+\.plate\.ts|plates\.ts)$/,
-            },
-            { name: 'records', test: /[\\/]src[\\/]data[\\/](species|references)[\\/]/ },
-          ],
-        },
+        ...(isSsrBuild
+          ? {}
+          : {
+              advancedChunks: {
+                // `[\\/]` in every separator: module ids are normalised to forward
+                // slashes on posix and can arrive with backslashes on Windows, and a
+                // group whose test silently matches nothing produces a build that is
+                // merely worse rather than one that fails.
+                groups: [
+                  {
+                    name: 'vendor',
+                    test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+                  },
+                  {
+                    // Both the eighteen generated drawings *and* the `plates.ts`
+                    // index that gathers them. Leaving the index out of this group
+                    // put it in `records`, which every route imports — so `records`
+                    // statically imported `plates` and the 258 kB came straight back
+                    // onto the critical path with the split apparently in place.
+                    name: 'plates',
+                    test: /[\\/]src[\\/]data[\\/]species[\\/]([^\\/]+\.plate\.ts|plates\.ts)$/,
+                  },
+                  { name: 'records', test: /[\\/]src[\\/]data[\\/](species|references)[\\/]/ },
+                ],
+              },
+            }),
       },
     },
     modulePreload: {
@@ -150,4 +205,4 @@ export default defineConfig({
       exclude: ['src/**/*.test.{ts,tsx}', 'src/**/index.ts', 'src/test/**', 'src/main.tsx'],
     },
   },
-});
+}));

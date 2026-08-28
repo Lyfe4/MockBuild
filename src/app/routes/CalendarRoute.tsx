@@ -7,6 +7,7 @@ import { SPECIES } from '@/data';
 import { findPlate } from '@/data/species/plates';
 import { useRouteMeta } from '@/features/meta';
 import { useSeason } from '@/features/theme';
+import { useHydrated, useToday } from '@/hooks';
 import {
   CALENDAR_MONTHS,
   CALENDAR_ORDER_LABELS,
@@ -73,16 +74,6 @@ import styles from './CalendarRoute.module.css';
  * explaining at all.
  */
 
-/**
- * Today, read once when the module loads.
- *
- * A calendar that re-read the clock on every render would change under a reader
- * at midnight on the last of the month, which is a bug nobody would ever see
- * and everybody would have to reason about. Once per page load is the honest
- * granularity for "the current month is ruled".
- */
-const TODAY = new Date();
-
 export function CalendarRoute() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { season } = useSeason();
@@ -99,8 +90,23 @@ export function CalendarRoute() {
 
   const order = parseCalendarOrder(searchParams.get(CALENDAR_ORDER_PARAM));
   const rows = useMemo(() => calendarRows(SPECIES, order), [order]);
-  const currentMonth = useMemo(() => monthOfDate(TODAY), []);
-  const seasonMonths = useMemo(() => new Set<Month>(monthsOfSeason(season)), [season]);
+  /**
+   * The month the chart rules, or `null` while the document does not know what
+   * day it is.
+   *
+   * `useToday` is null on the first render and today's date on every render
+   * after it, which is exactly the shape this needs: the chart is prerendered
+   * at build time, and the month a build machine was in is not the month a
+   * reader is in. Nothing is ruled until the page is being read.
+   */
+  const today = useToday();
+  const hydrated = useHydrated();
+  const currentMonth = useMemo(() => (today === null ? null : monthOfDate(today)), [today]);
+  // Undressed — no season resolved yet — tints nothing. See `ThemeContext`.
+  const seasonMonths = useMemo(
+    () => new Set<Month>(season === null ? [] : monthsOfSeason(season)),
+    [season],
+  );
 
   // Read off the records rather than written into the prose. See the note above
   // `TODAY` — the sentence said "every record" for as long as every record was
@@ -108,10 +114,18 @@ export function CalendarRoute() {
   const northernRecords = hasHemisphere(SPECIES, 'northern');
   const southernRecords = hasHemisphere(SPECIES, 'southern');
 
+  /*
+    The sentence has to survive an undressed page and a page that does not know
+    the date — the two states the prerendered file ships in — so both clauses
+    are conditional rather than interpolated with an empty value. A caption
+    reading "null highlighted, the current month ruled" would be worse than one
+    that simply does not mention the season.
+  */
   const summary =
-    `Months of adult activity for all ${String(SPECIES.length)} specimens, ` +
-    `${season} highlighted, the current month ruled. ` +
-    `${CALENDAR_ORDER_LABELS[order].toLowerCase()}.`;
+    `Months of adult activity for all ${String(SPECIES.length)} specimens` +
+    (season === null ? '' : `, ${season} highlighted`) +
+    (currentMonth === null ? '' : ', the current month ruled') +
+    `. ${CALENDAR_ORDER_LABELS[order].toLowerCase()}.`;
 
   const setOrder = (next: CalendarOrder): void => {
     const params = new URLSearchParams(searchParams);
@@ -254,8 +268,22 @@ export function CalendarRoute() {
                 <tr key={species.id}>
                   <th scope="row" className={styles.species}>
                     <Link to={`/specimen/${species.id}`} className={styles.link}>
+                      {/*
+                        The thumbnails are added **after** hydration, not
+                        prerendered with the rest of the chart, and that is a
+                        measurement rather than a preference. Eighteen plates
+                        inline are 700 kB of path data in the document — 111 kB
+                        gzipped against the chart's own 30 — and Lighthouse's
+                        mobile model put 2.7 s of first contentful paint on the
+                        page for them: 3.9 s to 6.7 s, and the score from 68 to
+                        57. They are decorative, the row already names the
+                        animal in two ways, and the frame holds its size, so
+                        holding them back costs a reader nothing and buys the
+                        chart back. `SpecimenRow` does the same thing for the
+                        same reason; `useHydrated` explains the mechanism.
+                      */}
                       <span className={styles.thumb}>
-                        {plate !== undefined && (
+                        {hydrated && plate !== undefined && (
                           <SpeciesIllustration species={species} plate={plate} decorative />
                         )}
                       </span>

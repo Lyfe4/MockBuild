@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Link } from 'react-router';
 
 import { catalogueNumberOf } from '@/data';
-import { useInViewOnce, usePrefersReducedMotion } from '@/hooks';
+import { useHydrated, useInViewOnce, usePrefersReducedMotion } from '@/hooks';
 import { binomialOf } from '@/lib/catalogue';
 import type { Species } from '@/types';
 
@@ -53,15 +53,41 @@ export interface SpecimenRowProps {
  */
 export function SpecimenRow({ species }: SpecimenRowProps) {
   const reducedMotion = usePrefersReducedMotion();
+  const hydrated = useHydrated();
   const { ref, seen } = useInViewOnce<HTMLLIElement>(reducedMotion);
 
   return (
     <li ref={ref} className={styles.root}>
       <Link to={`/specimen/${species.id}`} className={styles.link}>
         <span className={styles.plate}>
-          <Suspense fallback={null}>
-            <RowPlate species={species} animate={seen && !reducedMotion} />
-          </Suspense>
+          {/*
+            The boundary is mounted **after** hydration, not during it, and that
+            is a prerendering requirement rather than a preference.
+
+            `renderToString` is synchronous and cannot await a dynamic import,
+            so a lazy component inside it renders its fallback and the boundary
+            is marked *unfinished* in the emitted HTML. React reads that on
+            hydration, reports a recoverable error — #419, "the server could not
+            finish this Suspense boundary" — and re-renders the boundary on the
+            client. Eighteen rows, eighteen errors in the console, on the one
+            page almost every visitor lands on.
+
+            The alternatives were both worse. Letting the server resolve the
+            import and render all eighteen plates finishes the boundary, and
+            grows the catalogue's HTML from 38 kB to 726 kB — 650 kB of beetle
+            in front of the first paint, which is the exact cost this split
+            exists to avoid. Dropping the split and importing `RowPlate`
+            directly does the same thing by another route.
+
+            So the server renders no boundary at all, the browser's first render
+            renders no boundary either, and the plate arrives on the render
+            after — which is when it was arriving anyway.
+          */}
+          {hydrated && (
+            <Suspense fallback={null}>
+              <RowPlate species={species} animate={seen && !reducedMotion} />
+            </Suspense>
+          )}
         </span>
         <span className={styles.entry}>
           <span className={styles.scientific}>{binomialOf(species)}</span>

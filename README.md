@@ -331,14 +331,14 @@ Stated here rather than left for a reader to discover.
   say so in words. The two Australian scarabs carry `monthsHemisphere:
 'southern'` and their pages say nothing about a mismatch, because they have
   not got one.
-- **Performance is 88, not ≥95, and the gap is entirely the largest contentful
-  paint** — 3.8 s, of which 88% is render delay on an element that is a
-  paragraph of plain text. Observed FCP and LCP are both about 105 ms; the rest
-  is Lighthouse's model of a throttled mobile network against a client-rendered
-  app. Prerendering the routes to static HTML at build time would remove it, and
-  the site is a good candidate — every byte of data is a compiled-in module
-  constant, so hydration needs no serialised state. It is an architectural
-  change, and it has not been made.
+- **Every route is prerendered to static HTML at build time**, which is what
+  closed the largest-contentful-paint gap this section used to describe. Under
+  real mobile throttling the LCP element — a paragraph of plain text — now
+  paints from the document rather than after four chunks of JavaScript: 3.98 s
+  to 1.89 s on the catalogue, 6.04 s to 2.01 s on the calendar, 5.62 s to 1.98 s
+  on a specimen sheet, with LCP equal to FCP on all three. The remaining gap is
+  no longer JavaScript at all; it is the 38 kB render-blocking stylesheet and
+  the three preloaded font files, which is a different piece of work.
 - **`/lab/plates` is dev-only** and deliberately unbuildable: it displays the
   traced references, which must never ship. The branch is behind
   `import.meta.env.DEV` and a dynamic `import()`, so the module is not emitted
@@ -504,8 +504,12 @@ Netlify, from `dist/`. `netlify.toml` carries the build command, the publish
 directory, the Node version and two cache rules; the files that configure the
 _served_ site are copied to the publish root from `public/`:
 
-- **`_redirects`** — the SPA catch-all, `/* /index.html 200`. It rewrites rather
-  than redirects, so a deep link resolves instead of hitting Netlify's 404.
+- **`_redirects`** — `/* /404.html 404`, which is what the SPA catch-all became
+  once every route was prerendered to its own file. Netlify serves an existing
+  file in preference to a non-forced rule, so a deep link is answered by
+  `dist/specimen/lucanus-cervus/index.html` and never reaches this line; what
+  does reach it is an address the archive genuinely does not hold, and it now
+  gets the not-found page with a true 404 rather than the catalogue with a 200.
 - **`_headers`** — the security headers described above, including the
   `frame-ancestors` directive that only works as a header.
 

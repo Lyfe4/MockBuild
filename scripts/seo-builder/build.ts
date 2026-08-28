@@ -25,21 +25,10 @@
  * into a Node script; the list is six lines and `seo.test.ts` asserts it against
  * the live router, which is the cheaper half of the same guarantee.
  *
- * Both sets of slugs are read **off the filesystem** rather than imported, and
- * that is not laziness. Node's type stripping runs these modules as written, and
- * neither can be loaded: `src/data/species/index.ts` imports its eighteen
- * records through extensionless specifiers, which Node will not resolve, and
- * `src/data/journal` is built on `import.meta.glob`, which exists only inside
- * Vite. Teaching a loader to resolve the alias and the extensions would be a
- * second module system maintained for one script.
- *
- * What makes reading the directory safe is that the file name *is* the slug in
- * both places — `findSpecies` keys on it, the landmark files and the reference
- * images are named for it, and `src/data/journal` derives it the same way. And
- * `scripts/seo-builder/seo.test.ts` runs inside Vitest, where the real modules
- * do resolve, and asserts that this sitemap holds exactly the URLs `SPECIES`
- * and `JOURNAL_ENTRIES` imply — so a drift fails a test rather than dropping a
- * specimen out of the sitemap quietly.
+ * Both sets of slugs come from `scripts/site-paths.ts`, which reads them off
+ * the filesystem and explains why that is the only way a Node script can get
+ * at them. The prerenderer takes its route list from the same module, so a
+ * specimen cannot end up in the sitemap without a file behind it.
  *
  * ## What is deliberately absent
  *
@@ -50,24 +39,29 @@
  * than a plain list of URLs, which is what this is.
  */
 
-import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import process from 'node:process';
-import { fileURLToPath } from 'node:url';
 
 import { siteUrl } from '../../src/data/site.ts';
+import { journalSlugs, ROOT, speciesSlugs } from '../site-paths.ts';
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PUBLIC = join(ROOT, 'public');
 
 /**
- * The fixed routes, in the order `src/app/router.tsx` declares them.
+ * The fixed routes, in the order `src/app/routes.tsx` declares them.
  *
  * `/` and `/catalogue` render the same component, and only `/` is listed:
  * two URLs for one page is the duplicate-content problem a sitemap should not
- * be creating. The catalogue's own canonical link points at `/catalogue`, and
- * the home page's at `/` — which is the pair a crawler needs, and neither is
- * helped by listing both here.
+ * be creating. Both addresses get a *file* — see `scripts/site-paths.ts`, which
+ * is answering a different question — and both carry the same canonical link,
+ * `/catalogue`, because one component has one `routeMeta`. So a crawler that
+ * follows `/` from here is told once, in the page, which of the two to index.
+ *
+ * `/404` is not listed either, for the obvious reason, and it is the one page
+ * whose canonical is worth knowing about: it names `/404`, an address the site
+ * does not really have. Harmless — the page is served with a 404 status and a
+ * crawler discards the canonical along with the rest of it.
  *
  * `/lab/plates` is dev-only and never built. `*` is the 404, which must not be
  * in a sitemap at all.
@@ -80,40 +74,6 @@ export const ROUTES: readonly string[] = [
   '/journal',
   '/request',
 ];
-
-/** `src/content/journal/five-legs.md` → `five-legs`, sorted for determinism. */
-async function journalSlugs(): Promise<readonly string[]> {
-  const files = await readdir(join(ROOT, 'src', 'content', 'journal'));
-
-  return files
-    .filter((name) => name.endsWith('.md'))
-    .map((name) => name.replace(/\.md$/, ''))
-    .sort();
-}
-
-/**
- * `src/data/species/lucanus-cervus.ts` → `lucanus-cervus`.
- *
- * One record per file, named for its slug. The generated plates, their tests,
- * the barrel and the plates index all live in the same directory and are
- * excluded by name — a new kind of file there would have to be added here, and
- * `seo.test.ts` is what notices if it is not.
- */
-async function speciesSlugs(): Promise<readonly string[]> {
-  const files = await readdir(join(ROOT, 'src', 'data', 'species'));
-
-  return files
-    .filter(
-      (name) =>
-        name.endsWith('.ts') &&
-        !name.endsWith('.plate.ts') &&
-        !name.endsWith('.test.ts') &&
-        name !== 'index.ts' &&
-        name !== 'plates.ts',
-    )
-    .map((name) => name.replace(/\.ts$/, ''))
-    .sort();
-}
 
 export async function sitemapUrls(): Promise<readonly string[]> {
   return [
