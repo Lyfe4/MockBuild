@@ -276,7 +276,15 @@
   list-style: none;
 }
 
+/*
+ * A list of links, not a sentence containing them, so each one is a target in
+ * its own right. `inline-flex` rather than `block` keeps the underline the
+ * width of the words instead of the width of the column.
+ */
 .sourceLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
   font-size: var(--font-size-sm);
   text-wrap: pretty;
 }
@@ -290,7 +298,15 @@
   margin-block-start: var(--space-xl);
 }
 
+/*
+ * A paragraph holding one link and nothing else is a call to action, not a
+ * sentence with a link in it — the exemption WCAG 2.5.8 gives inline text does
+ * not cover it, and 16px is not a target.
+ */
 .requestLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
   font-family: var(--font-family-mono);
   font-size: var(--font-size-2xs);
   letter-spacing: var(--letter-spacing-wider);

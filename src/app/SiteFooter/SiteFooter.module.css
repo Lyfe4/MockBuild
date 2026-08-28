@@ -48,8 +48,15 @@
   line-height: var(--line-height-normal);
 }
 
+/**
+ * A 44px target at every width.
+ *
+ * It used to relax to `auto` at 48rem, on the reasoning that a wide screen is a
+ * pointer — which leaves an 18px target on every tablet, and 18px is under the
+ * 24px floor even WCAG's pointer-target rule asks for. The links are a stacked
+ * list rather than a line of prose, so the room is there to give.
+ */
 .link {
-  /* A 44px target on a phone; the list gaps absorb it at wider sizes. */
   display: inline-flex;
   align-items: center;
   min-block-size: 2.75rem;
@@ -79,10 +86,6 @@
 }
 
 @media (min-width: 48rem) {
-  .link {
-    min-block-size: auto;
-  }
-
   /*
    * Four columns each, which is the other reason the page grid has twelve: a
    * three-equal-column colophon and a three-against-nine ledger both land on

@@ -158,6 +158,47 @@ reads context, and Testing Library's plain `render` when it does not.
 A species is a record and a drawing, and they are separate files on purpose: the
 record is written once from published sources, and the plate gets redrawn.
 
+**The whole of it, in order.** Each step is expanded below or in _The authoring
+workflow_; this is the list to work down, and the order matters — nothing is
+drawn before its licence is checked, and nothing is judged before it is built.
+
+1. **Find a public-domain reference.** A lithograph or engraving of the whole
+   animal, dorsal, wings spread if it has them. Read the licence itself, not the
+   thumbnail caption. Save it as `references/<slug>.jpg`.
+2. **Record its provenance** in `REFERENCE_SOURCES` in
+   `src/data/references/sources.ts` — artist, publication, figure, year,
+   licence, source URL — and run `npm run sources:build` to regenerate
+   `references/SOURCES.md`. Before drawing, not after: the licence decides
+   whether the file may be committed at all.
+3. **Measure the landmarks** into `src/data/species/landmarks/<slug>.json`, in
+   plate space: midline at `x = 0`, head at `y = 0`, abdomen tip at `y = 1000`,
+   right half only. `doc` and each part's `note` are where the prose goes, since
+   JSON has no comments and the emitter owns every byte of the output.
+4. **`npm run plate:build`.** It writes `src/data/species/<slug>.plate.ts`,
+   which is generated and must never be hand-edited — `npm run plate:verify`
+   compares bytes and fails the check.
+5. **Validate.** Write `<slug>.plate.test.ts` calling `describePlateContract`,
+   then add whatever is true of _this_ animal: four wings on a hornet, no wings
+   on an ant, a narrower body than some other plate. `validatePlate` runs inside
+   the contract and catches the eight mistakes that otherwise fail silently.
+6. **Look at it.** `npm run dev`, then `/lab/plates` — every plate at 80, 240
+   and 600 px, in the current season, beside the reference it was traced from
+   and with the validator's verdict printed. A plate that reads at 600 and turns
+   to mud at 80 has its stroke ranks wrong. The route is dev-only and never
+   built.
+7. **Write the record** — `src/data/species/<slug>.ts`: taxonomy, distribution,
+   `activeMonths` and `monthsHemisphere`, sizes, sources, and the six
+   `Morphology` characters the key asks about. Then two lines in
+   `src/data/species/index.ts`: the import, and the entry **appended** to
+   `SPECIES`, because that array is in accession order and a `TEA-` number must
+   never move under a specimen that already has one.
+8. **`npm run check`.** Lint, types, the three byte-verifiers, 1,138 tests and
+   the build, which now includes the prerender — so the new specimen's page is
+   written to `dist/specimen/<slug>/index.html` and its URL is added to the
+   sitemap by the same list. Nothing else changes: no component knows what a
+   mandible is, and the key, the calendar, the filters and the catalogue all
+   pick the record up on their own.
+
 ```
 src/data/species/
   papilio-machaon.ts             the record — taxonomy, sizes, months, sources

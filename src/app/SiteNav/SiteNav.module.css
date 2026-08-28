@@ -92,10 +92,40 @@
     gap: var(--space-md);
   }
 
+  /**
+   * The horizontal list. The link's *box* shrinks to the word so the underline
+   * sits tight under it; the **target** does not shrink with it.
+   *
+   * A 26px row is a comfortable pointer target and an uncomfortable tap, and
+   * 48rem is a tablet as often as it is a laptop. Growing the box to 44px would
+   * have worked and would have hung the active-page underline twelve pixels
+   * below the word it underlines, so the area is extended instead of the box:
+   * a transparent overlay, inset only on the block axis, which cannot reach a
+   * neighbour because the gap between items is horizontal.
+   */
   .link {
+    position: relative;
     min-block-size: auto;
     padding-block: var(--space-3xs);
     border-block-end: 2px solid transparent;
+  }
+
+  .link::after {
+    content: '';
+    position: absolute;
+    inset-block: calc((2.75rem - 100%) / -2);
+    inset-inline: 0;
+  }
+
+  /*
+   * And the same floor on the other axis, which "About" needs and only
+   * "About" needs: six letters of tracked mono at 12px set 43.2px wide, eight
+   * tenths of a pixel short. Widening the box rather than the overlay keeps
+   * the two hit areas from meeting in the gutter between them.
+   */
+  .link {
+    justify-content: center;
+    min-inline-size: 2.75rem;
   }
 
   .link:hover {

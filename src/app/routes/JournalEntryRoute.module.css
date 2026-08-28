@@ -34,7 +34,11 @@
   text-transform: uppercase;
 }
 
+/* The one link out of an entry to the animal it is about. 24px was not enough. */
 .specimenLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
   font-family: var(--font-family-display);
   font-size: var(--font-size-sm);
 }

@@ -145,7 +145,13 @@
   color: var(--color-accent-strong);
 }
 
-@media (min-width: 48rem) {
+/*
+ * 60rem, not 48. The tighter control is for a pointer, and a 48rem viewport is
+ * a tablet at least as often as it is a laptop — 36px is a fine mouse target
+ * and a poor thumb one. `FilterPanel` already drew the line here; this is the
+ * same line.
+ */
+@media (min-width: 60rem) {
   .sortSelect {
     min-block-size: 2.25rem;
   }

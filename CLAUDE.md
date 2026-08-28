@@ -11,9 +11,10 @@ easy to get wrong.
 institution. It is a portfolio piece: no real institution, nothing is collected
 from a visitor.
 
-The institution is invented; the **collection is not**. Sixteen real species
+The institution is invented; the **collection is not**. Eighteen real species
 across six orders — Coleoptera (_Lucanus cervus_, _Coccinella septempunctata_,
-_Cetonia aurata_, _Carabus violaceus_, _Chrysolina coerulans_), Lepidoptera
+_Cetonia aurata_, _Carabus violaceus_, _Chrysolina coerulans_,
+_Anoplognathus viridiaeneus_, _Eupoecila australasiae_), Lepidoptera
 (_Papilio machaon_, _Aglais io_, _Acherontia atropos_), Odonata (_Aeshna
 cyanea_, _Ischnura elegans_), Hymenoptera (_Bombus terrestris_, _Vespa crabro_,
 _Formica rufa_), Hemiptera (_Palomena prasina_, _Graphosoma italicum_) and
@@ -264,7 +265,7 @@ SpeciesPlate    ──┘        │
   Nothing in `references/` is ever bundled. **`references/SOURCES.md` is
   generated** — see _The source records_ below.
 
-- **The sixteen plates share one test contract.** `src/test/plateContract.ts`
+- **The eighteen plates share one test contract.** `src/test/plateContract.ts`
   asks the six things that go wrong on every plate — validator, reference,
   clipped strokes, view box, line ranks, agreement with the record — and each
   species file adds only what is true of that animal.
@@ -358,7 +359,7 @@ the credits list started reading the same records as the markdown.
 ## The lab route
 
 `/lab/plates` is the contact sheet the plates are judged on. **Dev only** — it
-lives behind `import.meta.env.DEV` in `src/app/router.tsx` inside a dynamic
+lives behind `import.meta.env.DEV` in `src/app/routes.tsx` inside a dynamic
 `import()`, so the branch is dead code at build time and the module is never
 emitted. That matters here: the page displays the traced references, and those
 must not ship.
@@ -457,9 +458,13 @@ keyable the moment its record exists, and no branch mentions an animal.
   A name hashes to itself wherever it sits. Four characters is collision
   headroom over a forty-pair vocabulary, and the test asserts every code is
   distinct.
-- **Depth is pinned by a test that prints it**, under a ceiling of five — three
-  questions for sixteen species, and sixteen leaves, so every record keys out
-  on its own. A record that makes the key deeper has to be looked at rather
+- **Depth is pinned by a test that prints it**, under a ceiling of five — four
+  questions for eighteen species, and eighteen leaves, so every record keys out
+  on its own. It went from three to four when the two Australian scarabs were
+  accessioned: the opening question is the wing cases, seven beetles now answer
+  it the same way, and seven cannot be split in two more questions by characters
+  that divide three ways at best. The test says so at length, and says what to
+  do about the fifteenth beetle. A record that makes the key deeper has to be looked at rather
   than absorbed, and the same test prints the opening question, which must not
   be colour.
 
@@ -492,15 +497,16 @@ plot. `src/lib/calendar` is pure functions; the route renders them.
 
 - **The year is a ring, and the chart cuts it in July.** July is where the
   Australian year is cut and it keeps spring, summer and autumn as unbroken runs
-  of three columns. The cost is real and the page says so out loud: every
-  record's months were observed in the **northern** hemisphere, where the flight
-  season is centred on June and July, so many bars appear at _both ends_ of
-  their row. A stag beetle flying May to August is one period of four months,
+  of three columns. The cost is real and the page says so out loud: sixteen of
+  the eighteen records had their months observed in the **northern**
+  hemisphere, where the flight season is centred on June and July, so many bars
+  appear at _both ends_ of their row. The two Australian scarabs carry
+  `monthsHemisphere: 'southern'` and are the exception the prose names. A stag beetle flying May to August is one period of four months,
   two columns at each edge.
 - **So `activeRuns` joins across the cut** and `firstActiveIndex` reports where
   the joined run _starts_. Taking the first active column instead — the first
-  version — scored thirteen of the sixteen records zero, because thirteen of
-  them are on the wing in July, and the row order fell through to the tie-break
+  version — scored most of the records zero, because thirteen of the northern
+  ones are on the wing in July, and the row order fell through to the tie-break
   on the name. Fixed, the rows step down the page from August through February,
   March, April and May, which is what the animals do.
 - **The season tint is the tie to the theme engine.** `useSeason` gives the
@@ -606,6 +612,88 @@ says why.
 - **`?species=` preselects, and an unknown id selects nothing.** Falling back to
   the first specimen would have a visitor ask for an animal they never named.
   The specimen sheet links here with the parameter set.
+
+## The prerender
+
+Every route is rendered to static HTML at build time. `npm run build` is three
+steps — `vite build`, then `vite build --ssr src/entry-server.tsx`, then
+`node scripts/prerender/build.ts` — and the result is thirty-one files in
+`dist/`: seven fixed pages, five journal entries, eighteen specimen sheets and
+`404.html`.
+
+It is possible because nothing is fetched. Every record, plate, journal entry
+and reference is a compiled-in module constant, so a page is a pure function of
+its URL and there is no serialised state to hand the client. `entry-server.tsx`
+uses react-router's own `createStaticHandler`, so the browser router and the
+build share one route tree — which is why `src/app/routes.tsx` exists apart from
+`router.tsx`.
+
+- **`hydrate={false}` on `StaticRouterProvider` is load-bearing.** Without it
+  react-router emits an inline `<script>` assigning
+  `window.__staticRouterHydrationData`, which `script-src 'self'` forbids. There
+  is nothing for it to carry, because no route has a loader.
+- **The first render must be what is in the file.** That makes hydration a rule
+  about _what a build cannot know_, and three things fall under it: which season
+  this reader gets (`useReaderSeason`), what day it is (`useToday`), and whether
+  a lazy chunk has arrived (`useHydrated`). All three are
+  `useSyncExternalStore` with a server snapshot — the API React has for exactly
+  this, and the one that leaves no `setState` in an effect.
+- **The archive ships undressed.** No `data-season` on `<html>`, so the neutral
+  palette in `tokens.css` is what paints until the page hydrates. The season
+  then lands with `--duration-palette` still at 0ms, so it snaps rather than
+  cross-fading — which is what `data-theme-ready` was always for and is now
+  doing real work.
+- **A `React.lazy` inside `renderToString` is a trap.** The render cannot await
+  a dynamic import, so the boundary is emitted _unfinished_ and React reports
+  recoverable error #419 for it on hydration — eighteen of them on the
+  catalogue, one per row. `SpecimenRow` and the calendar's row thumbnails
+  therefore mount their plates only after hydration. The calendar's case was
+  measured: eighteen plates inline are 111 kB gzipped against the chart's own
+  6.7, and cost 2.7 s of first contentful paint.
+- **Each page links its own route stylesheet.** Only the entry CSS is in
+  `index.html`, and a lazy route's CSS is a sibling of its JS chunk — so a
+  prerendered calendar used to paint its chart unstyled and restyle it two round
+  trips later. The prerenderer asks each emitted stylesheet whether it defines a
+  class the page actually uses, which is the class-name verification read
+  backwards and cannot drift from a route list.
+- **Each page is rendered from a fresh copy of the server bundle**, via a
+  cache-busting query on the import. One shared graph let a resolved
+  `React.lazy` leak forwards and produced two different files for the same
+  component. That is why the SSR build sets `codeSplitting: false`: a chunked
+  one gives a _half_-fresh graph, with a new `ThemeContext` in the re-evaluated
+  entry and cached route chunks still reading the old one. The first route is
+  rendered again at the end and compared, so the property is asserted.
+- **The build fails** on an inline `style` attribute, on an inline `<script>`
+  that is not a JSON-LD data block, and on a class name no shipped stylesheet
+  defines.
+- **`public/_redirects` is `/* /404.html 404`.** Netlify serves an existing file
+  in preference to a non-forced rule, so the catch-all never shadows a
+  prerendered page; what reaches it is an address the archive does not hold.
+  Pointing it at the shell would now flash the _catalogue_ at that visitor,
+  because the shell has contents.
+- **`scripts/site-paths.ts` is the one list.** The sitemap and the prerenderer
+  read the same slugs off the same directories, and
+  `scripts/prerender/prerender.test.ts` and `src/app/router.test.tsx` hold that
+  list and the route tree against each other from both sides — which is what
+  replaced the SPA catch-all as the safety net.
+
+## Tap targets
+
+44 x 44 at touch widths, and the codebase's own relaxation above them. `375` and
+`768` are treated as touch and every control clears 44 px in both dimensions
+there; from `60rem` a handful of controls tighten to 36 or 28 px, which the
+stylesheets say out loud where they do it, and which stays above the 24 x 24
+floor WCAG 2.5.8 asks of a pointer target.
+
+Two things are deliberately not 44 px: **links set inside a sentence**, which
+2.5.8 exempts by name and which cannot be grown without breaking the line box
+they sit in. A paragraph holding _only_ a link is not one of those — see
+`SpecimenRoute`'s request link, which is a call to action and is 44 px.
+
+`SiteNav` extends its hit area with an absolutely positioned `::after` rather
+than growing the box, because the box is what the active-page underline is
+attached to. That trick only works where the neighbours are spaced on the other
+axis; the footer's stacked list grows instead.
 
 ## Known dead weight
 

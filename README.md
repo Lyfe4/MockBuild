@@ -22,9 +22,9 @@ where the fiction stops.
 |                  |                                                                                                     |
 | ---------------- | --------------------------------------------------------------------------------------------------- |
 | **Stack**        | Vite · React 19 · react-router 8 (data router) · TypeScript 6 strict · vanilla CSS Modules · Vitest |
-| **Tests**        | 1,071 across 63 files                                                                               |
+| **Tests**        | 1,138 across 70 files                                                                               |
 | **Collection**   | 18 species, 6 orders, 18 plates, 18 traced references                                               |
-| **Lighthouse**   | Performance 88 · Accessibility 100 · Best practices 100 · SEO 100                                   |
+| **Lighthouse**   | Accessibility 100 · Best practices 100 · SEO 100 · Performance 75, and see below                    |
 | **Runtime deps** | four: `react`, `react-dom`, `react-router`, `zod`                                                   |
 
 ```bash
@@ -263,7 +263,7 @@ wrong animal.
 
 ### Testing
 
-**1,071 tests across 63 files**, colocated with what they cover. The strategy is
+**1,138 tests across 70 files**, colocated with what they cover. The strategy is
 less about coverage than about which failures are _silent_:
 
 | What                              | How it is tested                                                                                          |
@@ -289,14 +289,32 @@ is what the pre-push hook and CI both run.
 Route-level code splitting with react-router's own `lazy`, and chunk groups
 declared by **lifetime** rather than by route:
 
-| Chunk              | Size        | gzip    | Notes                                                |
-| ------------------ | ----------- | ------- | ---------------------------------------------------- |
-| `vendor`           | 280.3 kB    | 88.9 kB | react, react-dom, react-router                       |
-| `plates`           | 257.6 kB    | 89.7 kB | the eighteen drawings — **not** on the critical path |
-| `RequestRoute`     | 68.8 kB     | 19.3 kB | zod, and only on `/request`                          |
-| `records`          | 58.7 kB     | 17.5 kB | species records and provenance                       |
-| `index` (entry)    | 20.9 kB     | 7.0 kB  |                                                      |
-| seven route chunks | 2–9 kB each |         |                                                      |
+| Chunk              | Size         | gzip    | Notes                                                |
+| ------------------ | ------------ | ------- | ---------------------------------------------------- |
+| `vendor`           | 280.4 kB     | 89.0 kB | react, react-dom, react-router                       |
+| `plates`           | 257.6 kB     | 89.7 kB | the eighteen drawings — **not** on the critical path |
+| `RequestRoute`     | 69.0 kB      | 19.4 kB | zod, and only on `/request`                          |
+| `records`          | 58.7 kB      | 17.5 kB | species records and provenance                       |
+| `index` (entry)    | 25.3 kB      | 8.5 kB  |                                                      |
+| seven route chunks | 2–10 kB each |         |                                                      |
+
+Twenty JavaScript files, 772 kB unminified-gzip on disk, of which a landing
+visitor parses the entry, `vendor` and `records`. The stylesheets are an entry
+sheet of 38.2 kB (7.8 kB gzipped) plus one per route, 2–6 kB each, and each
+prerendered page links only the ones its own markup uses.
+
+The HTML is no longer one 7.5 kB shell. Every route is its own file:
+
+| File                                  | raw     | gzip    |
+| ------------------------------------- | ------- | ------- |
+| `index.html` / `catalogue/index.html` | 37.1 kB | 7.1 kB  |
+| `calendar/index.html`                 | 57.4 kB | 6.8 kB  |
+| `specimen/lucanus-cervus/index.html`  | 93.6 kB | 18.6 kB |
+| `404.html`                            | 14.1 kB | 4.5 kB  |
+
+The specimen sheet is the largest because its plate is the page — one drawing at
+full size, inline. The catalogue's and the calendar's thumbnails are not in
+their HTML on purpose; see _Prerendering_ below.
 
 The plate data is the interesting one. `@/data` is the _records_; drawings come
 from a separate entry point whose own module comment explains what importing it
@@ -305,6 +323,53 @@ reaches is on the critical path — which is how 258 kB of beetle came to be
 `modulepreload`ed ahead of the first paint. Its thumbnails now load after the
 page does, through a dynamic import behind a frame that already has its final
 size.
+
+### Prerendering
+
+`npm run build` is three steps, not one: the client bundle, an SSR bundle of
+`src/entry-server.tsx`, and `scripts/prerender/build.ts`, which renders every
+route to static HTML — thirty-one files, one per address, plus `404.html`.
+
+It costs one script and no dependency because the archive is unusually suited to
+it: every record, plate, journal entry and reference is a compiled-in module
+constant, so a page is a pure function of its URL and hydration needs no
+serialised state. `entry-server.tsx` builds a static router from the same
+`ROUTES` the browser uses, with `hydrate={false}` so no inline hydration-data
+script is emitted — `script-src 'self'` would refuse it.
+
+What it changed, measured under mobile throttling (412 × 823, 1.6 Mbps,
+150 ms RTT, 4× CPU, five interleaved rounds, median):
+
+| Route                      | LCP before | LCP after |
+| -------------------------- | ---------- | --------- |
+| `/`                        | 4.16 s     | 1.99 s    |
+| `/calendar`                | 6.05 s     | 1.99 s    |
+| `/specimen/lucanus-cervus` | 5.64 s     | 1.92 s    |
+
+On all three the largest element now paints **with the document** rather than
+after four chunks of JavaScript: LCP equals FCP. First contentful paint is about
+0.25 s later, which is the honest price of a 37 kB document in place of a 7.5 kB
+one. Lighthouse's own simulated score moved 68 → 75 (median of five interleaved
+pairs; the prerendered runs vary from 67 to 76 on the machine this was measured
+on). Its diagnostics name what is left: the 38 kB render-blocking stylesheet and
+the three preloaded font files, neither of which prerendering touches.
+
+Three things had to change for hydration to be silent, and they are all the same
+rule — **the first client render has to be what is already in the file**, so
+anything a build cannot know has to arrive on the render after:
+
+- **Which season this reader gets.** Link, storage and clock are all facts about
+  the reader, so the file ships undressed: no `data-season`, the neutral palette
+  `tokens.css` always described. The season lands before the first post-hydration
+  paint, with the cross-fade still disarmed, so it snaps rather than fading in.
+- **What day it is.** The calendar ruled the month the site was _built_ in and
+  the request form floored its date input at the build date. Both read `useToday`.
+- **Whether a lazy chunk has arrived.** `renderToString` cannot await a dynamic
+  import, so a `React.lazy` inside it emits an unfinished Suspense boundary and
+  React reports a recoverable error for every one on hydration. The catalogue's
+  and the calendar's plate thumbnails mount after hydration instead — which also
+  keeps 650 kB of beetle out of the document it would otherwise have to arrive
+  in front of.
 
 ---
 
@@ -339,6 +404,14 @@ Stated here rather than left for a reader to discover.
   on a specimen sheet, with LCP equal to FCP on all three. The remaining gap is
   no longer JavaScript at all; it is the 38 kB render-blocking stylesheet and
   the three preloaded font files, which is a different piece of work.
+- **Without JavaScript the archive reads but does not filter.** Every route is a
+  real file now, so the catalogue, the calendar, the eighteen specimen sheets
+  and the journal render and every link on them works — verified with script
+  execution disabled. Four things still need it: the masthead's menu, which is a
+  disclosure (the colophon's archive links are the way round it), the
+  catalogue's filters, the identification key, and the request form. The season
+  is one of them too, so a scriptless visitor gets the neutral palette. The
+  `<noscript>` in `index.html` says all of this to the person it happens to.
 - **`/lab/plates` is dev-only** and deliberately unbuildable: it displays the
   traced references, which must never ship. The branch is behind
   `import.meta.env.DEV` and a dynamic `import()`, so the module is not emitted
@@ -380,6 +453,7 @@ validator's verdict printed on the page.
 | `npm run sources:build` / `sources:verify`      | `src/data/references` → `references/SOURCES.md`                       |
 | `npm run seo:build` / `seo:verify`              | `robots.txt` and `sitemap.xml`                                        |
 | `npm run og:build`                              | `public/og-image.png`, composed from the stag plate and the wordmark  |
+| `npm run build:ssr` / `prerender`               | the SSR bundle, and the 31 HTML files built from it                   |
 
 ### Adding a species
 
@@ -387,7 +461,9 @@ A record in `src/data/species`, a landmark file in
 `src/data/species/landmarks`, a test that calls `describePlateContract`, a
 reference in `references/` with its entry in `SOURCES.md`, and two lines in
 `src/data/species/index.ts`. It touches no component, and the key, the
-calendar, the filters and the sitemap all pick it up on their own.
+calendar, the filters, the sitemap and the prerendered file list all pick it up
+on their own. The step-by-step version, reference to committed plate, is in
+[CONTRIBUTING](CONTRIBUTING.md#adding-a-species).
 
 ---
 
@@ -450,12 +526,14 @@ rather than by choice:
 ├── index.html                CSP fallback, meta, Open Graph
 ├── netlify.toml              build command, publish dir, Node version, caching
 ├── scripts/
+│   ├── site-paths.ts         every path the site has, read off the filesystem
 │   ├── plate-builder/        landmarks → *.plate.ts
 │   ├── sources-builder/      src/data/references → references/SOURCES.md
 │   ├── seo-builder/          → robots.txt, sitemap.xml
+│   ├── prerender/            dist-ssr/entry-server.js → 31 HTML files in dist/
 │   └── og-builder/           → og-image.png
 └── src/
-    ├── app/                  router, providers, root layout, error boundary, routes/
+    ├── app/                  routes.tsx, router, providers, root layout, routes/
     ├── components/           SpeciesIllustration, Ledger, VisuallyHidden
     ├── features/             catalogue · journal · meta · theme
     ├── hooks/                shared React hooks
@@ -470,7 +548,8 @@ rather than by choice:
     │   └── species/          one record, one plate and one test per species
     ├── types/                shared types
     ├── test/                 Vitest setup, the plate contract, geometry, drift tests
-    └── main.tsx
+    ├── entry-server.tsx      renders one route to markup, at build time, in Node
+    └── main.tsx              hydrates it
 ```
 
 `@/` resolves to `src/`, configured in `tsconfig.app.json`, mirrored in

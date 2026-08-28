@@ -54,12 +54,15 @@
     <!--
       Open Graph, and the **site-level defaults**.
       
-      These describe the home page and are what a scraper that runs no
-      JavaScript sees on every URL. `src/features/meta/useRouteMeta.ts` rewrites
-      the title, description, canonical, og:title, og:description, og:url and
-      og:type as each route mounts — in place, by selector, rather than by
-      appending, so there is never a second copy of any of them for a consumer
-      to read first.
+      These describe the home page, and they are the *defaults* rather than
+      what most consumers see. `scripts/prerender` rewrites the title,
+      description, canonical, og:title, og:description, og:url and og:type into
+      each of the thirty-one built files, from what that route's own
+      `useRouteMeta` call asked for; the hook then does the same thing again in
+      the browser on every client-side navigation. Both write **in place, by
+      selector**, rather than appending, so there is never a second copy of any
+      of them for a consumer to read first — which is the whole reason the hook
+      is imperative and not rendered.
       
       The origin below is repeated from `src/data/site.ts`, which is the single
       source of truth for it and the only place to change it. It cannot be
@@ -137,8 +140,12 @@
   <body>
     <div id="root"></div>
     <noscript>
-      The Thornfield catalogue needs JavaScript to browse the collection. The accession records
-      themselves are available on request from the archive.
+      Every page here is rendered at build time, so the catalogue, the calendar, the eighteen
+      specimen sheets and the field journal are readable without JavaScript and every link on them
+      leads somewhere real. The menu in the masthead is the exception — it is a disclosure that
+      needs script — so use the archive links in the colophon at the foot of the page instead.
+      Filtering the catalogue, the identification key, the seasonal palette (the archive is shown
+      undressed, in its neutral one) and the request form all need JavaScript as well.
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -216,7 +216,14 @@
     /* Pointer users get a slightly tighter row; the target is still 56px. */
     padding-inline: var(--space-lg);
   }
+}
 
+/*
+ * 60rem, not 48, for the same reason the catalogue's sort control moved: a
+ * 48rem viewport is a tablet as often as a laptop, and 36px is a fine mouse
+ * target and a poor thumb one.
+ */
+@media (min-width: 60rem) {
   .start,
   .control {
     min-block-size: 2.25rem;

@@ -109,7 +109,15 @@
   text-wrap: pretty;
 }
 
+/*
+ * The index is a list of documents and this is how you open one, so it is a
+ * control rather than a phrase in a sentence: the title's own line box is 28px
+ * and the target is 44.
+ */
 .entryLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
   color: inherit;
   text-decoration: none;
 }
